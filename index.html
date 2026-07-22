@@ -108,7 +108,7 @@ select option{background:#121216;color:#fff;}
 .btn-test-hype:hover{background:#00B8D4;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,229,255,0.5);}
 .btn-save-manual{background:#00e676;color:#121216;width:100%;border:none;padding:12px;border-radius:8px;font-weight:800;cursor:pointer;margin-top:10px;transition:0.2s;font-size:0.85rem;box-shadow:0 4px 15px rgba(0,230,118,0.2);}
 .btn-save-manual:hover{background:#00b35c;transform:translateY(-2px);}
-#save-feedback{font-size:0.85rem;font-weight:bold;text-align:center;margin-top:5px;display:none;}
+#save-feedback{font-size:0.85rem;font-weight:bold;text-align:center;margin-top:5px;display:block;}
 #conn-status{margin-top:12px;font-size:0.85rem;font-weight:bold;text-align:center;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);}
 #link-token-ajuda{background:rgba(145,70,255,0.15);border:1px solid #9146ff;padding:12px;border-radius:8px;margin-bottom:10px;text-align:center;animation:pulseBox 2s infinite alternate;}
 #link-token-ajuda a{color:#00E5FF;font-size:0.85rem;font-weight:bold;text-decoration:none;}
@@ -314,7 +314,7 @@ select option{background:#121216;color:#fff;}
 </div>
 <div class="config-card" style="border-color:#ff9800; box-shadow:0 0 10px rgba(255,152,0,0.1);">
 <label style="color:#ff9800;">💾 Sincronização em Nuvem</label>
-<span class="config-desc">Configurações e histórico salvos automaticamente na nuvem para o seu login.</span>
+<span class="config-desc">Configurações salvas automaticamente na nuvem ao alterar ou clicar.</span>
 <div style="display:flex; gap:10px; margin-top:10px;">
 <button class="btn-purple" style="background:#ff9800; color:#121216;" onclick="exportBackup()">📥 EXPORTAR LOCAL (.TXT)</button>
 <button class="btn-purple" style="background:transparent; border:1px solid #ff9800; color:#ff9800;" onclick="document.getElementById('import-file').click()">📤 IMPORTAR (.TXT)</button>
@@ -656,7 +656,7 @@ async function trocarSenha() {
 }
 
 // ==========================================
-// 3. SINCRONIZAÇÃO EM NUVEM E CONFIGURAÇÕES
+// 3. SINCRONIZAÇÃO EM NUVEM E DEBOUNCE (AUTOMÁTICO)
 // ==========================================
 function saveSettingsLocal(){
     localStorage.setItem('tw_channel', document.getElementById('channel-name').value);
@@ -753,16 +753,29 @@ function salvarNuvem() {
     }).catch(e=>{});
 }
 
+// Sistema de Debounce: Salva automaticamente 1 segundo após o usuário parar de digitar/alterar
+let saveTimeout = null;
+function triggerAutoSave() {
+    saveSettingsLocal();
+    if(saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        salvarNuvem();
+        let feedback = document.getElementById('save-feedback');
+        feedback.innerText = "☁️ Salvo automaticamente na nuvem";
+        feedback.style.color = "#00e676";
+        feedback.style.display = "block";
+        setTimeout(() => { feedback.style.display = "none"; }, 2000);
+    }, 1000);
+}
+
 function salvarManualComFeedback() {
     saveSettingsLocal();
     salvarNuvem();
     let feedback = document.getElementById('save-feedback');
-    feedback.innerText = "✅ Suas configurações foram salvas na nuvem!";
+    feedback.innerText = "✅ Configurações salvas com sucesso!";
     feedback.style.color = "#00e676";
     feedback.style.display = "block";
-    setTimeout(() => {
-        feedback.style.display = "none";
-    }, 3000);
+    setTimeout(() => { feedback.style.display = "none"; }, 3000);
 }
 
 function carregarNuvem(jsonString) {
@@ -791,12 +804,12 @@ function checkMonthlyClean() {
     salvarNuvem();
 }
 
-// Ouve as digitações apenas para salvar localmente (sem causar spam assíncrono na nuvem)
+// Ouve qualquer alteração nos campos e dispara o salvamento automático inteligente
 const inputs = document.querySelectorAll('#admin-view input, #admin-view textarea, #admin-view select');
 inputs.forEach(input => {
-    input.addEventListener('change', saveSettingsLocal);
-    input.addEventListener('keyup', saveSettingsLocal);
-    input.addEventListener('input', saveSettingsLocal);
+    input.addEventListener('change', triggerAutoSave);
+    input.addEventListener('keyup', triggerAutoSave);
+    input.addEventListener('input', triggerAutoSave);
 });
 
 // O Restante do código original mantido da sua versão estável
@@ -986,7 +999,7 @@ function updateAllMultipliers(){
         else{p.weight=wv;}
     }
     updateUI();
-    saveSettingsLocal();
+    triggerAutoSave();
 }
 function toggleGiveaway(){
     isRunning=!isRunning;
