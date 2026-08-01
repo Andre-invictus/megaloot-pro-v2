@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>MegaLoot Pro - Streamer Edition</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
 body{display:flex;height:100vh;background-color:#0b0b0e;color:#efeff1;overflow:hidden;}
@@ -186,6 +188,9 @@ select option{background:#121216;color:#fff;}
 .btn-pass-loot:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,152,0,0.6);}
 .btn-reroll-popup{background:#3a3a3f;border:1px solid #555;}
 .btn-reroll-popup:hover{background:#e91e63;border-color:#e91e63;}
+
+/* MegaLoot Pro Supabase + DVAPI */
+.dv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.dv-stat{padding:12px 6px;text-align:center;border-radius:9px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.22)}.dv-stat small{display:block;color:#9294a4;font-size:.65rem;text-transform:uppercase}.dv-stat strong{display:block;color:#fff;font-size:1.15rem;margin-top:5px}.dv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dv-preview{padding:11px;border-radius:8px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);color:#baffd2;text-align:center;font-weight:800;margin:9px 0}.dv-msg{font-size:.78rem;line-height:1.4;min-height:18px;margin-top:8px}.ok{color:#00e676}.err{color:#ff668f}.warn{color:#ffca28}.role-badges-v2{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;margin-bottom:5px;min-height:17px}.role-badge-v2{font-size:.55rem;font-weight:900;padding:2px 6px;border-radius:999px;border:1px solid;background:rgba(0,0,0,.65)}.role-badge-v2.mod{color:#00e676}.role-badge-v2.vip{color:#ffca28}.role-badge-v2.sub{color:#d58cff}.cloud-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}.access-note{color:#888;font-size:.72rem;margin-top:10px;line-height:1.4}.delivery-tag{font-size:.58rem;color:#00e5ff;border:1px solid rgba(0,229,255,.45);border-radius:999px;padding:2px 5px;margin-left:4px}
 </style>
 </head>
 <body>
@@ -195,37 +200,26 @@ select option{background:#121216;color:#fff;}
     <div id="tab-login" class="login-box login-tab active">
         <h1>MegaLoot Pro</h1>
         <p>Acesso Restrito ao Streamer</p>
-        <input type="text" id="login-id" placeholder="Seu Login" onkeypress="if(event.key === 'Enter') fazerLogin()">
+        <input type="text" id="login-id" placeholder="Seu e-mail" onkeypress="if(event.key === 'Enter') fazerLogin()">
         <input type="password" id="login-pwd" placeholder="Sua Senha" onkeypress="if(event.key === 'Enter') fazerLogin()">
         <button onclick="fazerLogin()" id="btn-login">ACESSAR SISTEMA</button>
+        <div class="access-note">Acesso exclusivo para streamers autorizados. Solicite a liberação ao administrador do MegaLoot Pro.</div>
         <div id="msg-login" class="sys-msg sys-err"></div>
         <div class="login-links">
             <span onclick="switchTab('tab-esqueci')">Esqueci a Senha</span>
-            <span onclick="switchTab('tab-trocar')">Trocar Senha</span>
+            
         </div>
     </div>
 
     <div id="tab-esqueci" class="login-box login-tab">
         <h1>Recuperação</h1>
         <p>Informe seu login para receber uma nova senha no e-mail cadastrado.</p>
-        <input type="text" id="esqueci-id" placeholder="Seu Login" onkeypress="if(event.key === 'Enter') esqueciSenha()">
+        <input type="text" id="esqueci-id" placeholder="Seu e-mail" onkeypress="if(event.key === 'Enter') esqueciSenha()">
         <button onclick="esqueciSenha()" id="btn-esqueci">ENVIAR E-MAIL</button>
         <div id="msg-esqueci" class="sys-msg sys-err"></div>
         <div class="login-links"><span onclick="switchTab('tab-login')">← Voltar para o Login</span></div>
     </div>
-
-    <div id="tab-trocar" class="login-box login-tab">
-        <h1>Trocar Senha</h1>
-        <p>Altere sua senha de acesso.</p>
-        <input type="text" id="trocar-id" placeholder="Seu Login">
-        <input type="password" id="trocar-pwd-old" placeholder="Senha Atual">
-        <input type="password" id="trocar-pwd-new" placeholder="Nova Senha">
-        <button onclick="trocarSenha()" id="btn-trocar">ALTERAR SENHA</button>
-        <div id="msg-trocar" class="sys-msg sys-err"></div>
-        <div class="login-links"><span onclick="switchTab('tab-login')">← Voltar para o Login</span></div>
-    </div>
 </div>
-
 <div id="app-core">
 <audio id="sfx-bless" src="bless.mp3" preload="auto"></audio>
 <audio id="sfx-prize" src="premio.mp3" preload="auto"></audio>
@@ -354,6 +348,31 @@ select option{background:#121216;color:#fff;}
 <div class="flex-row"><label>Sorte Sub</label><input type="number" id="mult-sub" value="2" min="1" oninput="updateAllMultipliers()"></div>
 <div class="flex-row"><label>Sorte VIP</label><input type="number" id="mult-vip" value="3" min="1" oninput="updateAllMultipliers()"></div>
 <div class="flex-row"><label>Sorte Mod</label><input type="number" id="mult-mod" value="3" min="1" oninput="updateAllMultipliers()"></div>
+</div>
+
+
+<div class="config-card" style="border-color:#00E5FF;">
+<label style="color:#00E5FF;">💰 PAINEL DVAPI</label>
+<span class="config-desc">Consulta de saldo e lotes opcionais pagos pelo streamer. A fila normal da live permanece separada.</span>
+<div class="dv-row"><input type="text" id="dvapi-dv" placeholder="Login DV"><input type="password" id="dvapi-key" placeholder="API Key DVAPI"></div>
+<div class="dv-grid"><div class="dv-stat"><small>MPoints</small><strong id="dv-bal-mp">--</strong></div><div class="dv-stat"><small>MCoins</small><strong id="dv-bal-mc">--</strong></div><div class="dv-stat"><small>MegaVIP</small><strong id="dv-bal-vip">--</strong></div></div>
+<button class="btn-purple" style="background:#0097A7" onclick="atualizarSaldoDvapi()">🔄 ATUALIZAR SALDO</button><div id="dv-updated" class="dv-msg"></div>
+</div>
+<div class="config-card" style="border-color:#ffca28;">
+<label style="color:#ffca28;">🎁 SORTEIO COM SALDO DVAPI</label>
+<span class="config-desc">Crie manualmente MP, MC ou MegaVIP do seu saldo. Não interfere nos prêmios que entram normalmente durante a live.</span>
+<select id="dv-lot-type" onchange="calcularLoteDvapi()"><option value="mp">MPoints</option><option value="mc">MCoins</option><option value="megavip">Dias MegaVIP</option></select>
+<div class="dv-row"><div><span class="config-desc">Valor total</span><input id="dv-lot-total" type="number" min="1" value="5000" oninput="calcularLoteDvapi()"></div><div><span class="config-desc">Quantidade de prêmios</span><input id="dv-lot-count" type="number" min="1" value="5" oninput="calcularLoteDvapi()"></div></div>
+<div id="dv-lot-preview" class="dv-preview">5 prêmios de 1.000 MPoints</div>
+<label class="checkbox-container"><input id="dv-auto" type="checkbox" checked> Entrega automática após o vencedor usar !nick</label>
+<button class="btn-purple" style="background:#ffca28;color:#121216" onclick="adicionarLoteDvapi()">➕ ADICIONAR LOTE À FILA</button><div id="dv-lot-msg" class="dv-msg"></div>
+</div>
+<div class="config-card" style="border-color:#bf94ff;">
+<label style="color:#bf94ff;">☁️ SUPABASE E BACKUP</label>
+<span class="config-desc">Salva histórico, VIPs, comandos, anúncios, prêmios e configurações. Tokens e chaves sensíveis não são enviados.</span>
+<div class="cloud-buttons"><button class="btn-purple" onclick="salvarBackupSupabase(true)">☁️ SALVAR</button><button class="btn-purple" style="background:#00b8d4;color:#071014" onclick="restaurarBackupSupabase()">♻️ RESTAURAR</button></div>
+<button class="btn-purple" style="background:transparent;border:1px solid #bf94ff;color:#bf94ff" onclick="importarLegadoParaSupabase()">📦 IMPORTAR DADOS DESTE NAVEGADOR</button>
+<button class="btn-purple" style="background:#444" onclick="alterarSenhaSupabase()">🔐 ALTERAR MINHA SENHA</button><div id="cloud-status" class="dv-msg"></div>
 </div>
 
 <!-- BOTÃO DE SALVAR MANUAL -->
@@ -1324,5 +1343,6 @@ function clearGiveaway(){
     updateUI();
 }
 </script>
+<script src="megaloot-supabase.js"></script>
 </body>
 </html>
