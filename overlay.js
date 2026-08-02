@@ -13,6 +13,17 @@
   function hash(v){try{return JSON.stringify(v);}catch{return String(Date.now());}}
   function stopDrawing(){if(scrambleTimer){clearInterval(scrambleTimer);scrambleTimer=null;}if(revealTimer){clearTimeout(revealTimer);revealTimer=null;}}
   function randomText(length){let out="";for(let i=0;i<Math.max(6,length||8);i++)out+=chars[Math.floor(Math.random()*chars.length)];return out;}
+  function showPrize(state){
+    const event=state.event_id||("prize:"+Date.now());
+    if(lastEventId===event&&$("winner").classList.contains("prize-preview"))return;
+    lastEventId=event;stopDrawing();
+    $("winner").className="prize-preview";$("winner").classList.remove("hidden","drawing","revealed");
+    $("winner-avatar").style.display="none";
+    $("winner-label").textContent="A RODADA VAI COMEÇAR";
+    $("winner-name").textContent="🎁 "+(state.active_prize||"PRÊMIO");
+    $("winner-prize").style.display="none";
+    $("status").textContent="PRÓXIMO PRÊMIO";
+  }
   function showDrawing(state){
     if(lastEventId===state.event_id&&$("winner").classList.contains("drawing"))return;
     lastEventId=state.event_id||("drawing:"+Date.now());stopDrawing();
@@ -37,7 +48,7 @@
   function renderPrizes(s){const key=hash(s.prizes||[]);if(key===lastPrizes)return;lastPrizes=key;$("prizes").innerHTML=(s.prizes||[]).map(x=>`<div class="prize">🎁 ${esc(x)}</div>`).join("")||'<div class="prize">Aguardando prêmio</div>';}
   function renderMultipliers(s){const m=s.multipliers||{},key=hash(m);if(key===lastMultipliers)return;lastMultipliers=key;$("multipliers").innerHTML=`<span>👤 VIEW: ${m.viewer||1}x</span><span>⭐ SUB: ${m.sub||1}x</span><span>👑 VIP: ${m.vip||1}x</span><span>🛡 MOD: ${m.mod||1}x</span>`;}
   function renderParticipants(s){const ps=s.participants||[],key=hash(ps);if(key===lastParticipants)return;lastParticipants=key;$("empty").style.display=ps.length?"none":"grid";$("participants").innerHTML=ps.map(p=>`<div class="card ${p.isMod?'mod':p.isVip?'vip':p.isSub?'sub':''}"><div class="luck">${p.weight||1}x LUCK</div><div class="badges">${p.isMod?'🛡 MOD ':''}${p.isVip?'👑 VIP ':''}${p.isSub?'⭐ SUB':''}</div><img loading="eager" src="${esc(p.avatar||DEFAULT_AVATAR)}"><span class="name">${esc(p.name)}</span></div>`).join("");$("count").textContent=`${ps.length} participantes (${ps.filter(p=>p.eligible).length} elegíveis)`;}
-  function renderStatus(s){if(s.status===lastStatus&&s.status!=="drawing")return;lastStatus=s.status;if(s.status==="drawing")showDrawing(s);else if(["winner","confirmed","timeout"].includes(s.status)&&s.winner)revealWinner(s);else{hideWinner();$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":"AGUARDANDO";}}
+  function renderStatus(s){if(s.status===lastStatus&&s.status!=="drawing")return;lastStatus=s.status;if(s.status==="prize")showPrize(s);else if(s.status==="drawing")showDrawing(s);else if(["winner","confirmed","timeout"].includes(s.status)&&s.winner)revealWinner(s);else{hideWinner();$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":"AGUARDANDO";}}
   function render(s){if(!s)return;currentState=s;renderPrizes(s);renderMultipliers(s);renderParticipants(s);renderStatus(s);}
   async function load(){try{const {data,error}=await client.from("overlay_rooms").select("state,updated_at").eq("room_code",room).maybeSingle();if(error)throw error;if(data&&data.updated_at!==lastUpdated){lastUpdated=data.updated_at;render(data.state);}}catch(e){$("empty").textContent="Overlay aguardando configuração";}}
   load();setInterval(load,350);
