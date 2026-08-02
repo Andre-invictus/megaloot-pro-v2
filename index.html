@@ -1,1393 +1,355 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>MegaLoot Pro - Streamer Edition</title>
-<link rel="icon" type="image/png" href="megaloot-icon.png">
-<link rel="apple-touch-icon" href="megaloot-icon.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
-body{display:flex;height:100vh;background-color:#0b0b0e;color:#efeff1;overflow:hidden;}
+PK    |2]À}(b
+z  yé 
+  index.htmlUT	 Œánjánjux
+     è  Ì\[oÛH–~Ï¯àØÚêi’"uMî¤ ú†Iï ƒÅ>”È’Ä„"	’²ì~Þ¶lOÝÈºQ–Ó™mwl‰,V:u.ß9uŠ¯þòö·ÿøçïïœ]»Ï¿{ñŠüqrTl__U­ûÃß¯È5ŒRø³Ç-r’ªÜ¾¾ú?~rçän›µ9þî¼E?—eëü^—Žë|hkŒö¸vÞ¥Y›•Å«[ÖìÅ«<+>95Î__eIY\9íC…áómñmUl¯œ]7¯¯öÐ_ý¹¤•Gn(Ï¢ªÊ±Û–‡dç²~Î<Ö$uVµNS'¯¯vm[5ËÛÛ$->6^’—‡t“£{I¹¿EÑýmž­›ÛM•nnC/ööÙ;ìSoŸÞÇæê»W·¬Ëá¾¡YŠóì®ö
+ÜÞÕþöûæP¡5jð­øà~l¾ ;ëZÁD6ÙÖ·} ìüö´.ïÝ&ûœÛåº¬S\»peµGõ6+–þªBiJîù«MY´îí³üaùÍû¢Åõ7ãÛà:Û¬_¬Ëôá”fM•£‡å&Ç÷«Î¶»vøþÝnµFÉ§m]ŠHÊËzyí¯á ¯ø7¼Á›M°*ïp½ÉËãr—¥). ß·ß:¼ûùóöóóo{ÿ«óæo~ýŸÿ~óöóíí‹ë¼R]˜Æ…srª²¡"³t6Ù=NWN[VKÇ_99Þ´ôÃ1KÛÝÒ!dW'ÒaT:=™K§Fi†rwKþâ¢½I²:É±ƒZ'Á„cç:@
+#Ç	ŸÙ|HG/G+GpÂ¡¬ ¿Ý4«qÂˆƒYöÅÊùxhÚló@–©…N—¼ë•ƒòl[¸Y‹÷Mñ³›)¾_:
+ößÊy|á1À²Áìeò¯ƒ~¦0'º°0ÅêÞiÊ<KëÉd²rÄâ:‘_Ý‹f.™íÆBväc‡RXÇ‡Ÿš:õvnü1ýñæ0Ùß·.¥¸§µgóË•³G÷.¿ùt4…ð] ´3A >úïâŸ~–‰ÙÄK'¬ñžÒÖ t›²Þ/CUá:!'ý×¬¯¶-÷dP2DŽ[ Äm*”Ði’	)ÃVÒ¨óù\Ò÷tP­ç06ˆÏŠêÐBOÊ„;ÞôE¬dîÅ£áõ¤m6cuæ¤W‰Ü€[Z0rðµ(
 
-/* TELA DE LOGIN AVANÇADA */
-#login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #1a1a24 0%, #0b0b0e 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999999; }
-.login-box { background: #121216; border: 1px solid #333; padding: 40px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.8); text-align: center; width: 100%; max-width: 400px; }
-.login-box h1 { color: #00E5FF; font-size: 2rem; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px;}
-.login-box p { color: #888; font-size: 0.9rem; margin-bottom: 25px; }
-.login-box input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 1rem; outline: none; margin-bottom: 15px; text-align: center; letter-spacing: 1px;}
-.login-box input:focus { border-color: #00E5FF; }
-.login-box button { width: 100%; background: #00E5FF; color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.2s; text-transform: uppercase; margin-bottom: 10px;}
-.login-box button:hover { background: #00B8D4; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,229,255,0.4); }
-.sys-msg { font-weight: bold; margin-top: 15px; font-size: 0.9rem; display: none; }
-.sys-err { color: #e91e63; } .sys-ok { color: #00e676; }
-.login-links { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem; }
-.login-links span { color: #00E5FF; cursor: pointer; transition: 0.2s; }
-.login-links span:hover { color: #fff; text-decoration: underline; }
+W()¶µÒ9èœ¢s\nÊäÐ)c´è
+¦<±>À …ÎE>Ås}?~Ï6CL8r-^.d¶xŒ1É¡nÈU™±S1â†Â÷ÂæÙÒe™ìrG¬—®…¾ÿÃümÄGd]Ó9jñ?o\Ê‘®f0W:a!*a¸‡qâ(››‡ÆÝ7[J™ýºÌÓŽZj÷Û,bÝ™'ÆgÞ'®kI%ð"ÀSÃG‡Þ,?)JŠ§³©´æÄ¹ÙÐìžaßˆŒawÛ#Øë'‰Ç”Zmè£°Œ
+ÙÒQ·jŠºQiHqRÖˆ=‹‰k¢\¤ÑK‹Öò”;^vw=öþËÖy™|¢\ÆÔ¸s›´¦0T_zúr¥yº<‚^W‡už%î]†'Òb¬¬=ÅÝNç$
+!B äž—ÃnVi,¹<áñæÄá	Õd÷–Œ46†_çju
+éZU ¥Šv%­›ljèŽ{Uak
+ìÞt§OŠmâ¢áü%ÛWeÝ"è[Ò´¬ (J½ÚÜ·+Û˜ÜŒ¬7Ã‘Ô),Äº²+.Jçu+ÊV»ã7ZÃl-^§òÎF>
+ïË-¯‡Ì6-J!Cü#ä–Rê•(ð¨
+qÝª!qØ÷&M‡óbjÙ´É0
+9q–õèmY]¶`Çn~Š·£ÕÎ]Â:b);ý„~·°BèˆÜcˆyµŠ¬n2¸“Ú¢j9!–WÐJ¾°Åé~Yàãõ*2¹ÃÁœ8‰žYõèdNÁÉ$k¦<1ìÀ¼$'ËÉW}HÈ\ˆþ ¡S¿t![:ÙÄÿ&¯ƒÎïÎiQ<žù½×Ð¼[ïÜ4×Úéª$²¸
+ád ¥ëùJ²ã\† |Áîþ·Y•g¸nN—.2Õ©?êneû¤á'!€ÊW%Ì»+K
+`±%ßd­ BŒJCthKq))½b™u#
+ƒæÆÂQ×¬p@øÒì÷Ö¹{w:‡Z=ÒkÍZ\[Ç“9ˆ »|Wu—7‹¨»¼OO!¤þšxŒh„¨Šó‰ñ œR5èÔ‚}¿@
+ôeQ’ö«cYaKcë V™Œ”Öeån²x†õPßÑ“rvao¬ÎsHc	U©ÄÉ«fàYcª»ÕöSóÃqDÄwB¨÷õcSQ‹6Da?y¯2áC0Ð.lžX Æôam²«ŠdsÔ5œ
+ÎÉ¦A„!Ô)®†ùë3ä²Cóâ|áIâ˜`".íá$MC´áOðÐWv‰&Ý]rƒ™
+C]ŸåDÙÌú¸ßT©\OˆwïAHï&»YriÎ³¦[=á×Ü f…8éÜ0Åýd:
+|òRcËQ?är	LX«Ø$u™çkTs+]ÐÔmw‡ýZ™3‘•ù‘"µ`åöDr Ÿ~Rh1¦b
+*CþiÖ P¦Pàæˆ§cWYú¥“öØêÎº"5B±˜éKLVÐ!bêLzœ+–Yr;02+ \â€kYÜ:³äh*d.9–]+ÔF“L6°NŠšN»¸NP9øã ˜3ãÕÛÇ&A9¾	¨Í/‰il–‘¥áÝí±(%UÓ=çôå„ºë£OKúÛ%V\]| ëÒ0-ç:ÀM3!ciÙ8pR¦Ó©®ä†Ðµ^(]g‘ÐiP!4¬;– PàÃ,– ILÉhˆH4ÑW@P/²øÃÁb>#6ò
+“ÑŸqß*°ùò˜¸r
+~ï¦ÁõsÈ$^ö*V3Ð1¸0 ƒpzñ3E‘Õ^Õ	ÞÃ!¢\´u†›OÀÓ‰™‹+I+yÕm–d€AÛ†9
+ÁŠm¥+òË«HÂ‰ B
+þFí
+€¬B>ð a *X‡q°©G#æBÉQR%  Œê&¨NOç“	vT(Yž
+L¨89ú#„ÑDÙœÓd²	Ùžeoª²z_8$Òu’Ã:KÀºä~ƒÌ¨ß˜“ß“pðp°hG˜Zs‰PYÄ@p£[ÍÒÈLåö¢7¯FÊð	Ç#¥?äb–25ò#VsïÛÌ}¨ª»é`Þûiù©€:jÉîrmRw VP¥ŽÇ2ƒÔ‹`Ds)r}ês—SØÖ:…,¦pŒãéó	”»ˆ>|Ÿä‡§'á{AœWÜ¼ÂÜ=ûRªŽOØ%ÑºCm÷RâN&š8*ö_®ÊõGP0  ãD`µðdÚ;ˆ§5]ƒCs
+²J´£no«¬{NÑ6	8ûÉùsô‘­q®¸÷©-«3nª,ï¯ Àš3!ÝTò½ÀÒ©±ŽŒSZ[ 	ƒ}Ý]¢¤“º»DAVHÏb5£ÁÙDÀ KÜ”éQ¹„¥<ùq ö—2„$¹h 	Êßî"Îó¬j²FŽ%¿–’Oî¥[|²§nÝy—º¥Ïèuµæ°Ÿü]À<FZ ªˆ‡5ë×e=­‹È®H*ÚTd¡Ï1“ÉnÊ’HA8—Æ‹R@Eáè…À¯Ç®zf£ådW–
+>rF.‚hºÙŒ¹€ÌÔCôrèLìiAÇ2Ö.ø/MúêDÊŸž«•[aÎ @dÊó¡–A¦4ivhpÝ€é: ¨VuZÉèâ8S÷'Ìîƒ‘
+-¹¿é`ì ôDóc×t‚™ËN+(rú¾ŒC5{Üy†9ü #ˆcvsK!EÉ2*¬71SŒ”ŒAyéJoXV¯8ÃNƒÄ]®4¬°‡Ap9ÎàåL$ðí‰D3õG†W‡r˜;S··ÌÔ·Ú;Ñ5µÌG§çhROPŠ›ä¢ÀYfJºI“˜œ¦!ÿ“Õ•²®þk,_* ®Ãµv±BMCRp™<(
+$-þ“{5—Å6_–ƒ˜ ¿)¦iÍ×vÈ€¥tãhcML‰J!1¹8Ž¡yƒsð8Cœ£Vœ–%9O0Ò9ÔùÍ7) ´%«lî¶½ßç«C»™_Á7‡Ä¼¯¯^†“
+ýïŠ×½¾
+£+‡¨÷åýë+æÃÈ!×(Qì6ôT4¬^oy{{<½ãÄ+ëímèû>ëê»WjwNúúê— õ<vàÇ?_Ý’"¼»íwßŒœ¢tYîPÁ‚†¡ã×Í±‰üÙ”EÐ4áül\Ô¿‹u³ŠB !Y§¬è¶“Å`I³#¾ÃÉ'âÎöCvÏæ'æ²AH’DŸ¸/â}û¸|E{Ëè´‘–ò(vªË£}ÿæ‚lš¶X0inŽ»zMÙ®`IQ¾’ ·ÉÍîŠj×=›;Ï~Ù³,Òö«€+Õ¡®r,ë±¼ÞÀqº(r··èIÌFu]´}hC+þ„SfgÙÜAñt¡GøLíÁj‰Ë5³ÑEI¸@§+s¹HŸåºJt›Y2,<-ã5UN$w®cvÓÂ†>»MÚ´¸i]R £´á%!‘ðeÐk•†ðOJ¥[_}c¢gPºZücLÏÂ^ù÷ex].î†k)=@ÅåÚPÔÌªAå¿Ÿ¥ñÓ<•Ó‹æ$­\]Oâä¼–]Ó.6§äÉKJ3
+vôýTa0×@j‹ÚƒH×3¦„VtÁ€²!µKÃÛ2´$¥øÃÂ…‹>Rt:ŸY±&·ËOˆ‡ÅÍ¼ò–rÂœÉ&+ÀÜ;ˆ¤%
+X1éêÓOÔH\ÊL©Z“FKß"†Öè«;_|ÿ	?lj´Ç#¨?mêrÒ²¼öøˆq[êm ‚}‡«’Š“ÿò¤o¬R#ÐåvWD«F´õJ:ööeŠršõÑUcç.¯ÅŽIÑõW4îõ‡*P‡Dp÷y%~.a` Ä¶™>¸ØÑ/6þY‹ø¥T° „iåaZí‡†¡-[˜r=¡žÉ7;À\Éè;‘5ºÛI„Žp^ø5ª
+,¹2=7Ê+
+ŠHêÂÜ×~>Jò²¡9xÕIå6Êîºš&	-	6%ª¯‘FÚV¿Ë*#1bì·LX>‘Õ3¹Øáçv"iù±	j¡^%¼Ú“›]êA mÛŠ¡Ñç×6Íºóœ8ƒVlœ)E5JììbCºâNÓLÜÈÑ˜é#[Ö Ô’
+tœ®0Ü°^Ò&e<Z©«=7©U¿ôcQ] åÆ J±Ÿ4JW4X=¡Vòað}•ÕjÀÀž˜LÆ@Øb¡ŽÂb`éeá¦MaÈŸ.ºÖ|®òÔ¤Úª.·5nw½Uñ;È­€]ôÍ‹Ø&3•±Iè4àãì…h\@Æ‡Žd=§.‰–X ò,R20ˆ¾[díÎ¶Pý±›']äLîùê3Ì	7Ï)ÎÙVþW­ººÈ3ð¡­^Á¬T£Ç55HÀ²dgÍ;žÛZ}^¢¸)eýóYFÿ™YÆ öb'ˆv®7[ä®ÎáßìG¸NzñÂ	¦NxA@>,Hã©{
+ø:ñü…3¡×&&ì"ûÊî‹æIàM ”´wI‘N\XžYcÁwdì./?‡¾Á˜@
+ùêÆŸ÷îÔñœy>ô91!
+>Æ¤ï³î#¹9¢7:Ÿ4¿8iª¦
+ƒgæÎÅŽ^|ÎgÂ½d‡ HxÈ£Æé6
+@¡	"™ƒŠD-Á{˜•bl›¬“/Å,¶PÎT,ƒ+zéÎø˜íÿ%È„£Zs°•I“GúwÙ6™†ç9ÚNI‚ÿËf!ÒuÃ	/žˆA‡±­­h²× P2ƒå-îPsº(p½;ªo°•
+KÇíH†¢ç¿<ZÖ ò‹óÇYºÂg„Òöª
+q>’T_Má ¼Iý4ÎïÐHxnnäK{û´6…Û.1FaÜP~ó’êÍés«7ÅÔéËC†6ëcK°Û¬·ìœ÷EwónPV{>tib?Û78¨~žhb?OÄ
+;ŽYQÀlþ$ùrAž!ÈÀB>jÒ™5õ3Õ3?—Š´ZŠ xd9¥6µ¦8ºF9ZÊ¡‡sJJú[.úþ²Âc93Ú3S*cŸªuº¹¥Ò]	¡µbwÑÉáÔÖIÇ¢µâÁÌñ²ZfÉÈ<QË¥ú.Òs' UO«òËÙ…5>"ç!õ`Á“½4#7±ìÚ¨IL†”q€ãºUBG‰6
+£dÃŸAŽENã©Z/û	\>ØsÊ¤,)%¥VNLS)ch^W¬¬¥0î÷Ç"C›5ÝXu7=U	È[H¬Šâ«¸7MÜ¼£”§/kú±<ÔÐŸó+>~3æ_Æû²()Ö•„.ÉÑ¾ºaqßÇ!Ý¡Mú’¹Ò[¤W>°eãBy®åÝt?ZnNaæsÎê*{ /íLd¾Û<ÿ©l¯j…ÙúÒ³îÜrrÕ(u²j‘"al±Æóœ;¨
+D„¡Ø¥1èW=ç¢âWäBá|›íÙÇ,ÙY£|}¨’WN÷Iî˜œk°œðïÊD™)~ÕÈD„üÀjá<½¬böI,'ÙzÝ¹‘ã×ö¾URë3k-²ò¾…çØHÛÞ¶¦ÂrîqÓ -vór;P¾£¬NtYêÁÜ7
+{(IÐ¨š©Šl,d;»ÉI
+ö
+Ka½o´zÑ»h7n®B’ â„’Š©üæ’gg5e’	£c4Û“†$MõE?Ajµ×Ê®*p¨Ÿ`”"ÐbbøO6˜Ú®¬OªÍ×±‹òÒXªø­÷Ø~€mà?Ãh{¢¾½§ï~±™ãpsºå¡ÕˆbÙ˜‹ˆRwaº"ÊGyJ ÁÖÃÎV&k:Ò‘
+'¨µ;’íNZlDµ¹øTI¨º‹¯QŒO%)ƒÉöª·o“XO{!Ô'êžä¨Ã¨¦<Èþ›êy„Wœ…Ñ÷¢.,µŠFÆ`êl‰ÍD•#	6ÈÛT/˜
+ào<KÈ~×™‰ÈÑGdö§&"÷ÝO¤Æ„C.àôƒ²­u=Aðc+ªdåìÆÃÃÅ’6û±bï>U^û¿ÖÕù«óöo~OÞ€ê¥wìôÜåÇ¾'ô„·öR†<ýGÒ±3'‘žË‚5ZX7ËDžÏóg¸ 7
+ÃQGÓì!BÐ›p-ÂE„"Ißø¹¹!“:më²ØÚ{Õ“ƒA¬•¿‚Òžäï3ü6;ðOpš>ZÕ˜eêØØ±þ`½‚çÏÏ0R4
+¥ýy´Ù¤¡eùìž—¬#—Kx³¹‘æ ì@0µø*A=Â.:çò“êE=\KÉ”ét¾y¤{ãj¶ô‘¥Ç0÷.´8
+XèqÏs/3ÐgÌÏ‹	¢g„Ê~02–4éøìyLû¡ÚÅbaIzàhÜ‘6¾gœÂÕH qMv‘ÒYÜ4ž'à1}_µË^VÚ|‘ø¢$!å EÙb;Êöf¡­`\-òzk\?¸-R$,žK±Ì<¬+‘lFë¯Š`ü—×HŠGÅy˜}ýýÍû_ß½ÿàüòÛÛwÿõ·Ô¤ûq]ðÒ6†$@`n@±`6ãÅôî8)%r}ÓËáÝn$a¥ÚÚz¦Cøa:Aú‹vÖÉÈrsLà Hü$ÐOÔÓ¼Õ‚¿Ñ_?Š	’­Ù?¹1Û1™¸ép~.F
+áŒ‡O–«°2°b\Ààu$³Íãp
+=.b’§>æˆ„H:¸C?+Ê@ßÈb­Â)‡è²5g•§aˆ×žH£ï^§s¤¬uHL¡vj'{XCßhØ™‚y<Jò T
+r$=Ë’ðâÐ¬Äßb»@:§ãêUÌyÉqâ<˜›.[¡œ:""¢áêŽúúxN@‚ò„¾«Âq…ú^ ùíg½È=z»¬iK0'ÄÃ_dÚ8Šz$$³JÈî”ö­¢¡™½º,	“XçNlåïò¼1ò™™ñn†v¤E˜§t|CŸ\í‚ö,Oo‚‘èF)k1†zCá»ô†½áf¥sßl™
+×~è÷
+Þ–e~¹/›ÑùÝ½ý®“@zÖm,¾ñ³¨’¢`¡•J„¯ç$å›Z}c`>iú©IN¥‹ý«+ˆ9êo<zl+Ö­²<oLKi ~‡¢6P)t²O€¡å\žìôîìië0v+dxf%¯z˜P®òa½ÿx-ÄÅ”$†>ïMYá¼{S–Ü 7$Š°t©>‚¤;U»Ëšlý¿Í½s#Éq(øÿ~Š"´&Ð; ’3;»À€†ÄÌ@KÉ™•4;oØ šdï h,à%qŠçgÅéÞY–,Ÿïé|Þ“í;ŸÖÅ‹ð]„Ãñþ8~}ïG¸Ì¬]UÝä¬íµ5ltWeeeUeefeev½¤ÁÕÇõŒÇÛ’Œ(1†‚%DØÑ ?~<ƒG¥Ê4tðÿ{ìlâ†9l±`/*Š–)ÍX¦ä¯,ˆÊ|2@n'€r±
+¶)‚ù
+?3­k{ÝzÊy‚~%óáÚÚZ{¦ˆB#Ò  àÕaÐ¿ŽN JÊN}c­¼zLØ´r×wŽx3±ZXã¼°6mWX'"Š€8bú}œè¤O¬ ¤~é”ˆŒ­¦å{ó%X}4‘³Ç®Ã7ŽJÜ¦²
+ŸHñ*¸…Xgp8¯°Ê?ûÓ˜uk>p>Õ½rÕ<Í'óæ=FL0/`M£«kbSœ;•WW
+«S®>²ìÄ'd¨ÏõG 1Ää9d*ÑœˆÚæ¡‚Ñ4®iÄá4ÕfŽFH(	“bèØŽ
+M·Fý|±ãöOQ©õ
+Ã	[+ß«IG±ö¾b€7ã´VÝµµÎú°´Þ~ø©¤N§Ó™èX%ÌÀ$ Â¶g‰=í ×sûLaíØZ€ªu+Á©
+àÆæÁ´Q(—,ÐÑQŽájùâØ6€)×°y’š/Ú/ß¢Ú·o¦Ë0?IÈßÄO	ºî}ƒ1v `ãÉ£¶æ­Sd}ä½)*Þc6í°‰c–¢ŒMÕ®#hÍ^5£ ÎmpÖ-H«¼g¦“ì´ÖYs×m²ÕS´)Y<mæ(>2;
+ñMMR N|¯Û™ÛÒK9DTWIìà7A‘$ˆáÍ-öS³‚±Í~cq)I
+€f%ð€$ÙD¸ EŽ@±;¹7Î=Ôë ù/`¼ßá¦ÒF Ûy‚œkbø£’‘+E{@•‘'„Íši¡³­A
+Qùll i4ôOO1aJ²“‰TÈû‚EU-kq[ø"\ÛÊX$²˜VÛGÖt5$šÁÐ#å19T÷¤˜x ŒcCÓÄ7Žp×FòùúÃ©3}Úñ“5÷±1Û“7rS–¦u¾`´yU5[¥ËÂ	Š„TM?ýÔ¹q/Ã
+Î¬’%säLß ÙÙwsVÚçÚ²‚MåÈ–%o²ö¼±úó+LšÊ†ÅòÒ%{éiJ\LžL>x²"V>YÙDÑ\¸ñÁ O–
+…Ôì…ìøçÌïT3zšÈÌÆ þSß Ý}Ï°vTYS»E‰¾¸h!êRý³U#q) ·ª}lÔð°$` ^kp07P™MŸ¬´¢<… ƒMCÙïd˜"¼š9ôÆã£øÝ
+úï¼«^	­fü“]o)Â+V­VY¶Ni:vâ~í
+wZÎÉ¤4«"¼iM.bm]vèõÏÜû6-Òýv×o¿«fŒr„žóAÙ¨mÕk ì°qxTß­=Yáµ5p8’bè´#ªŒŠŽúç9ÖE‹"
+BHŽ} ï¹ ,²Cà-mŠOÂº~Ëº·{û×4jõ–
+,ì`È:q(_|²Í[È`zá©5­dÞ>‘kS²Æ«SòÔi„£R”ÿN‘.¼ðGí³#·•ËâDöÂ¯Æ^ÛÏ¹ëü‘‰1ƒUMXQÓ&â1¾Fèi«ÄZ ^{<”Œ­FÍØ
+aF><°ƒ{@~6î¹¬œÃx!öð(¦=k» ÃÒ`çYGí÷±’("çô	m•TSZÒp£¾÷ªsº^Ø­5vR¦´œE6áï<¦O*Šç÷ô'ìUÐ¹C>"£¥)&P|ªÈ?g™ØÓ'»ãŽÐÛðä²Ðê…3<G1={ƒu–¡×
+\¬	
+»CµbµÉ6#jC•žÌ¨.ÒÒ$"Nb°ä˜D©î2mFÁéi×«áÛ}Ðâº8ˆtÚVÍlQøÑ1MëÿÇ²þþ7ÿå_þéÑ ªví„w'=g%Ê^Ûøö›?þ)ð”Û¿‡®…°^ÖDy1–‰‰“°jòÄï{’dÆ¼7gûl½]oË}æ]íãK>ýT#¿‘F,xG pM<Ðè`Í‹(uš²OfçFþ Øöp
+Ü“ì ¥ª>ÌEoÓ»|ÍÛ µ4™¤à—‰ÌI»6p£#´sôü0D¦ß<­Àí"óûoRÉV8ÊŽ
+‹¤”jF“830¤¿üöªQÿ¼L‚W§Ün«4ªß™ÕK Þ†äÔIPE`u˜t¿ûvøò©6l%ƒ]›
+–«†„ï/ß}ÝA2Üõ™p…M×È¯a ›…¹×™
+r2ŸÑSÜ$ŽºÐ°ŒeO·Bãw~*£/<|jÀgÂ=¼“ƒ6ônüè!²ÏV?>_{ñðë^‰=JzÆEåE¼˜ªëmÄÅ¸;Sìº ,¢Ó1Èã°¸¶¥ˆñ­¬Óº ãñÕ nÈ6¸Ï2mmoH²ÐWcŸV‰
+@ +Óí&¯ÆXNšh½§
+!70Ë‘¸ÝÏ5ÅðŽy÷«U‹hh±Ð3%“`,Wbõ®wzû»sÏ5'ã¬‘Çi×øbgè^|N^Ê¹·zŽš-7-Éd¹6Žê Ôž7jÉ|4‰2ÊÈ¡õ8aŸã[ZFÇ˜‡"m{ÏÅ¨ ?oì5¶HRÙ;: µêPCË‚ßîzî0¼œj"ÿªì°øTÃƒ`éhì4v÷‹Ð(3Ç%œ¨îbÓÝÇm´Ë:ƒ}„^tñW
+®z“a’þãƒâóïó[Ö€iu*õ
+tãÅ
+i÷å“ªiíç¦fæüÂxØµvô­ 34³— ;”i ùÈe9xbí3÷Üc¯b±8m15&6^õÛÓÆ×<¹ûôqí±‘ás³ã0ZÈY°:Žô·ßüú™œuµ—GÍÂá÷¶âÓn><ðX«: ôx£ÚÀßrÛgž&éíø½
+„íy½Ûú.ê~>]@:_ºl€îÈàÿ Bjc—†54Ãy@òßÿ—ÿ÷¾ƒúaý¨v:{Sæ›œQ¨}‘Èž<S"É†˜N—îXS¥~Yup¼åö]R{°è©'HðÂëú—
+¶ ÿW’öŒ¶;3Gh·fMÄ3–kÚ Ðº]'B2œÌxœ™´}è±·;¾ãe`Ý’jï0WACÄ[Fyv´oÿµ‚¶º¸°Ç=F8–ùnå²³¡wÂƒ+…å••$ômQ+£ž¿S šô@xÛêºýw4-É¶v?|Ygµ¾l0`G5ö¼~€#êF£˜¾v¼þÄûŸ´~–¥e·ÕîÀRÍÒv›,„§Ox{ƒ™×UuÞÀähøT+îÏÙVs¯¾u„K®É¶^ÔŽÔ-æ­-µ‰{‰Ìž,‚[—L —
+®o¿ùæ¯Å"ÀeÍ1ÚÊÍš˜BL“LjaÕ¢¥~Ôú·ÿÜ‡‰Êú¤
+	©»ú4Z
+±9ÖÁÀëï¢1¨Ø„51Rr,FMˆþ¬ñü%Ì!ö¢¾ÓøïSÒ¾?( ³?÷†ôˆ˜N€“úÎAŸÏ\æ…4Ü5¤nÓ&{E­ºý-Dw&“¸ã<™(0¤OíéAã€ûhï`‡îB›_ýlì8ìÀœ=V£\Â 5“8»^Iú!r~ä4°ÍŠ™ê„	ïJ™™‹U£Œ°“‡)äÙ®ÃÞ­ím7ç&S²,#b3°Ô¼vF'UèpÁüê¿±C¿ß}ÿk!ø€±7>÷zsƒeqa¡Û=wÅ ÀúmóÖ2ë#D²Ù¢ß ,ô`Ì’î0¡ÙòOŒ-Ê…	SÇÕ»D¿¾§Pe<à<øOÿwVÿÑ>h (æ6·j;,W<úÑ‘sGÉG÷Û`©ñ7˜5Tšî´ÇHÖ"ì‚ þàãÓ«F'—å‰èée"•øB:ï@u}[Äª|KÔ`eì1!“Cƒþ öáâ¥›H`áU#ƒU²ÐßñÎÉA¤k…»bd]"Â®¡/–ž;sÊQbâ ¨„È½ë\ÿf¹g~”’Ð§çoò8MëGI³š%Ú,¸e—ã*éK‹
+½>¢xädÊ›0µõ+*ÃÎÝî^º] =Áñ:Ú(¢‡Ë¡8zÜ	Ú.ÚY7Ø·ßüç?‰
+9ö èÀ‚V…¡"Ãw‚e8nÁþ“™‰àï÷'4^5àÎ0^‡ãî-ÆŽû]á7r:bß-Fs‘K§•)–Ì%ý%.A•±`ÊÄhûìq)ÏpÃbÓÖ¡‚ÚÚ_þ«u|Òb†l—QÌ±G5ú¡’æX›¬¸'árEûÓxØw‹ìö7#¿+#‰y>)þ9DNÛ§X´Q1{I3µS%+…<¥FM]–ú± ,õÖž–ºh%˜ó<Ìít8}^Ðœ“b
+e¥û§~Ž0
+õö,næb«k–†ÁD&3$IjÛ­FsoqÝ{næ_Þÿ§? ÞßuGhf 9uÛÛÐè/ªÇz(®vuÁ”µ¥èÔÑ¤÷ä	ÒáMbŒ·³ xgM4.ü9ÿˆEMå_XL’”4Å¤„Y(K%ûÍ/þˆq¡øEãðèöO[M–{QÛñ¸ÆžÕvkß‘8euDþœÖ˜6}<¶|Á{¡„À§µÆ@‚:¨ïÔ¨ Ðâþö3çÎv# –Â•9d‹Cä9³gVòjþ„¯¨¬Råc28r2/´Ù˜€.‹Á.#LZˆ	«£ò9Bü$RÆ99Õ”Œ·Ú´ša=¿OA½ÀŠÕÌxÐqG^­ÛÝÎéÂ	4KA
+¶Îù°¡=Y ²ö BŠï|„(TÖ¿T`.Í‡
+¬É{¡"œPäÌjOf¸ê”SÊoJ_Ù¯Á±_Û;ª²£ÏG[/æÙôI	ñ"3°ßÛèìæIÐAõmÂ²Óáx€Ïš@@€
+¼¯ÆÞmuÑY›5¶ÑXAÎLÜvI–Ü€é"`½ úÊ&ÙÅ¢Õ·˜¼'
+ð]„‚&v¸ü¾ÁÈ0>4$PÇé_à/âÎÚÐTY<zÆœ‡Äûõñ —…å’“
+H¹jø_>M8˜šWU'ã”±MG–YÈ·}
+Áx'^Ü[Ÿtªø WK«§£LùLPÃÄ)ÂØH)w.5²ÒœN/<M<®]T<šGêùgÖ|U?Ø©ý˜[Ó›8Š³­A¨K'>á.FÞb û¸ÊÙVÔV0ðå¹”=\C{`î±=PVNÉÆ	kÚž% ‰ˆÊü šïýî•)%Õ¨1^oË€ ¦îàö0áÍ¸ðbH›Òæ	0ˆ«&Çõå°+‹ÿm5÷ñH
+¼ëRá‡z–0f·ôë?"˜Ú{®‰‡'u§°-Ø:D³ AÐS§†tÃöš¯jV/å¼—#˜2ë}rû¹Ý&p:Í}Bq¿Sáo¿ùÕUvÜWóllýöN:àTa<çEpyöœ{JY7P
+¦ÈjäGÅx
+ÔûÐ¡	
+ÁÏ>,&˜½¸/uÜDNÎØ4âÏ7:ç–ò@þƒÐ3«žy>Æë‚’iUÆãÔÏ@õ$Â$
++"|3_â0£×#^¾ÚØÝG¿ÿ:E?ŸðÀ¢åB
+TãÞ ³Q( ·9~
+M¹ §Bl/
+‰{© QÆK€y·íÆZÎ®ê‡‡8Ÿ¶q<ÔÚª½¬í4~‚[Kmg»©Wdc=/p¡®ó^w±=§Ÿ1ˆÏä;I4 1m5w9šó¯¦¡O‡ƒ@ .›íîçÙî
+pbLPåEWeZkE¶‡gt‘äÄz°š4 ä¸UO¬2²jx_8˜Ÿ{ÑòÉ±a
+pyèf5‰2îºÃXßjXžðlÚRÊÆÙ«æ8ÿ+‚GZbÎ¦”€¾ÒÛöÝ©Ù(
+¯pTSXMÄT
+¿r1²î(¡9{s^ ÷¿f,BêÅG¥RIS$’I£Ú„~8†Ñð;n‡„r»MÁ{‡ÍÀmNÄìã	Þ‚
+§/ùjã‘æaâ±Õ"©ÑæÐæõE‹ä,“û•ˆ 0üš1)eÎ½~ÛC¹É'~Ð–ö‚ž·ìSl÷T?Õ{ŸÂ¸+í²QÉb+M|l§yTg·ÿ{ÖØ©%r)$5²¥÷É¥”f9KñüŸŠ®@‡/÷kOk‡uVgOk[Ÿ½ÜŸƒCâ¡'C›ûÚ×0ó(ÓÒáv>:šÎG“Å‹,€üð´ÈÕIú‚Þa!Þ¯¹s#ë#S#h¯îÇÍÑ/=’nMŽŽl‡ü¸N†±Ì†cÏ‰ˆRÛy¥™hß«ê4ô`›Ø8ºwÖQíåŽÀöÔ„LJš•PLcRÄô;˜Ü¤• ãŠŽ'ÈðÿG¤ßm×¶›‡l®³½Ú«úsø}p'9}‘ñ£sº»b"ðë?aµ#²w{/jì°ÿÆŸs©–üßÓæÑíl¢
+Ÿl·¶ â¿ÃïŠ–"<6ÅøÂVÐ{&òsÔÑƒV>7·?»ý³z’vl¤W'!¢ò¿ëüÂí
+xË›þæ¯ØN®öâÇûu–Ûi<²ÛŸ¾Ün4ç±G3|Záôë)hŽ uT?„.n×•cHn·	‚è·é&dž\K:yé	·°ûüI#ž)K¿M)0—	§2ÉW’¢¤L™;hnãmÍWµJmõÛŸá
+T7ŒëŠë'
+qu•q…æàöç»æì›Jfª$K97Cdô
+|'ÀÌ…Ó ƒÆNtk@oñø
+OTÍV-wZ=µŒ6¤g~ÇÎâ0˜Ëð&¬h#v¶&Óƒh6¶=´E`ªÝÒh_‰}›´Zåã¬ˆ2ÄDëÔïêEx,%q
++ƒ~6 ¡ñwù„û©V—^€òRHØc/ôa•èÐ›˜¸d$¯°ZU9%„	Sý4A-•ƒ^PÜ X/…æe·„i%o0P–Ä¯û!Ñ\x¥.1íBu J&[4hZfòV_ß8ðNñ&*yøm\–“ƒê”ÅÕ
+†‘y`š”co7z%ß%2)£3âŠëÜfÈh>è^ýòÂÛ?^ú½€ŸKùÁTŽoLÅþÖÃwGg^ò’7/6~ÿ‹¿c ~yU\²[°)=šwò5!ÑÆ|àÑµf–; jéÜ×{ÛQTí <‰{2³âßä…§èèNÆ`<_Zb-írÜZú½°oþšé~x #ê~¸ÄM®ÄDÙÚÛðvŠ[lœùÝC&gÚ›Ò9Zš€—õoÿ–\¯ÈÞ™C4ßóðœæö·xïr7—Ðnè_ý&š¸
+i ^ºläž
+']t
+á”Ì“w²ÇVd~œìÇÆxß M ÏšGM4EH¬Èj!¿"2<åíIïHh¯öÁ0Ù¬mÚÞÎ°«0Z>E±oJ«3©¹oÌj)É
+Þ8íÊ¶ƒ–™¸ËPÒ +ãÙ
+Ð	ã#a€
+ùZ|:s£™|û ùòˆ‹pÐ÷ýYSnPg…Ý¶Øõ‚´)–§És	/Ÿ´†¸0
 
-.login-tab { display: none; }
-.login-tab.active { display: block; }
-
-#app-core{display:none;width:100%;height:100%;flex-direction:row;}
-#public-view{flex:1;display:flex;flex-direction:column;position:relative;background:radial-gradient(circle at top,#1a1a24 0%,#0b0b0e 80%);border-right:1px solid #1a1a1f;overflow:hidden;border:4px solid transparent;transition:border-color 0.2s,box-shadow 0.2s;}
-.hype-active{border-color:#00E5FF !important;box-shadow:inset 0 0 80px rgba(0,229,255,0.4),0 0 40px rgba(0,229,255,0.2)!important;}
-#btn-show-admin{display:block;position:absolute;top:15px;right:15px;z-index:100;background:transparent;color:rgba(255,255,255,0.2);border:none;font-size:1.5rem;cursor:pointer;transition:0.3s;padding:5px;}
-#btn-show-admin:hover{color:#fff;transform:rotate(90deg);text-shadow:0 0 10px #00E5FF;}
-#giveaway-wrapper{flex:1;display:flex;justify-content:center;gap:30px;padding:30px 40px 40px 40px;overflow:hidden;}
-#main-column{flex:1;min-width:450px;max-width:800px;display:flex;flex-direction:column;height:100%;}
-#giveaway-header{text-align:center;margin-bottom:20px;}
-#giveaway-header h1{font-size:2.5rem;font-weight:900;color:#fff;text-shadow:0 0 15px rgba(145,70,255,0.4);text-transform:uppercase;letter-spacing:2px;}
-#giveaway-header p{font-size:0.9rem;color:#adadb8;margin-top:5px;}
-#live-multipliers{display:flex;justify-content:center;gap:15px;margin-top:10px;background:rgba(0,0,0,0.5);padding:8px 20px;border-radius:8px;border:1px solid #333;width:fit-content;margin-left:auto;margin-right:auto;}
-#live-multipliers span{font-size:0.85rem;font-weight:bold;display:flex;align-items:center;gap:5px;}
-#lbl-vw{color:#aaa;}#lbl-sb{color:#b538ff;}#lbl-vp{color:#bf94ff;}#lbl-md{color:#00e676;}
-#prize-section{width:260px;min-width:260px;display:flex;flex-direction:column;background:rgba(255,255,255,0.02);padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(10px);}
-#prize-section h2{color:#ffca28;font-size:1.2rem;margin-bottom:15px;font-weight:800;text-transform:uppercase;letter-spacing:2px;text-align:center;text-shadow:0 0 10px rgba(255,202,40,0.3);}
-.prize-input-container{display:flex;gap:8px;margin-bottom:15px;}
-.prize-input-container input{flex:1;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #333;color:#fff;border-radius:6px;font-size:0.9rem;outline:none;transition:0.2s;}
-.prize-input-container input:focus{border-color:#ffca28;}
-.btn-add-prize{background:#ffca28;color:#121216;border:none;border-radius:6px;padding:0 20px;font-weight:bold;font-size:1.5rem;cursor:pointer;transition:0.2s;}
-.btn-add-prize:hover{background:#ffb300;box-shadow:0 0 10px #ffca28;}
-#prize-list{flex:1;overflow-y:auto;padding-right:5px;padding-top:5px;display:flex;flex-direction:column;gap:10px;}
-#prize-list::-webkit-scrollbar{width:4px;}
-#prize-list::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
-.prize-item{background:linear-gradient(90deg,rgba(40,40,45,0.8) 0%,rgba(20,20,25,0.8) 100%);padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(255,255,255,0.1);border-left:4px solid #ffca28;box-shadow:0 4px 10px rgba(0,0,0,0.5);cursor:grab;transition:transform 0.2s;}
-.prize-item:active{cursor:grabbing;}
-.prize-item.over{border:2px dashed #00e676;box-shadow:0 0 15px rgba(0,230,118,0.3);transform:scale(1.02);opacity:1!important;}
-.prize-item-name{color:#fff;font-size:1rem;font-weight:700;word-break:break-word;pointer-events:none;}
-.btn-remove-prize{background:transparent;border:none;color:#666;cursor:pointer;font-size:1.5rem;transition:0.2s;padding-left:10px;}
-.btn-remove-prize:hover{color:#e91e63;}
-.prize-tip{font-size:0.75rem;color:#888;margin-top:15px;line-height:1.4;text-align:center;}
-#giveaway-box{flex:1;display:flex;flex-direction:column;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid rgba(255,255,255,0.05);padding:20px;backdrop-filter:blur(5px);overflow:hidden;}
-#giveaway-content{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-right:10px;}
-#giveaway-content::-webkit-scrollbar{width:6px;}
-#giveaway-content::-webkit-scrollbar-thumb{background:#444;border-radius:4px;}
-#placeholder-entries{margin:auto;text-align:center;color:#666;}
-#participants-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:12px;padding:10px 5px;}
-.part-card{position:relative;background:rgba(255,255,255,0.02);border:2px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 5px 8px 5px;text-align:center;animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:0.2s;cursor:pointer;}
-.part-card:hover{transform:translateY(-2px);background:rgba(255,255,255,0.05);}
-.part-card.role-mod{border-color:#00e676;box-shadow:0 0 10px rgba(0,230,118,0.2);background:linear-gradient(180deg,rgba(0,230,118,0.1) 0%,transparent 100%);}
-.part-card.role-vip{border-color:#bf94ff;box-shadow:0 0 10px rgba(191,148,255,0.2);background:linear-gradient(180deg,rgba(191,148,255,0.1) 0%,transparent 100%);}
-.part-card.role-sub{border-color:#b538ff;box-shadow:0 0 10px rgba(181,56,255,0.2);background:linear-gradient(180deg,rgba(181,56,255,0.1) 0%,transparent 100%);}
-.part-card.excluded{opacity:0.3;filter:grayscale(100%);border-color:#444;}
-.part-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;margin-bottom:6px;border:2px solid rgba(255,255,255,0.1);box-shadow:0 4px 8px rgba(0,0,0,0.5);}
-.part-card.role-mod .part-avatar{border-color:#00e676;}
-.part-card.role-vip .part-avatar{border-color:#bf94ff;}
-.part-card.role-sub .part-avatar{border-color:#b538ff;}
-.part-role-label{font-size:0.6rem;font-weight:900;text-transform:uppercase;margin-bottom:3px;letter-spacing:0.5px;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;}
-.role-txt-mod{color:#00e676;}
-.role-txt-vip{color:#bf94ff;}
-.role-txt-sub{color:#b538ff;}
-.role-txt-view{color:#aaa;}
-.part-name-grid{font-size:0.75rem;font-weight:800;color:#fff;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
-.part-luck-badge{position:absolute;top:-8px;right:-8px;background:linear-gradient(45deg,#ffca28,#ff9800);color:#121216;font-size:0.65rem;font-weight:900;padding:3px 6px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.6);z-index:10;}
-.footer-bar{display:flex;flex-direction:column;gap:15px;border-top:1px solid rgba(255,255,255,0.05);padding-top:15px;margin-top:10px;}
-.btn-choose{background:linear-gradient(45deg,#9146ff,#b538ff);color:#fff;border:none;padding:15px 30px;border-radius:8px;font-weight:900;font-size:1.1rem;cursor:pointer;transition:0.2s;text-transform:uppercase;letter-spacing:1px;box-shadow:0 4px 15px rgba(145,70,255,0.4);width:100%;}
-.btn-choose:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(145,70,255,0.6);}
-#users-count{color:#bf94ff;font-size:0.95rem;font-weight:700;background:rgba(145,70,255,0.1);padding:10px 20px;border-radius:6px;border:1px solid rgba(145,70,255,0.3);}
-#admin-view{display:none;width:400px;min-width:400px;padding:20px;background-color:#08080a;overflow-y:auto;border-left:1px solid #1a1a1f;}
-#admin-view h2{color:#fff;font-size:1.3rem;margin-bottom:20px;text-transform:uppercase;border-bottom:1px solid #222;padding-bottom:10px;}
-.config-card{background:#121216;padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid #222;}
-.config-card label{display:block;font-size:0.85rem;margin-bottom:8px;color:#efeff1;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
-.config-desc{font-size:0.75rem;color:#888;margin-bottom:10px;display:block;line-height:1.3;}
-input[type="text"],input[type="number"],input[type="password"],textarea{width:100%;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #333;color:#fff;border-radius:6px;font-size:0.9rem;outline:none;transition:0.2s;margin-bottom:8px;}
-input[type="text"]:focus,input[type="password"]:focus,textarea:focus{border-color:#bf94ff;}
-input:disabled{background:#1a1a1a;color:#555;}
-select{width:100%;padding:12px 30px 12px 12px;background:rgba(0,0,0,0.5) url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;border:1px solid #333;color:#fff;border-radius:6px;font-size:0.9rem;outline:none;transition:0.2s;cursor:pointer;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
-select:focus{border-color:#00e676;}
-select option{background:#121216;color:#fff;}
-.checkbox-container{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#ccc;cursor:pointer;padding:4px 0;}
-.checkbox-container input{cursor:pointer;width:16px;height:16px;}
-.flex-row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.flex-row label{margin:0;font-weight:normal;color:#aaa;font-size:0.85rem;text-transform:none;}
-.flex-row input{width:65px;text-align:center;padding:8px;}
-.btn-purple{width:100%;background:#9146ff;color:white;border:none;padding:14px;border-radius:8px;font-weight:800;cursor:pointer;margin-top:5px;font-size:0.9rem;transition:0.2s;text-transform:uppercase;letter-spacing:1px;}
-.btn-purple:hover{background:#a569ff;transform:translateY(-2px);}
-.btn-purple:disabled{background:#222;color:#666;cursor:not-allowed;transform:none;}
-.btn-obs{background:transparent;color:#fff;border:1px solid #e91e63;padding:10px;font-size:0.8rem;margin-top:10px;}
-.btn-obs:hover{background:#e91e63;}
-.btn-test-hype{background:#00E5FF;color:#000;width:100%;border:none;padding:12px;border-radius:8px;font-weight:800;cursor:pointer;margin-top:10px;transition:0.2s;font-size:0.8rem;box-shadow:0 4px 15px rgba(0,229,255,0.2);}
-.btn-test-hype:hover{background:#00B8D4;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,229,255,0.5);}
-.btn-save-manual{background:#00e676;color:#121216;width:100%;border:none;padding:12px;border-radius:8px;font-weight:800;cursor:pointer;margin-top:10px;transition:0.2s;font-size:0.85rem;box-shadow:0 4px 15px rgba(0,230,118,0.2);}
-.btn-save-manual:hover{background:#00b35c;transform:translateY(-2px);}
-#save-feedback{font-size:0.85rem;font-weight:bold;text-align:center;margin-top:5px;display:block;}
-#conn-status{margin-top:12px;font-size:0.85rem;font-weight:bold;text-align:center;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);}
-#link-token-ajuda{background:rgba(145,70,255,0.15);border:1px solid #9146ff;padding:12px;border-radius:8px;margin-bottom:10px;text-align:center;animation:pulseBox 2s infinite alternate;}
-#link-token-ajuda a{color:#00E5FF;font-size:0.85rem;font-weight:bold;text-decoration:none;}
-#link-token-ajuda a:hover{text-decoration:underline;}
-@keyframes pulseBox{from{box-shadow:0 0 5px rgba(145,70,255,0.2);}to{box-shadow:0 0 15px rgba(145,70,255,0.6);}}
-@keyframes popIn{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:999999;justify-content:center;align-items:center;backdrop-filter:blur(5px);}
-.modal-content{width:95%;max-width:1000px;background:#121216;border:1px solid #333;border-radius:12px;padding:30px;box-shadow:0 0 50px rgba(0,0,0,0.5);max-height:90vh;overflow-y:auto;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #333;padding-bottom:15px;margin-bottom:20px;}
-.modal-header h2{font-size:1.5rem;text-transform:uppercase;letter-spacing:1px;}
-.btn-close-modal{background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;line-height:1;transition:0.2s;}
-.btn-close-modal:hover{color:#e91e63;}
-.vip-card{background:linear-gradient(135deg,#1a1a24,#121216);border:1px solid #333;border-radius:10px;padding:15px;position:relative;transition:0.2s;}
-.vip-card:hover{border-color:#bf94ff;box-shadow:0 5px 15px rgba(191,148,255,0.15);}
-.vip-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.vip-name{font-weight:900;color:#fff;font-size:1.2rem;letter-spacing:1px;}
-.vip-status{font-size:0.75rem;padding:4px 8px;border-radius:4px;font-weight:bold;text-transform:uppercase;}
-.status-active{background:rgba(0,230,118,0.15);color:#00e676;border:1px solid rgba(0,230,118,0.3);}
-.status-warning{background:rgba(255,202,40,0.15);color:#ffca28;border:1px solid rgba(255,202,40,0.3);}
-.status-expired{background:rgba(233,30,99,0.15);color:#e91e63;border:1px solid rgba(233,30,99,0.3);}
-.status-infinite{background:rgba(191,148,255,0.15);color:#bf94ff;border:1px solid rgba(191,148,255,0.3);}
-.vip-progress-bg{background:#0b0b0e;height:8px;border-radius:4px;overflow:hidden;margin-bottom:12px;border:1px solid #222;}
-.vip-progress-fill{height:100%;background:linear-gradient(90deg,#00e676,#00b35c);transition:width 0.3s;}
-.vip-progress-fill.warning{background:linear-gradient(90deg,#ffca28,#ff9800);}
-.vip-progress-fill.infinite{background:linear-gradient(90deg,#bf94ff,#9146ff);}
-.vip-meta{font-size:0.75rem;color:#888;display:flex;justify-content:space-between;}
-.btn-del-vip{background:transparent;border:none;color:#666;cursor:pointer;font-size:1.5rem;line-height:1;transition:0.2s;}
-.btn-del-vip:hover{color:#e91e63;transform:scale(1.2);}
-#vip-search{width:100%;padding:15px;background:rgba(0,0,0,0.5) url('data:image/svg+xml;utf8,<svg fill="%23888" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 12.01 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>') no-repeat right 15px center;border:1px solid #333;color:#fff;border-radius:8px;font-size:1rem;outline:none;transition:0.2s;margin-bottom:20px;}
-#vip-search:focus{border-color:#bf94ff;}
-.chat-automations textarea{resize:none;}
-.announcement-card{background:rgba(255,255,255,0.03);border:1px solid #333;border-radius:10px;padding:15px;margin-bottom:10px;transition:0.2s;}
-.announcement-card:hover{border-color:#00E5FF;}
-.announcement-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.announcement-card-meta{font-size:0.75rem;color:#888;display:flex;justify-content:space-between;}
-.btn-del-announcement{background:transparent;border:none;color:#666;cursor:pointer;font-size:1.5rem;line-height:1;transition:0.2s;}
-.btn-del-announcement:hover{color:#e91e63;transform:scale(1.2);}
-.btn-edit-announcement{background:transparent;border:none;color:#00E5FF;cursor:pointer;font-size:1.2rem;line-height:1;transition:0.2s;}
-.btn-edit-announcement:hover{transform:scale(1.2);}
-#confetti-canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:100000;}
-#hype-overlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:100002;justify-content:center;align-items:center;flex-direction:column;}
-.hype-box{background:linear-gradient(135deg,#16161e,#0d0d12);padding:50px 80px;border-radius:20px;border:3px solid #00E5FF;box-shadow:0 0 100px rgba(0,229,255,0.5);text-align:center;animation:popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
-.hype-title{color:#fff;font-size:1.5rem;letter-spacing:4px;text-transform:uppercase;margin-bottom:15px;opacity:0.8;}
-.hype-prize{color:#ffca28;font-size:3.5rem;font-weight:900;text-transform:uppercase;text-shadow:0 0 30px rgba(255,202,40,0.6);}
-#winner-overlay{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:100001;justify-content:center;align-items:center;}
-.winner-card-ui{width:95%;max-width:600px;background:linear-gradient(135deg,#16161e,#0d0d12);color:#efeff1;padding:50px 40px;border-radius:16px;text-align:center;border:2px solid #00e676;position:relative;box-shadow:0 0 50px rgba(0,230,118,0.2);margin:auto;display:flex;flex-direction:column;align-items:center;max-height:92vh;overflow-y:auto;}
-.winner-card-ui::-webkit-scrollbar{width:6px;}
-.winner-card-ui::-webkit-scrollbar-thumb{background:#00e676;border-radius:4px;}
-#winner-close{position:absolute;top:15px;right:20px;background:none;border:none;color:#666;font-size:2rem;font-weight:bold;cursor:pointer;transition:0.2s;line-height:1;}
-#winner-close:hover{color:#fff;transform:scale(1.2);}
-.winner-card-ui h2.title-status{color:#fff;margin-bottom:20px;font-size:1rem;text-transform:uppercase;letter-spacing:3px;font-weight:800;opacity:0.8;}
-#winner-pass-alert{display:none;color:#ff9800;font-weight:900;background:rgba(255,152,0,0.15);padding:10px 20px;border-radius:8px;border:1px solid #ff9800;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;width:100%;}
-#winner-avatar{width:130px;height:130px;border-radius:50%;border:4px solid #00e676;box-shadow:0 0 30px rgba(0,230,118,0.4);object-fit:cover;margin-bottom:15px;display:none;animation:popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
-.winner-card-ui .w-name{font-family:'Courier New',Courier,monospace;font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;line-height:1.1;margin-bottom:25px;word-wrap:break-word;word-break:break-all;color:#00e676;text-shadow:0 0 20px rgba(0,230,118,0.6);display:none;text-transform:uppercase;letter-spacing:2px;max-width:100%;}
-.winner-card-ui .w-prize{font-size:1.5rem;color:#121216;margin-bottom:30px;font-weight:900;text-transform:uppercase;background:#ffca28;padding:12px 30px;border-radius:8px;box-shadow:0 0 25px rgba(255,202,40,0.5);display:none;width:fit-content;}
-#response-area{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;margin-bottom:25px;width:100%;}
-.timer-box{background:rgba(0,0,0,0.6);padding:15px 30px;border-radius:12px;border:2px solid #444;width:fit-content;min-width:130px;transition:border-color 0.3s;margin:0 auto;}
-.timer-count{font-size:3.5rem;font-weight:900;color:#fff;line-height:1;}
-.winner-status-txt{font-weight:700;font-size:1.1rem;color:#adadb8;text-transform:uppercase;letter-spacing:1px;text-align:center;max-width:100%;}
-#winner-message-log{width:100%;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:8px;margin-bottom:25px;display:none;text-align:left;padding:15px;flex-direction:column;}
-#winner-message-log h3{color:#888;font-size:0.8rem;text-transform:uppercase;margin-bottom:10px;letter-spacing:1px;border-bottom:1px solid #333;padding-bottom:8px;}
-#winner-chat-messages{max-height:110px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
-.winner-chat-msg{font-size:1rem;padding:10px 12px;line-height:1.4;word-wrap:break-word;background:#1e1e24;border-radius:6px;border-left:3px solid #00e676;}
-.winner-chat-author{color:#00e676;font-weight:800;margin-right:5px;}
-.confirmed{border-color:#00e676 !important;box-shadow:0 0 50px rgba(0,230,118,0.3)!important;}
-.confirmed h2.title-status{color:#00e676 !important;}
-.timed-out{border-color:#e91e63 !important;box-shadow:0 0 50px rgba(233,30,99,0.3)!important;}
-.timed-out h2.title-status{color:#e91e63 !important;}
-.timed-out .w-name{color:#e91e63 !important;text-shadow:0 0 20px rgba(233,30,99,0.6)!important;text-decoration:line-through;}
-.winner-actions{display:flex;flex-direction:column;gap:12px;width:100%;align-items:center;display:none;}
-.btn-winner-action{width:100%;max-width:350px;padding:15px 20px;border-radius:8px;font-weight:800;cursor:pointer;border:none;transition:0.2s;color:#fff;font-size:1rem;text-transform:uppercase;letter-spacing:1px;}
-.btn-next-roll{background:linear-gradient(45deg,#00e676,#00b35c);box-shadow:0 4px 15px rgba(0,230,118,0.4);}
-.btn-next-roll:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,230,118,0.6);}
-.btn-pass-loot{background:linear-gradient(45deg,#ff9800,#f57c00);box-shadow:0 4px 15px rgba(255,152,0,0.4);}
-.btn-pass-loot:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,152,0,0.6);}
-.btn-reroll-popup{background:#3a3a3f;border:1px solid #555;}
-.btn-reroll-popup:hover{background:#e91e63;border-color:#e91e63;}
-
-/* MegaLoot Pro Supabase + DVAPI */
-.dv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.dv-stat{padding:12px 6px;text-align:center;border-radius:9px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.22)}.dv-stat small{display:block;color:#9294a4;font-size:.65rem;text-transform:uppercase}.dv-stat strong{display:block;color:#fff;font-size:1.15rem;margin-top:5px}.dv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dv-preview{padding:11px;border-radius:8px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);color:#baffd2;text-align:center;font-weight:800;margin:9px 0}.dv-msg{font-size:.78rem;line-height:1.4;min-height:18px;margin-top:8px}.ok{color:#00e676}.err{color:#ff668f}.warn{color:#ffca28}.role-badges-v2{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;margin-bottom:5px;min-height:17px}.role-badge-v2{font-size:.55rem;font-weight:900;padding:2px 6px;border-radius:999px;border:1px solid;background:rgba(0,0,0,.65)}.role-badge-v2.mod{color:#00e676}.role-badge-v2.vip{color:#ffca28}.role-badge-v2.sub{color:#d58cff}.cloud-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}.access-note{color:#888;font-size:.72rem;margin-top:10px;line-height:1.4}.delivery-tag{font-size:.58rem;color:#00e5ff;border:1px solid rgba(0,229,255,.45);border-radius:999px;padding:2px 5px;margin-left:4px}
-</style>
-</head>
-<body>
-
-<!-- TELA DE LOGIN AVANÇADA -->
-<div id="login-screen">
-    <div id="tab-login" class="login-box login-tab active">
-        <h1>MegaLoot Pro</h1>
-        <p>Acesso Restrito ao Streamer</p>
-        <input type="text" id="login-id" placeholder="Seu e-mail" onkeypress="if(event.key === 'Enter') fazerLogin()">
-        <input type="password" id="login-pwd" placeholder="Sua Senha" onkeypress="if(event.key === 'Enter') fazerLogin()">
-        <button onclick="fazerLogin()" id="btn-login">ACESSAR SISTEMA</button>
-        <div class="access-note">Acesso exclusivo para streamers autorizados. Solicite a liberação ao administrador do MegaLoot Pro.</div>
-        <div id="msg-login" class="sys-msg sys-err"></div>
-        <div class="login-links">
-            <span onclick="switchTab('tab-esqueci')">Esqueci a Senha</span>
-            
-        </div>
-    </div>
-
-    <div id="tab-esqueci" class="login-box login-tab">
-        <h1>Recuperação</h1>
-        <p>Informe seu login para receber uma nova senha no e-mail cadastrado.</p>
-        <input type="text" id="esqueci-id" placeholder="Seu e-mail" onkeypress="if(event.key === 'Enter') esqueciSenha()">
-        <button onclick="esqueciSenha()" id="btn-esqueci">ENVIAR E-MAIL</button>
-        <div id="msg-esqueci" class="sys-msg sys-err"></div>
-        <div class="login-links"><span onclick="switchTab('tab-login')">← Voltar para o Login</span></div>
-    </div>
-</div>
-<div id="app-core">
-<audio id="sfx-bless" src="bless.mp3" preload="auto"></audio>
-<audio id="sfx-prize" src="premio.mp3" preload="auto"></audio>
-<div id="public-view">
-<button id="btn-show-admin" onclick="toggleAdminPanel()" title="Configurações">⚙️</button>
-<div id="giveaway-wrapper">
-<div id="prize-section">
-<h2>🎁 Prêmios</h2>
-<div class="prize-input-container">
-<input type="text" id="new-prize" placeholder="" onkeypress="handlePrizeKeyPress(event)">
-<button class="btn-add-prize" onclick="addPrize()">+</button>
-</div>
-<div id="prize-list"></div>
-<p class="prize-tip">Arraste para reordenar a fila.</p>
-</div>
-<div id="main-column">
-<div id="giveaway-header">
-<h1>MegaLoot Pro</h1>
-<p>Transmissão Oficial ao Vivo</p>
-<div id="live-multipliers">
-<span style="color:#aaa;">👤 VIEW: <b id="lbl-vw" style="color:#fff;">1x</b></span>
-<span style="color:#b538ff;">⭐ SUB: <b id="lbl-sb" style="color:#fff;">2x</b></span>
-<span style="color:#bf94ff;">👑 VIP: <b id="lbl-vp" style="color:#fff;">3x</b></span>
-<span style="color:#00e676;">⚔️ MOD: <b id="lbl-md" style="color:#fff;">3x</b></span>
-</div>
-</div>
-<div id="giveaway-box">
-<div id="giveaway-content">
-<div id="placeholder-entries">
-<svg width="45" height="45" fill="#333" viewBox="0 0 24 24" style="margin-bottom:15px;"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
-<h3 style="color:#efeff1;margin-bottom:5px;font-size:1.1rem;">Aguardando Participantes</h3>
-<p style="font-size:0.85rem;">As entradas aparecerão aqui em tempo real.</p>
-</div>
-<div id="participants-list"></div>
-</div>
-<div id="giveaway-footer">
-<div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:10px;">
-<span id="users-count">0 Participantes (0 Elegíveis)</span>
-<button class="btn-choose" onclick="drawWinner(false)" style="width:auto;margin:0;">SORTEAR AGORA</button>
-</div>
-<div style="display:flex;gap:10px;width:100%;">
-<button id="btn-toggle" class="btn-purple" onclick="toggleGiveaway()">INICIAR ENTRADAS</button>
-<button id="btn-clear" class="btn-purple" style="flex:1;margin:0;background:#222;" onclick="clearGiveaway()">LIMPAR LISTA</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="admin-view">
-<h2>Painel de Controle</h2>
-<div class="config-card" style="border-color:#00E5FF;">
-<label style="color:#00E5FF;">⚡ Integração API MegaMU</label>
-<input type="password" id="api-url" placeholder="Cole a URL completa (com chave e login)...">
-<div style="display:flex; gap:10px;">
-<button id="btn-api-sync" class="btn-purple" style="background:#0097A7; margin-top:0; flex:2;" onclick="toggleAutoSync()">🔄 INICIAR AUTO-SYNC</button>
-<button class="btn-purple" style="background:#444; margin-top:0; flex:1;" onclick="resetApiCache()" title="Limpa a memória do painel e puxa todos os prêmios da API novamente.">♻️ RESETAR</button>
-</div>
-</div>
-<div class="config-card">
-<label>Sua Twitch</label>
-<input type="text" id="channel-name" placeholder="Ex: SeuCanal">
-<label style="margin-top:10px;">Token OAuth (Opcional)</label>
-<div id="link-token-ajuda">
-<p style="font-size:0.75rem;color:#ccc;margin-bottom:5px;">Para o bot falar no chat, você precisa de um Token:</p>
-<a href="https://twitchapps.com/tmi/" target="_blank">🔑 CLIQUE AQUI PARA GERAR</a>
-</div>
-<input type="password" id="oauth-token" placeholder="Cole o 'oauth:abcd...' aqui">
-<button class="btn-purple" style="background: #00E5FF; color:#121216;" onclick="connectTwitch()">🔗 CONECTAR AO CHAT</button>
-<div id="conn-status" style="color:#adadb8; margin-top:10px; font-size:0.9rem;">Aguardando...</div>
-</div>
-<div class="config-card">
-<label>🟣 Twitch API</label>
-<span class="config-desc">Para dar VIP e mandar Anúncio nativo.</span>
-<button class="btn-purple" style="background: #bf94ff; color:#121216;" onclick="openModal('twitch-api-modal')">CONFIGURAR HELIX API</button>
-</div>
-<div class="config-card">
-<label>👑 Gerenciamento de VIPs</label>
-<span class="config-desc">Lista especial com multiplicador automático.</span>
-<button class="btn-purple" style="background: #ffca28; color:#121216;" onclick="openModal('vip-modal')">ABRIR PAINEL VIP</button>
-</div>
-<div class="config-card">
-<label>💬 Comandos e Automação</label>
-<span class="config-desc">Mensagens do bot e anúncios automáticos.</span>
-<button class="btn-purple" style="background: #00E5FF; color:#121216;" onclick="openModal('commands-modal')">ABRIR PAINEL DE COMANDOS</button>
-</div>
-<div class="config-card" style="border-color:#ff9800; box-shadow:0 0 10px rgba(255,152,0,0.1);">
-<label style="color:#ff9800;">💾 Sincronização em Nuvem</label>
-<span class="config-desc">Configurações salvas automaticamente na nuvem ao alterar ou clicar.</span>
-<div style="display:flex; gap:10px; margin-top:10px;">
-<button class="btn-purple" style="background:#ff9800; color:#121216;" onclick="exportBackup()">📥 EXPORTAR LOCAL (.TXT)</button>
-<button class="btn-purple" style="background:transparent; border:1px solid #ff9800; color:#ff9800;" onclick="document.getElementById('import-file').click()">📤 IMPORTAR (.TXT)</button>
-<input type="file" id="import-file" style="display:none;" accept=".txt" onchange="importBackup(event)">
-</div>
-</div>
-<div id="dev-panel" style="display:block;">
-<div class="config-card" style="border-color:#00e676; box-shadow: 0 0 10px rgba(0,230,118,0.1);">
-<label style="color:#00e676;">👑 Regras de Entrada (Filtros)</label>
-<div style="display:flex; flex-direction:column; gap:5px; margin-top:10px; margin-bottom:15px;">
-    <label class="checkbox-container"><input type="radio" name="entry-filter" value="all" checked onchange="saveSettingsLocal()"> 🌎 Todos podem participar</label>
-    <label class="checkbox-container"><input type="radio" name="entry-filter" value="subvip" onchange="saveSettingsLocal()"> ⭐👑 Apenas Subs e VIPs</label>
-    <label class="checkbox-container"><input type="radio" name="entry-filter" value="sub" onchange="saveSettingsLocal()"> ⭐ Apenas Subs</label>
-    <label class="checkbox-container"><input type="radio" name="entry-filter" value="vip" onchange="saveSettingsLocal()"> 👑 Apenas VIPs</label>
-</div>
-</div>
-<div class="config-card" style="border-color: #9146ff; box-shadow: 0 0 10px rgba(145, 70, 255, 0.1);">
-<label style="color: #9146ff;">➕ Adicionar Manual</label>
-<span class="config-desc">Insira um participante diretamente na urna. Útil para sorteios privados.</span>
-<div style="display: flex; gap: 5px; margin-top: 10px;">
-<input type="text" id="manual-user" placeholder="Nick da pessoa..." onkeypress="if(event.key === 'Enter') addManualUser()" style="margin-bottom: 0;">
-<button class="btn-purple" onclick="addManualUser()" style="margin-top: 0; width: 120px; font-size: 0.8rem; padding: 10px;">ADICIONAR</button>
-</div>
-</div>
-<div class="config-card" style="border-color:#00e676; box-shadow:0 0 10px rgba(0,230,118,0.1);">
-<label style="color:#00e676;">📊 Relatórios e Discord</label>
-<span class="config-desc">Relatório mensal automático configurado.</span>
-<input type="text" id="discord-webhook" placeholder="URL do Webhook do Discord (Opcional)">
-<button class="btn-purple" style="background:#00e676; color:#121216; margin-top: 10px;" onclick="openModal('history-modal')">🏆 ABRIR HISTÓRICO (HALL DA FAMA)</button>
-<button class="btn-purple" style="background:transparent; border:1px solid #00e676; color:#00e676; margin-top: 10px;" onclick="downloadHistory()">📥 BAIXAR RELATÓRIO (.PDF)</button>
-</div>
-</div>
-<div class="config-card">
-<label>Modificadores de Sorte</label>
-<span class="config-desc" style="margin-bottom:8px;">Atualiza automaticamente os pesos.</span>
-<div class="flex-row"><label>Sorte Espectador</label><input type="number" id="mult-viewer" value="1" min="1" oninput="updateAllMultipliers()"></div>
-<div class="flex-row"><label>Sorte Sub</label><input type="number" id="mult-sub" value="2" min="1" oninput="updateAllMultipliers()"></div>
-<div class="flex-row"><label>Sorte VIP</label><input type="number" id="mult-vip" value="3" min="1" oninput="updateAllMultipliers()"></div>
-<div class="flex-row"><label>Sorte Mod</label><input type="number" id="mult-mod" value="3" min="1" oninput="updateAllMultipliers()"></div>
-</div>
-
-
-<div class="config-card" style="border-color:#9146ff;">
-<label style="color:#bf94ff;">⭐👑 IMPORTAR PARTICIPANTES TWITCH</label>
-<span class="config-desc">Importe todos os inscritos, VIPs ou os dois grupos diretamente para a urna. Requer Client ID e Access Token com os escopos corretos no painel Twitch API.</span>
-<label class="checkbox-container"><input type="checkbox" id="tw-import-clear" checked> Limpar participantes antes de importar</label>
-<div class="dv-row">
-<button class="btn-purple" onclick="importTwitchGroup('subs')">⭐ IMPORTAR SUBS</button>
-<button class="btn-purple" style="background:#ffca28;color:#121216" onclick="importTwitchGroup('vips')">👑 IMPORTAR VIPS</button>
-</div>
-<button class="btn-purple" style="background:#00b8d4;color:#071014" onclick="importTwitchGroup('both')">⭐👑 IMPORTAR SUBS + VIPS</button>
-<div id="tw-import-status" class="dv-msg"></div>
-</div>
-<div class="config-card" style="border-color:#00e676;">
-<label style="color:#00e676;">📺 OVERLAY PARA OBS</label>
-<span class="config-desc">Cada streamer recebe uma sala exclusiva. Copie a URL e use como Fonte de Navegador no OBS.</span>
-<input type="text" id="overlay-url" readonly placeholder="A URL será criada após o login">
-<div class="dv-row">
-<button class="btn-purple" style="background:#00e676;color:#071014" onclick="copyOverlayUrl()">📋 COPIAR URL</button>
-<button class="btn-purple" style="background:#0097A7" onclick="openOverlayUrl()">🔗 ABRIR OVERLAY</button>
-</div>
-<button class="btn-purple" style="background:#444" onclick="regenerateOverlayRoom()">🔄 GERAR NOVA URL</button>
-<div id="overlay-status" class="dv-msg">Inicializando sala...</div>
-</div>
-<div class="config-card" style="border-color:#00E5FF;">
-<label style="color:#00E5FF;">💰 PAINEL DVAPI</label>
-<span class="config-desc">Consulta de saldo e lotes opcionais pagos pelo streamer. A fila normal da live permanece separada.</span>
-<div class="dv-row"><input type="text" id="dvapi-dv" placeholder="Login DV"><input type="password" id="dvapi-key" placeholder="API Key DVAPI"></div>
-<div class="dv-grid"><div class="dv-stat"><small>MPoints</small><strong id="dv-bal-mp">--</strong></div><div class="dv-stat"><small>MCoins</small><strong id="dv-bal-mc">--</strong></div><div class="dv-stat"><small>MegaVIP</small><strong id="dv-bal-vip">--</strong></div></div>
-<button class="btn-purple" style="background:#0097A7" onclick="atualizarSaldoDvapi()">🔄 ATUALIZAR SALDO</button><div id="dv-updated" class="dv-msg"></div>
-</div>
-<div class="config-card" style="border-color:#ffca28;">
-<label style="color:#ffca28;">🎁 SORTEIO COM SALDO DVAPI</label>
-<span class="config-desc">Crie manualmente MP, MC ou MegaVIP do seu saldo. Não interfere nos prêmios que entram normalmente durante a live.</span>
-<select id="dv-lot-type" onchange="calcularLoteDvapi()"><option value="mp">MPoints</option><option value="mc">MCoins</option><option value="megavip">Dias MegaVIP</option></select>
-<div class="dv-row"><div><span class="config-desc">Valor total</span><input id="dv-lot-total" type="number" min="1" value="5000" oninput="calcularLoteDvapi()"></div><div><span class="config-desc">Quantidade de prêmios</span><input id="dv-lot-count" type="number" min="1" value="5" oninput="calcularLoteDvapi()"></div></div>
-<div id="dv-lot-preview" class="dv-preview">5 prêmios de 1.000 MPoints</div>
-<label class="checkbox-container"><input id="dv-auto" type="checkbox" checked> Entrega automática após o vencedor informar !NomeDoPersonagem</label>
-<button class="btn-purple" style="background:#ffca28;color:#121216" onclick="adicionarLoteDvapi()">➕ ADICIONAR LOTE À FILA</button><div id="dv-lot-msg" class="dv-msg"></div>
-</div>
-<div class="config-card" style="border-color:#bf94ff;">
-<label style="color:#bf94ff;">☁️ SUPABASE E BACKUP</label>
-<span class="config-desc">Salva histórico, VIPs, comandos, anúncios, prêmios e configurações. Tokens e chaves sensíveis não são enviados.</span>
-<div class="cloud-buttons"><button class="btn-purple" onclick="salvarBackupSupabase(true)">☁️ SALVAR</button><button class="btn-purple" style="background:#00b8d4;color:#071014" onclick="restaurarBackupSupabase()">♻️ RESTAURAR</button></div>
-<button class="btn-purple" style="background:transparent;border:1px solid #bf94ff;color:#bf94ff" onclick="importarLegadoParaSupabase()">📦 IMPORTAR DADOS DESTE NAVEGADOR</button>
-<button class="btn-purple" style="background:#444" onclick="alterarSenhaSupabase()">🔐 ALTERAR MINHA SENHA</button><div id="cloud-status" class="dv-msg"></div>
-</div>
-
-<!-- BOTÃO DE SALVAR MANUAL -->
-<button class="btn-save-manual" onclick="salvarManualComFeedback()">💾 SALVAR CONFIGURAÇÕES</button>
-<div id="save-feedback"></div>
-
-<button class="btn-test-hype" onclick="triggerHype()">🟢 TESTAR HYPE (LIBERA ÁUDIO)</button>
-<button class="btn-purple btn-obs" onclick="toggleAdminPanel()">👁️ ESCONDER PAINEL (MODO OBS)</button>
-</div>
-</div>
-<canvas id="confetti-canvas"></canvas>
-<div id="hype-overlay">
-    <div class="hype-box">
-        <div class="hype-title">A RODADA VAI COMEÇAR</div>
-        <div class="hype-prize" id="hype-prize-text">🎁 PRÊMIO</div>
-    </div>
-</div>
-<div id="winner-overlay">
-<div class="winner-card-ui" id="winner-card" data-god-mode="false" data-res-index="-1">
-<button id="winner-close" onclick="hideWinner()">&times;</button>
-<h2 class="title-status" id="winner-title-status">Descriptografando Vencedor...</h2>
-<div id="winner-pass-alert"></div>
-<img id="winner-avatar" src="" alt="Avatar">
-<div class="w-name" id="winner-name">---</div>
-<div class="w-prize" id="winner-prize"></div>
-<div id="response-area">
-<div class="timer-box" id="timer-box"><span class="timer-count" id="timer-count">30s</span></div>
-<div class="winner-status-txt" id="winner-status">Avisando no chat! Aguardando resposta...</div>
-</div>
-<div id="winner-message-log">
-<h3>Registro de Chat (Vencedor):</h3>
-<div id="winner-chat-messages"></div>
-</div>
-<div class="winner-actions" id="winner-actions">
-<button class="btn-winner-action btn-next-roll" onclick="startNextGiveaway()">🎁 Próximo Sorteio</button>
-<button class="btn-winner-action btn-pass-loot" onclick="passTheLoot(false)">⏩ Repassar Prêmio</button>
-<button class="btn-winner-action btn-reroll-popup" onclick="drawWinner(true)">🔄 Refazer (Reroll)</button>
-</div>
-</div>
-</div>
-<div id="twitch-api-modal" class="modal-overlay">
-<div class="modal-content" style="max-width: 600px;">
-<div class="modal-header">
-<h2 style="color:#bf94ff;">🟣 Configuração Twitch API</h2>
-<button class="btn-close-modal" onclick="closeModal('twitch-api-modal')">&times;</button>
-</div>
-<div class="config-card" style="border-color:#bf94ff; margin:0;">
-<label style="color:#bf94ff;">API Avançada (Helix)</label>
-<span class="config-desc">Necessário apenas se você quiser que o bot dê a tag de VIP na Twitch, mande /announce colorido ou puxe a FOTO do vencedor. As senhas ficam salvas e ocultas.</span>
-<input type="password" id="helix-client-id" placeholder="Client ID">
-<input type="password" id="helix-token" placeholder="Access Token (Scopes: channel:manage:vips, moderator:manage:announcements)">
-<p style="font-size:0.7rem;color:#ccc;margin-top:5px;line-height:1.4;">
-Gere em <a href="https://twitchtokengenerator.com" target="_blank" style="color:#bf94ff;">Twitch Token Generator</a>.<br>
-</p>
-<button class="btn-purple" style="background: #bf94ff; color:#fff;" onclick="closeModal('twitch-api-modal')">SALVAR E FECHAR</button>
-</div>
-</div>
-</div>
-<div id="vip-modal" class="modal-overlay">
-<div class="modal-content">
-<div class="modal-header">
-<h2 style="color:#ffca28;">👑 Gerenciamento de VIPs Premium</h2>
-<button class="btn-close-modal" onclick="closeModal('vip-modal')">&times;</button>
-</div>
-<div style="display:flex;gap:10px;margin-bottom:20px;">
-<input type="text" id="vip-add-name" placeholder="Nick da Twitch..." style="margin:0;flex:2;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #333;color:#fff;border-radius:6px;outline:none;">
-<input type="number" id="vip-add-time" placeholder="Dias (0 = Infinito)" min="0" style="margin:0;flex:1;padding:12px;background:rgba(0,0,0,0.5);border:1px solid #333;color:#fff;border-radius:6px;outline:none;">
-<button class="btn-purple" onclick="addCustomVip()" style="margin:0;flex:1;">➕ ADICIONAR VIP</button>
-</div>
-<input type="text" id="vip-search" placeholder="🔍 Procurar um VIP específico..." onkeyup="renderCustomVips()">
-<div id="vip-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px;max-height:400px;overflow-y:auto;padding-right:5px;"></div>
-</div>
-</div>
-<div id="history-modal" class="modal-overlay">
-<div class="modal-content">
-<div class="modal-header">
-<h2 style="color:#00e676;">🏆 Hall da Fama (Histórico de Ganhadores)</h2>
-<button class="btn-close-modal" onclick="closeModal('history-modal')">&times;</button>
-</div>
-<div style="margin-bottom:20px;">
-<input type="text" id="history-search" placeholder="🔍 Digite o Nick da Twitch para pesquisar..." onkeyup="renderHistory()" style="width:100%; padding:15px; background:rgba(0,0,0,0.5); border:1px solid #333; color:#fff; border-radius:8px; font-size:1rem; outline:none; transition:0.2s;">
-</div>
-<div id="history-summary" style="color:#00e676; font-size:1.1rem; font-weight:bold; margin-bottom:15px; display:none;"></div>
-<div id="history-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px;max-height:400px;overflow-y:auto;padding-right:5px;"></div>
-<div style="text-align: right; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
-<button class="btn-purple" style="background:transparent; border:1px solid #e91e63; color:#e91e63; width:auto; font-size:0.8rem; padding:10px 20px;" onclick="clearHistory()">🗑️ LIMPAR TODO O HISTÓRICO</button>
-</div>
-</div>
-</div>
-<div id="commands-modal" class="modal-overlay">
-<div class="modal-content" style="max-width: 1100px;">
-<div class="modal-header">
-<h2 style="color:#00E5FF;">💬 Painel de Comandos e Automação</h2>
-<button class="btn-close-modal" onclick="closeModal('commands-modal')">&times;</button>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px;">
-<div class="config-card" style="margin:0;">
-<label style="color:#00E5FF;">Comandos Fixos (Sorteio)</label>
-<div style="margin-bottom: 10px;">
-<label style="color:#aaa; font-size: 0.75rem; margin-bottom: 5px;">Entrar (Sorteio):</label>
-<div style="display:flex;gap:5px; margin-bottom:5px;">
-<input type="text" id="cmd-sorteio" value="!sorteio" style="width:35%;" placeholder="Comando (ex: !sorteio)">
-<input type="text" id="cmd-sorteio-text" value="Você entrou no sorteio!" style="width:65%;">
-</div>
-<label style="color:#aaa; font-size: 0.75rem; margin-bottom: 5px;">Mensagem de Abertura da Urna:</label>
-<input type="text" id="cmd-open-msg" value="⚔️ ENTRADAS PARA O SORTEIO ABERTAS ⚔️ Digite {comando} para participar!" style="width:100%; margin-bottom:8px;">
-<label style="color:#aaa; font-size: 0.75rem; margin-bottom: 5px;">Mensagem de Derrota (Tempo Esgotado):</label>
-<input type="text" id="cmd-timeout-msg" value="@{user} VOCÊ... MAMOU!🔞" style="width:100%; margin-bottom:8px;">
-</div>
-<div style="display:flex;gap:5px; margin-bottom:8px;">
-<input type="text" id="cmd-fila" value="!fila" style="width:35%;" placeholder="Fila">
-<input type="text" id="cmd-fila-text" value="🔮 Drops: {premios}" style="width:65%;">
-</div>
-<div style="display:flex;gap:5px; margin-bottom:8px;">
-<input type="text" id="cmd-sortudos" value="!sortudos" style="width:35%;" placeholder="Sortudos">
-<input type="text" id="cmd-sortudos-text" value="🏆 Top: {ranking}" style="width:65%;">
-</div>
-<div style="display:flex;gap:5px;">
-<input type="text" id="cmd-hype" value="!hype" style="width:100%;" placeholder="Comando Hype (VIPs)">
-</div>
-<label class="checkbox-container" style="margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
-<input type="checkbox" id="enable-pass-cmd" checked onchange="saveSettingsLocal()"> Permitir que o ganhador use o comando !passar
-</label>
-</div>
-<div class="config-card chat-automations" style="margin:0; border-color: #b538ff; box-shadow: 0 0 10px rgba(181, 56, 255, 0.1);">
-<label style="color:#b538ff;">🤖 Comandos Personalizados</label>
-<div style="margin-bottom:15px; padding:15px; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid #333;">
-<input type="text" id="custom-cmd-trigger" placeholder="Comando (ex: !pix)">
-<textarea id="custom-cmd-message" rows="3" placeholder="Mensagem de resposta..."></textarea>
-<button id="btn-add-custom-cmd" class="btn-purple" style="background:#b538ff; color:#fff;" onclick="addCustomCommand()">➕ ADICIONAR COMANDO</button>
-</div>
-<div id="custom-cmd-list" style="display:flex;flex-direction:column;max-height:200px;overflow-y:auto;padding-right:5px;gap:8px;"></div>
-</div>
-<div class="config-card chat-automations" style="margin:0;">
-<label style="color:#ffca28;">⏳ Criar Anúncio Automático</label>
-<div style="margin-bottom:15px; padding:15px; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid #333;">
-<textarea id="announcement-message" rows="3" placeholder="Mensagem..."></textarea>
-<div style="display:flex;gap:10px;margin-top:10px;">
-<input type="number" id="announcement-interval" placeholder="Minutos" min="1" style="flex:1;">
-<input type="number" id="announcement-messages-min" placeholder="Mín. Msgs" min="1" style="flex:1;">
-</div>
-<label class="checkbox-container" style="margin-top:10px;">
-<input type="checkbox" id="announcement-announce"> Usar Anúncio Nativo (/announce)
-</label>
-<button id="btn-add-announcement" class="btn-purple" style="background:#ffca28; color:#121216;" onclick="addAnnouncement()">➕ ADICIONAR ANÚNCIO</button>
-</div>
-<div id="announcement-list" style="display:flex;flex-direction:column;max-height:200px;overflow-y:auto;padding-right:5px;"></div>
-</div>
-</div>
-</div>
-</div>
-<script>
-// ==========================================
-// 1. SISTEMA ANTI-F12 E PROTEÇÃO DO CÓDIGO
-// ==========================================
-document.addEventListener('contextmenu', event => event.preventDefault()); 
-document.onkeydown = function(e) {
-    if (e.keyCode == 123) return false;
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
-};
-
-// ==========================================
-// 2. SISTEMA DE LOGIN E INTEGRAÇÃO GOOGLE SHEETS
-// ==========================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytXzKCuqsgS1dibaNE4yLq2CSTXbPrV7wYGXHaxXhIzEGImz7LvPC-dOfCf62cOFvv7A/exec"; 
-
-let currentUserLogin = "";
-let wakeLock = null;
-
-async function requestWakeLock() {
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-  } catch (err) {}
-}
-document.addEventListener('visibilitychange', async () => {
-  if (wakeLock !== null && document.visibilityState === 'visible') {
-    await requestWakeLock();
-  }
-});
-
-function switchTab(tabId) {
-    document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.querySelectorAll('.sys-msg').forEach(m => m.style.display = 'none');
-}
-
-function showMsg(id, texto, isError) {
-    let el = document.getElementById(id);
-    el.innerText = texto;
-    el.className = isError ? "sys-msg sys-err" : "sys-msg sys-ok";
-    el.style.display = "block";
-}
-
-async function fazerLogin() {
-    let login = document.getElementById('login-id').value.trim();
-    let senha = document.getElementById('login-pwd').value.trim();
-    let btn = document.getElementById('btn-login');
-    
-    if(!login || !senha) return showMsg('msg-login', "Preencha Login e Senha.", true);
-
-    let hwid = localStorage.getItem('hwid_secreto');
-    if(!hwid) { 
-        hwid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem('hwid_secreto', hwid); 
-    }
-
-    btn.innerText = "VALIDANDO..."; btn.disabled = true; document.getElementById('msg-login').style.display = "none";
-
-    try {
-        let url = `${SCRIPT_URL}?acao=login&login=${encodeURIComponent(login)}&senha=${encodeURIComponent(senha)}&hwid=${encodeURIComponent(hwid)}`;
-        let response = await fetch(url);
-        let data = await response.json();
-
-        if(data.status === 'LOGIN_OK') {
-            currentUserLogin = login;
-            carregarNuvem(data.config);
-            
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-core').style.display = 'flex';
-            requestWakeLock();
-            
-            checkMonthlyClean();
-
-            document.getElementById('dev-panel').style.display='block';
-            loadSettings();
-            loadPrizes();
-            loadCustomVips();
-            loadAnnouncements();
-            loadCustomCommands();
-            loadHistory(); 
-            resizeConfetti();
-            updateAllMultipliers();
-            if(document.getElementById('channel-name').value.trim()!==''){
-                connectTwitch();
-            }
-        } else if (data.status === 'INATIVO' || data.status === 'BANIDO') {
-            showMsg('msg-login', "Sua chave está inativa ou bloqueada.", true);
-        } else if (data.status === 'HWID_INVALIDO') {
-            showMsg('msg-login', "Conta já registrada em outro navegador/PC.", true);
-        } else if (data.status === 'SENHA_INCORRETA') {
-            showMsg('msg-login', "Senha incorreta.", true);
-        } else {
-            showMsg('msg-login', "Login não encontrado.", true);
-        }
-    } catch(e) {
-        showMsg('msg-login', "Erro de conexão.", true);
-    }
-    btn.innerText = "ACESSAR SISTEMA"; btn.disabled = false;
-}
-
-async function esqueciSenha() {
-    let login = document.getElementById('esqueci-id').value.trim();
-    let btn = document.getElementById('btn-esqueci');
-    if(!login) return showMsg('msg-esqueci', "Preencha seu Login.", true);
-
-    btn.innerText = "ENVIANDO..."; btn.disabled = true; document.getElementById('msg-esqueci').style.display = "none";
-    try {
-        let url = `${SCRIPT_URL}?acao=esqueci&login=${encodeURIComponent(login)}`;
-        let response = await fetch(url);
-        let data = await response.json();
-
-        if(data.status === 'EMAIL_ENVIADO') {
-            showMsg('msg-esqueci', "Nova senha enviada para seu e-mail!", false);
-        } else if(data.status === 'ERRO_SEM_EMAIL') {
-            showMsg('msg-esqueci', "Nenhum e-mail cadastrado. Contate o suporte.", true);
-        } else {
-            showMsg('msg-esqueci', "Login não encontrado.", true);
-        }
-    } catch(e) { showMsg('msg-esqueci', "Erro de conexão.", true); }
-    btn.innerText = "ENVIAR E-MAIL"; btn.disabled = false;
-}
-
-async function trocarSenha() {
-    let login = document.getElementById('trocar-id').value.trim();
-    let antiga = document.getElementById('trocar-pwd-old').value.trim();
-    let nova = document.getElementById('trocar-pwd-new').value.trim();
-    let btn = document.getElementById('btn-trocar');
-    
-    if(!login || !antiga || !nova) return showMsg('msg-trocar', "Preencha todos os campos.", true);
-
-    btn.innerText = "ALTERANDO..."; btn.disabled = true; document.getElementById('msg-trocar').style.display = "none";
-    try {
-        let url = `${SCRIPT_URL}?acao=trocar&login=${encodeURIComponent(login)}&senhaAntiga=${encodeURIComponent(antiga)}&novaSenha=${encodeURIComponent(nova)}`;
-        let response = await fetch(url);
-        let data = await response.json();
-
-        if(data.status === 'SENHA_ALTERADA') {
-            showMsg('msg-trocar', "Senha alterada com sucesso!", false);
-            setTimeout(() => switchTab('tab-login'), 2000);
-        } else if(data.status === 'SENHA_INCORRETA') {
-            showMsg('msg-trocar', "A Senha Atual está incorreta.", true);
-        } else {
-            showMsg('msg-trocar', "Login não encontrado.", true);
-        }
-    } catch(e) { showMsg('msg-trocar', "Erro de conexão.", true); }
-    btn.innerText = "ALTERAR SENHA"; btn.disabled = false;
-}
-
-// ==========================================
-// 3. SINCRONIZAÇÃO EM NUVEM E DEBOUNCE (AUTOMÁTICO)
-// ==========================================
-function saveSettingsLocal(){
-    localStorage.setItem('tw_channel', document.getElementById('channel-name').value);
-    const tokenInput = document.getElementById('oauth-token').value;
-    localStorage.setItem('tw_token', tokenInput);
-    if(tokenInput && tokenInput.length > 5){
-        document.getElementById('link-token-ajuda').style.display = 'none';
-    } else {
-        document.getElementById('link-token-ajuda').style.display = 'block';
-    }
-    localStorage.setItem('tw_mult_viewer', document.getElementById('mult-viewer').value);
-    localStorage.setItem('tw_mult_sub', document.getElementById('mult-sub').value);
-    localStorage.setItem('tw_mult_vip', document.getElementById('mult-vip').value);
-    localStorage.setItem('tw_mult_mod', document.getElementById('mult-mod').value);
-    localStorage.setItem('tw_api_url', document.getElementById('api-url').value);
-    localStorage.setItem('tw_cmd_sorteio', document.getElementById('cmd-sorteio').value);
-    localStorage.setItem('tw_cmd_sorteio_text', document.getElementById('cmd-sorteio-text').value);
-    localStorage.setItem('tw_cmd_open_msg', document.getElementById('cmd-open-msg').value);
-    localStorage.setItem('tw_cmd_timeout_msg', document.getElementById('cmd-timeout-msg').value);
-    localStorage.setItem('tw_cmd_fila', document.getElementById('cmd-fila').value);
-    localStorage.setItem('tw_cmd_fila_text', document.getElementById('cmd-fila-text').value);
-    localStorage.setItem('tw_cmd_sortudos', document.getElementById('cmd-sortudos').value);
-    localStorage.setItem('tw_cmd_sortudos_text', document.getElementById('cmd-sortudos-text').value);
-    localStorage.setItem('tw_cmd_hype', document.getElementById('cmd-hype').value);
-    localStorage.setItem('tw_enable_pass', document.getElementById('enable-pass-cmd').checked);
-    let ef = document.querySelector('input[name="entry-filter"]:checked');
-    if(ef) localStorage.setItem('tw_entry_filter', ef.value);
-    localStorage.setItem('tw_helix_client_id', document.getElementById('helix-client-id').value);
-    localStorage.setItem('tw_helix_token', document.getElementById('helix-token').value);
-    if(document.getElementById('discord-webhook')) {
-        localStorage.setItem('tw_discord_webhook', document.getElementById('discord-webhook').value);
-    }
-}
-
-function loadSettings(){
-    if(localStorage.getItem('tw_channel') !== null) document.getElementById('channel-name').value = localStorage.getItem('tw_channel');
-    if(localStorage.getItem('tw_mult_viewer') !== null) document.getElementById('mult-viewer').value = localStorage.getItem('tw_mult_viewer');
-    if(localStorage.getItem('tw_mult_sub') !== null) document.getElementById('mult-sub').value = localStorage.getItem('tw_mult_sub');
-    if(localStorage.getItem('tw_mult_vip') !== null) document.getElementById('mult-vip').value = localStorage.getItem('tw_mult_vip');
-    if(localStorage.getItem('tw_mult_mod') !== null) document.getElementById('mult-mod').value = localStorage.getItem('tw_mult_mod');
-    if(localStorage.getItem('tw_api_url') !== null) document.getElementById('api-url').value = localStorage.getItem('tw_api_url');
-    if(localStorage.getItem('tw_token') !== null){
-        document.getElementById('oauth-token').value = localStorage.getItem('tw_token');
-        if(localStorage.getItem('tw_token').length > 5){
-            document.getElementById('link-token-ajuda').style.display = 'none';
-        } else {
-            document.getElementById('link-token-ajuda').style.display = 'block';
-        }
-    } else {
-        document.getElementById('link-token-ajuda').style.display = 'block';
-    }
-    if(localStorage.getItem('tw_cmd_sorteio') !== null) document.getElementById('cmd-sorteio').value = localStorage.getItem('tw_cmd_sorteio');
-    if(localStorage.getItem('tw_cmd_sorteio_text') !== null) document.getElementById('cmd-sorteio-text').value = localStorage.getItem('tw_cmd_sorteio_text');
-    if(localStorage.getItem('tw_cmd_open_msg') !== null) document.getElementById('cmd-open-msg').value = localStorage.getItem('tw_cmd_open_msg');
-    if(localStorage.getItem('tw_cmd_timeout_msg') !== null) document.getElementById('cmd-timeout-msg').value = localStorage.getItem('tw_cmd_timeout_msg');
-    if(localStorage.getItem('tw_cmd_fila') !== null) document.getElementById('cmd-fila').value = localStorage.getItem('tw_cmd_fila');
-    if(localStorage.getItem('tw_cmd_fila_text') !== null) document.getElementById('cmd-fila-text').value = localStorage.getItem('tw_cmd_fila_text');
-    if(localStorage.getItem('tw_cmd_sortudos') !== null) document.getElementById('cmd-sortudos').value = localStorage.getItem('tw_cmd_sortudos');
-    if(localStorage.getItem('tw_cmd_sortudos_text') !== null) document.getElementById('cmd-sortudos-text').value = localStorage.getItem('tw_cmd_sortudos_text');
-    if(localStorage.getItem('tw_cmd_hype') !== null) document.getElementById('cmd-hype').value = localStorage.getItem('tw_cmd_hype');
-    if(localStorage.getItem('tw_enable_pass') !== null) document.getElementById('enable-pass-cmd').checked = localStorage.getItem('tw_enable_pass') === 'true';
-    let ef = localStorage.getItem('tw_entry_filter');
-    if(ef){
-        let rb = document.querySelector(`input[name="entry-filter"][value="${ef}"]`);
-        if(rb) rb.checked = true;
-    }
-    if(localStorage.getItem('tw_auto_sync') === 'true'){
-        setTimeout(()=>{
-            const url = document.getElementById('api-url').value.trim();
-            if(url) toggleAutoSync();
-        }, 1000);
-    }
-    if(localStorage.getItem('tw_helix_client_id') !== null) document.getElementById('helix-client-id').value = localStorage.getItem('tw_helix_client_id');
-    if(localStorage.getItem('tw_helix_token') !== null) document.getElementById('helix-token').value = localStorage.getItem('tw_helix_token');
-    if(localStorage.getItem('tw_discord_webhook') !== null && document.getElementById('discord-webhook')){
-        document.getElementById('discord-webhook').value = localStorage.getItem('tw_discord_webhook');
-    }
-}
-
-function salvarNuvem() {
-    if(!currentUserLogin) return;
-    let b = {};
-    for(let i = 0; i < localStorage.length; i++){
-        let k = localStorage.key(i);
-        if(k.startsWith('tw_') || k.startsWith('kk_') || k.includes('prizes') || k.includes('winners') || k.includes('vips') || k.includes('commands') || k.includes('announcements')) {
-            b[k] = localStorage.getItem(k);
-        }
-    }
-    let payload = JSON.stringify(b);
-    fetch(`${SCRIPT_URL}?acao=salvar&login=${encodeURIComponent(currentUserLogin)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'dados_json=' + encodeURIComponent(payload)
-    }).catch(e=>{});
-}
-
-// Sistema de Debounce: Salva automaticamente 1 segundo após o usuário parar de digitar/alterar
-let saveTimeout = null;
-function triggerAutoSave() {
-    saveSettingsLocal();
-    if(saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-        salvarNuvem();
-        let feedback = document.getElementById('save-feedback');
-        feedback.innerText = "☁️ Salvo automaticamente na nuvem";
-        feedback.style.color = "#00e676";
-        feedback.style.display = "block";
-        setTimeout(() => { feedback.style.display = "none"; }, 2000);
-    }, 1000);
-}
-
-function salvarManualComFeedback() {
-    saveSettingsLocal();
-    salvarNuvem();
-    let feedback = document.getElementById('save-feedback');
-    feedback.innerText = "✅ Configurações salvas com sucesso!";
-    feedback.style.color = "#00e676";
-    feedback.style.display = "block";
-    setTimeout(() => { feedback.style.display = "none"; }, 3000);
-}
-
-function carregarNuvem(jsonString) {
-    try {
-        let b = JSON.parse(jsonString);
-        for(let k in b) { 
-            localStorage.setItem(k, b[k]); 
-        }
-    } catch(e){}
-}
-
-function checkMonthlyClean() {
-    let currentMonth = new Date().getMonth();
-    let savedMonth = localStorage.getItem('tw_saved_month');
-    
-    if (savedMonth !== null && parseInt(savedMonth) !== currentMonth) {
-        loadHistory();
-        if (winnersHistory.length > 0) {
-            downloadHistory();
-            alert("Virada de mês detectada! O seu relatório PDF de ganhadores foi baixado e o histórico será zerado para otimizar o banco de dados.");
-            winnersHistory = [];
-            saveHistory();
-        }
-    }
-    localStorage.setItem('tw_saved_month', currentMonth);
-    salvarNuvem();
-}
-
-// Ouve qualquer alteração nos campos e dispara o salvamento automático inteligente
-const inputs = document.querySelectorAll('#admin-view input, #admin-view textarea, #admin-view select');
-inputs.forEach(input => {
-    input.addEventListener('change', triggerAutoSave);
-    input.addEventListener('keyup', triggerAutoSave);
-    input.addEventListener('input', triggerAutoSave);
-});
-
-// O Restante do código original mantido da sua versão estável
-let winnersHistory=[];
-let sessionWinners=[];
-window.onload=function(){};
-function toggleAdminPanel(){const adminView=document.getElementById('admin-view');if(adminView.style.display==='block'){adminView.style.display='none';}else{adminView.style.display='block';}}
-function openModal(id){document.getElementById(id).style.display='flex';if(id==='history-modal'){renderHistory();}}
-function closeModal(id){document.getElementById(id).style.display='none';}
-let broadcasterIdCache=null;
-async function getTwitchUserId(u){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');if(!c||!t)return null;try{let r=await fetch(`https://api.twitch.tv/helix/users?login=${u}`,{headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});let d=await r.json();if(d.data&&d.data.length>0)return d.data[0].id;}catch(e){}return null;}
-async function fetchWinnerAvatar(username){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');if(!c||!t)return 'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png';try{let r=await fetch(`https://api.twitch.tv/helix/users?login=${username}`,{headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});if(r.ok){let d=await r.json();if(d.data&&d.data.length>0)return d.data[0].profile_image_url;}}catch(e){}return 'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png';}
-let avatarCache={};
-let avatarQueue=new Set();
-setInterval(processAvatarQueue,2500);
-async function processAvatarQueue(){if(avatarQueue.size===0)return;let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');if(!c||!t){avatarQueue.clear();return;}let usersToFetch=Array.from(avatarQueue).slice(0,100);usersToFetch.forEach(u=>avatarQueue.delete(u));let queryParams=usersToFetch.map(u=>`login=${encodeURIComponent(u)}`).join('&');try{let r=await fetch(`https://api.twitch.tv/helix/users?${queryParams}`,{headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});if(r.ok){let d=await r.json();if(d.data){d.data.forEach(user=>{avatarCache[user.login]=user.profile_image_url;let imgEl=document.getElementById(`avatar-${user.login}`);if(imgEl)imgEl.src=user.profile_image_url;});}}}catch(e){}}
-function exportBackup(){let b={};for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k.startsWith('tw_')){b[k]=localStorage.getItem(k);}}let bl=new Blob([JSON.stringify(b)],{type:"text/plain"});let a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=`MegaLoot_Backup_${new Date().toISOString().split('T')[0]}.txt`;a.click();}
-function importBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=function(evt){try{let b=JSON.parse(evt.target.result);for(let k in b){if(k.startsWith('tw_')){localStorage.setItem(k,b[k]);}}salvarNuvem();alert("Backup restaurado com sucesso! A página será recarregada.");location.reload();}catch(err){alert("Erro ao ler o arquivo de backup.");}};r.readAsText(f);}
-function loadHistory(){try{let saved=localStorage.getItem('tw_winners_history');if(saved){winnersHistory=JSON.parse(saved);}}catch(e){winnersHistory=[];}}
-function saveHistory(){localStorage.setItem('tw_winners_history',JSON.stringify(winnersHistory)); salvarNuvem();}
-function renderHistory(){const grid=document.getElementById('history-grid');const summary=document.getElementById('history-summary');const search=document.getElementById('history-search').value.trim().toLowerCase();grid.innerHTML='';let filtered=winnersHistory;let winCount=0;if(search){filtered=winnersHistory.filter(w=>w.name.toLowerCase().includes(search));winCount=filtered.filter(w=>w.status==="Confirmado").length;summary.style.display='block';if(winCount>0){summary.innerHTML=`⭐ Ganhador confirmado <b>${winCount}</b> vez(es)!`;summary.style.color='#00e676';}else{summary.innerHTML=`❌ Nenhuma vitória confirmada encontrada para este nick.`;summary.style.color='#e91e63';}}else{summary.style.display='none';}if(filtered.length===0){grid.innerHTML='<div style="color:#888; font-size:0.9rem;">Nenhum registro encontrado...</div>';return;}[...filtered].reverse().forEach((w)=>{let isConfirmed=w.status==="Confirmado";let statusColor=isConfirmed?"#00e676":"#e91e63";if(w.status.includes("Repassou"))statusColor="#ff9800";let card=document.createElement('div');card.className='vip-card';card.style.borderColor=`rgba(${statusColor==='#00e676'?'0,230,118':statusColor==='#ff9800'?'255,152,0':'233,30,99'},0.3)`;card.innerHTML=`<div class="vip-card-header" style="margin-bottom:8px;"><span class="vip-name" style="color:${statusColor}">${w.name}</span><span class="vip-status" style="background:transparent; border:1px solid ${statusColor}; color:${statusColor}">${w.status}</span></div><div style="font-size:0.9rem; color:#fff; margin-bottom:10px;">🎁 ${w.prize}</div><div class="vip-meta"><span>📅 ${w.time}</span></div>`;grid.appendChild(card);});}
-function clearHistory(){if(confirm("🚨 TEM CERTEZA? Isso vai apagar todo o histórico de ganhadores salvos no seu painel. Esta ação não pode ser desfeita.")){winnersHistory=[];saveHistory();renderHistory();}}
-async function manageTwitchVip(u,a){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch)return;if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);let id=await getTwitchUserId(u);if(broadcasterIdCache&&id)try{await fetch(`https://api.twitch.tv/helix/channels/vips?broadcaster_id=${broadcasterIdCache}&user_id=${id}`,{method:a,headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});}catch(e){}}
-async function sendTwitchAnnouncement(text){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch){sendChatMsg(`/me 📢 ${text}`);return;}if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);if(broadcasterIdCache){try{let r=await fetch(`https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${broadcasterIdCache}&moderator_id=${broadcasterIdCache}`,{method:'POST',headers:{'Client-Id':c,'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},body:JSON.stringify({message:text,color:"primary"})});if(!r.ok){sendChatMsg(`/me 📢 ${text}`);}}catch(e){sendChatMsg(`/me 📢 ${text}`);}}else{sendChatMsg(`/me 📢 ${text}`);}}
-let manualPrizes=[];let apiPrizes=[];let activePrizeText="";let autoSyncInterval=null;let isSyncing=false;
-function cleanPrizeDisplay(prize){return String(prize||"").replace(/^💰\s*/u,"").replace(/\s*\[DVAPI:(?:mp|mc|megavip):(?:auto|manual)\]\s*$/i,"").trim();}
-function getCombinedPrizes(){return[...manualPrizes,...apiPrizes];}
-function getAwardPriority(name){if(!name)return 0;const n=name.toLowerCase();if(n.includes('balgass'))return 1000;if(n.includes('garuda flame'))return 900;if(n.includes('wings of power'))return 850;if(n.includes('wings'))return 800;if(n.includes('condor flame'))return 750;if(n.includes('condor feather'))return 740;if(n.includes('ruud')||n.includes('box ruud'))return 600;if(n.includes('mcoin')||n.includes('mpoint'))return 500;if(n.includes('megavip'))return 400;return 100;}
-function toggleAutoSync(){const url=document.getElementById('api-url').value.trim();const btn=document.getElementById('btn-api-sync');if(!url){alert("Cole a URL da API primeiro!");return;}if(autoSyncInterval){clearInterval(autoSyncInterval);autoSyncInterval=null;btn.innerText="🔄 INICIAR AUTO-SYNC";btn.style.background="#0097A7";btn.style.color="#fff";localStorage.setItem('tw_auto_sync','false');salvarNuvem();}else{btn.innerText="✅ AUTO-SYNC ATIVADO";btn.style.background="#00e676";btn.style.color="#121216";syncApiRoutine(url);autoSyncInterval=setInterval(()=>syncApiRoutine(url),5000);localStorage.setItem('tw_auto_sync','true');salvarNuvem();}}
-let lastApiPrizesState=[];
-function resetApiCache(){lastApiPrizesState=[];apiPrizes=[];savePrizes();updatePrizeUI();alert("Memória da API resetada! O sistema vai puxar os itens do zero no próximo ciclo.");}
-async function syncApiRoutine(baseUrl){if(isSyncing)return;isSyncing=true;try{const timestamp=Date.now();const finalUrl=baseUrl.includes('?')?`${baseUrl}&_=${timestamp}`:`${baseUrl}?_=${timestamp}`;let data=null;try{const res=await fetch(finalUrl);data=await res.json();}catch(e){const proxyUrl=`https://api.allorigins.win/get?url=${encodeURIComponent(finalUrl)}`;const res=await fetch(proxyUrl);const proxyData=await res.json();if(proxyData.contents)data=JSON.parse(proxyData.contents);}let items=null;if(Array.isArray(data))items=data;else if(data&&data.awards&&Array.isArray(data.awards))items=data.awards;else if(data&&data.data&&Array.isArray(data.data))items=data.data;else if(data&&data.items&&Array.isArray(data.items))items=data.items;if(items){let sortedItems=items.sort((a,b)=>{const nameA=(a.name||a.item||a.ItemName||a.premio||a||'').toString();const nameB=(b.name||b.item||b.ItemName||b.premio||b||'').toString();const scoreA=getAwardPriority(nameA);const scoreB=getAwardPriority(nameB);if(scoreA!==scoreB)return scoreB-scoreA;const cleanNameA=nameA.replace(/[0-9xX\s\-]/g,'').toLowerCase();const cleanNameB=nameB.replace(/[0-9xX\s\-]/g,'').toLowerCase();if(cleanNameA!==cleanNameB)return cleanNameA.localeCompare(cleanNameB);const numA=parseInt(nameA.match(/\d+/))||0;const numB=parseInt(nameB.match(/\d+/))||0;return numB-numA;});let newApiPrizes=sortedItems.map(award=>award.name||award.item||award.ItemName||award.premio||(typeof award==='string'?award:"Prêmio Desconhecido"));if(JSON.stringify(newApiPrizes)!==JSON.stringify(lastApiPrizesState)){let oldCounts={};lastApiPrizesState.forEach(p=>oldCounts[p]=(oldCounts[p]||0)+1);let newCounts={};newApiPrizes.forEach(p=>newCounts[p]=(newCounts[p]||0)+1);let added=[];let removed=[];for(let p in newCounts){let diff=newCounts[p]-(oldCounts[p]||0);for(let i=0;i<diff;i++)added.push(p);}for(let p in oldCounts){let diff=oldCounts[p]-(newCounts[p]||0);for(let i=0;i<diff;i++)removed.push(p);}let queueChanged=false;removed.forEach(r=>{let idx=apiPrizes.indexOf(r);if(idx!==-1){apiPrizes.splice(idx,1);queueChanged=true;}});if(added.length>0){apiPrizes=[...added,...apiPrizes];queueChanged=true;let audio=document.getElementById('sfx-prize');if(audio){audio.currentTime=0;audio.play().catch(e=>{});}}lastApiPrizesState=newApiPrizes;if(queueChanged){savePrizes();updatePrizeUI();}}}}catch(err){console.error("Auto-sync error:",err);}finally{isSyncing=false;}}
-function loadPrizes(){const savedM=localStorage.getItem('tw_manual_prizes');if(savedM)manualPrizes=JSON.parse(savedM);const savedA=localStorage.getItem('tw_api_prizes');if(savedA)apiPrizes=JSON.parse(savedA);const savedState=localStorage.getItem('tw_api_prizes_state');if(savedState)lastApiPrizesState=JSON.parse(savedState);updatePrizeUI();}
-function savePrizes(){localStorage.setItem('tw_manual_prizes',JSON.stringify(manualPrizes));localStorage.setItem('tw_api_prizes',JSON.stringify(apiPrizes));localStorage.setItem('tw_api_prizes_state',JSON.stringify(lastApiPrizesState)); salvarNuvem();}
-function addPrize(){const input=document.getElementById('new-prize');const val=input.value.trim();if(val){manualPrizes.push(val);input.value='';savePrizes();updatePrizeUI();let audio=document.getElementById('sfx-prize');if(audio){audio.currentTime=0;audio.play().catch(e=>{});}}}
-function handlePrizeKeyPress(e){if(e.key==='Enter')addPrize();}
-function removePrize(index){if(index<manualPrizes.length){manualPrizes.splice(index,1);}else{let apiIndex=index-manualPrizes.length;let p=apiPrizes[apiIndex];apiPrizes.splice(apiIndex,1);let stateIdx=lastApiPrizesState.indexOf(p);if(stateIdx!==-1)lastApiPrizesState.splice(stateIdx,1);}savePrizes();updatePrizeUI();}
-let dragSrcEl=null;let dragSrcIsManual=false;let dragSrcOriginalIndex=0;
-function handleDragStart(e){this.style.opacity='0.4';dragSrcEl=this;dragSrcIsManual=parseInt(this.dataset.index)<manualPrizes.length;dragSrcOriginalIndex=dragSrcIsManual?parseInt(this.dataset.index):parseInt(this.dataset.index)-manualPrizes.length;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/html',this.innerHTML);}
-function handleDragOver(e){if(e.preventDefault){e.preventDefault();}e.dataTransfer.dropEffect='move';return false;}
-function handleDragEnter(e){this.classList.add('over');}
-function handleDragLeave(e){this.classList.remove('over');}
-function handleDrop(e){if(e.stopPropagation){e.stopPropagation();}if(dragSrcEl!==this){let dropIndex=parseInt(this.dataset.index);let dropIsManual=dropIndex<manualPrizes.length;let dropOriginalIndex=dropIsManual?dropIndex:dropIndex-manualPrizes.length;let movedItem=dragSrcIsManual?manualPrizes.splice(dragSrcOriginalIndex,1)[0]:apiPrizes.splice(dragSrcOriginalIndex,1)[0];if(dropIsManual){manualPrizes.splice(dropOriginalIndex,0,movedItem);}else{apiPrizes.splice(dropOriginalIndex,0,movedItem);}savePrizes();updatePrizeUI();}return false;}
-function handleDragEnd(e){this.style.opacity='1';let items=document.querySelectorAll('.prize-item');items.forEach(function(item){item.classList.remove('over');});}
-function updatePrizeUI(){const container=document.getElementById('prize-list');container.innerHTML='';let combined=getCombinedPrizes();combined.forEach((prize,idx)=>{const div=document.createElement('div');div.className='prize-item';div.draggable=true;div.dataset.index=idx;div.addEventListener('dragstart',handleDragStart);div.addEventListener('dragover',handleDragOver);div.addEventListener('drop',handleDrop);div.addEventListener('dragenter',handleDragEnter);div.addEventListener('dragleave',handleDragLeave);div.addEventListener('dragend',handleDragEnd);div.innerHTML=`<span class="prize-item-name">🎁 ${cleanPrizeDisplay(prize)}</span><button class="btn-remove-prize" onclick="removePrize(${idx})">&times;</button>`;container.appendChild(div);});}
-function flyPrizeToCenter(){const firstPrize=document.querySelector('.prize-item');if(!firstPrize)return;firstPrize.style.opacity='0.3';const rect=firstPrize.getBoundingClientRect();const clone=firstPrize.cloneNode(true);const removeBtn=clone.querySelector('.btn-remove-prize');if(removeBtn)removeBtn.remove();clone.style.position='fixed';clone.style.left=rect.left+'px';clone.style.top=rect.top+'px';clone.style.width=rect.width+'px';clone.style.zIndex='99999';clone.style.margin='0';clone.style.transition='all 0.8s cubic-bezier(0.25,1,0.5,1)';clone.style.boxShadow='0 0 30px rgba(255,202,40,0.6)';clone.style.border='2px solid #ffca28';clone.style.animation='none';document.body.appendChild(clone);requestAnimationFrame(()=>{requestAnimationFrame(()=>{const centerY=window.innerHeight/2-80;clone.style.left=`calc(50% - ${rect.width/2}px)`;clone.style.top=centerY+'px';clone.style.transform='scale(1.5)';clone.style.opacity='0';});});setTimeout(()=>{clone.remove();},850);}
-const confettiCanvas=document.getElementById('confetti-canvas');const ctx=confettiCanvas.getContext('2d');let confettiParticles=[];let confettiAnimationId=null;const blessImage=new Image();blessImage.src='bless.png';
-function resizeConfetti(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeConfetti);
-function startConfetti(){resizeConfetti();confettiParticles=[];for(let i=0;i<40;i++){confettiParticles.push({x:Math.random()*confettiCanvas.width,y:Math.random()*confettiCanvas.height-confettiCanvas.height,size:Math.random()*20+20,dx:Math.random()*2-1,dy:Math.random()*3+2,tiltAngle:Math.random()*Math.PI,tiltAngleInc:(Math.random()*0.1)-0.05});}if(!confettiAnimationId)renderConfetti();}
-function renderConfetti(){ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);confettiParticles.forEach((p)=>{p.y+=p.dy;p.x+=Math.sin(p.tiltAngle)*1.5+p.dx;p.tiltAngle+=p.tiltAngleInc;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.tiltAngle);ctx.drawImage(blessImage,-p.size/2,-p.size/2,p.size,p.size);ctx.restore();if(p.y>confettiCanvas.height+50){p.y=-50;p.x=Math.random()*confettiCanvas.width;}});confettiAnimationId=requestAnimationFrame(renderConfetti);}
-function stopConfetti(){cancelAnimationFrame(confettiAnimationId);confettiAnimationId=null;ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);}
-
-function addManualUser(){
-    const input=document.getElementById('manual-user');
-    let rawName=input.value.trim();
-    if(!rawName)return;
-    let cleanName=rawName.replace('@','');
-    let usernameKey=cleanName.toLowerCase();
-    if(participants[usernameKey]){
-        if(!participants[usernameKey].eligible){
-            participants[usernameKey].eligible=true;
-            updateUI();
-        }
-        input.value='';
-        return;
-    }
-    let weight=parseInt(document.getElementById('mult-viewer').value)||1;
-    participants[usernameKey]={
-        name:cleanName,
-        weight:weight,
-        isMod:false,
-        isVip:false,
-        isSub:false,
-        vipBorder:false,
-        eligible:true,
-        hasPassBuff:false,
-        passCount:0,
-        passedCurrentPrize:false
-    };
-    avatarQueue.add(usernameKey);
-    updateUI();
-    input.value='';
-}
-let customVips={};
-function loadCustomVips(){try{const saved=localStorage.getItem('tw_custom_vips_v3');if(saved){customVips=JSON.parse(saved);cleanExpiredVips();renderCustomVips();}}catch(e){customVips={};}}
-function saveCustomVips(){localStorage.setItem('tw_custom_vips_v3',JSON.stringify(customVips)); salvarNuvem();}
-function cleanExpiredVips(){const now=Date.now();let changed=false;for(let user in customVips){if(customVips[user].expires!==null&&customVips[user].expires<now){delete customVips[user];changed=true;manageTwitchVip(user,'DELETE');}}if(changed)saveCustomVips();}
-function addCustomVip(){let name=document.getElementById('vip-add-name').value.trim().toLowerCase();let daysInput=document.getElementById('vip-add-time').value;let days=daysInput===''?0:parseInt(daysInput);if(!name)return;name=name.replace('@','');let now=Date.now();let expire=null;if(days>0){expire=now+(days*24*60*60*1000);}customVips[name]={added:now,expires:expire};saveCustomVips();manageTwitchVip(name,'POST');document.getElementById('vip-add-name').value='';document.getElementById('vip-add-time').value='';renderCustomVips();}
-function removeCustomVip(name){delete customVips[name];saveCustomVips();manageTwitchVip(name,'DELETE');renderCustomVips();}
-function renderCustomVips(){cleanExpiredVips();const grid=document.getElementById('vip-grid');const search=document.getElementById('vip-search').value.toLowerCase();if(!grid)return;grid.innerHTML='';let now=Date.now();for(let user in customVips){if(search&&!user.includes(search))continue;let data=customVips[user];let addedDate=new Date(data.added).toLocaleDateString('pt-BR');let expDate="---";let statusClass="status-active";let statusText="Ativo (Infinito)";let progressPercent=100;let isWarning=false;if(data.expires!==null){expDate=new Date(data.expires).toLocaleDateString('pt-BR');let diffMs=data.expires-now;let diffDays=Math.ceil(diffMs/(1000*60*60*24));let totalMs=data.expires-data.added;progressPercent=Math.max(0,Math.min(100,(diffMs/totalMs)*100));if(diffDays>3){statusText=`Ativo (${diffDays}d)`;}else if(diffDays>0){statusClass="status-warning";statusText=`Expirando (${diffDays}d)`;isWarning=true;}else{statusClass="status-expired";statusText=`Expirado`;progressPercent=0;}}else{statusClass="status-infinite";}let progressHtml=data.expires===null?`<div class="vip-progress-bg"><div class="vip-progress-fill infinite" style="width:100%;"></div></div>`:`<div class="vip-progress-bg"><div class="vip-progress-fill ${isWarning?'warning':''}" style="width:${progressPercent}%;"></div></div>`;let card=document.createElement('div');card.className='vip-card';card.innerHTML=`<div class="vip-card-header"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.5rem;">👑</span><span class="vip-name">${user}</span></div><button class="btn-del-vip" onclick="removeCustomVip('${user}')" title="Remover VIP">&times;</button></div>${progressHtml}<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span class="vip-status ${statusClass}">${statusText}</span></div><div class="vip-meta"><span>Add: ${addedDate}</span><span>Exp: ${expDate}</span></div>`;grid.appendChild(card);}}
-function isUserCustomVip(username){cleanExpiredVips();return customVips.hasOwnProperty(username);}
-let customChatCommands={};let editingCustomCmdId=null;
-function loadCustomCommands(){try{const saved=localStorage.getItem('tw_custom_commands');if(saved){customChatCommands=JSON.parse(saved);renderCustomCommands();}}catch(e){customChatCommands={};}}
-function saveCustomCommands(){localStorage.setItem('tw_custom_commands',JSON.stringify(customChatCommands)); salvarNuvem();}
-function renderCustomCommands(){const list=document.getElementById('custom-cmd-list');if(!list)return;list.innerHTML='';for(let cmd in customChatCommands){let c=customChatCommands[cmd];let card=document.createElement('div');card.className='announcement-card';card.style.borderColor='#b538ff';card.innerHTML=`<div class="announcement-card-header" style="margin-bottom:5px;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.2rem; color:#b538ff;">🤖</span><span class="announcement-name" style="font-weight:700;">${c.trigger}</span></div><div style="display:flex;gap:10px;"><button class="btn-edit-announcement" onclick="editCustomCommand('${cmd}')" title="Editar">✏️</button><button class="btn-del-announcement" onclick="removeCustomCommand('${cmd}')" title="Remover">&times;</button></div></div><div class="announcement-message" style="font-size:0.9rem; color:#adadb8; word-break:break-word; margin-bottom:0;">${c.message}</div>`;list.appendChild(card);}}
-function addCustomCommand(){let trigger=document.getElementById('custom-cmd-trigger').value.trim().toLowerCase();let message=document.getElementById('custom-cmd-message').value.trim();if(!trigger||!message)return alert("Preencha o comando e a mensagem!");if(!trigger.startsWith('!'))trigger='!'+trigger;if(editingCustomCmdId&&editingCustomCmdId!==trigger){delete customChatCommands[editingCustomCmdId];}customChatCommands[trigger]={trigger:trigger,message:message,lastUsed:0};editingCustomCmdId=null;saveCustomCommands();document.getElementById('custom-cmd-trigger').value='';document.getElementById('custom-cmd-message').value='';let btn=document.getElementById('btn-add-custom-cmd');btn.innerText="➕ ADICIONAR COMANDO";btn.style.background="#b538ff";btn.style.color="#fff";renderCustomCommands();}
-function editCustomCommand(cmd){let c=customChatCommands[cmd];document.getElementById('custom-cmd-trigger').value=c.trigger;document.getElementById('custom-cmd-message').value=c.message;editingCustomCmdId=cmd;let btn=document.getElementById('btn-add-custom-cmd');btn.innerText="💾 SALVAR ALTERAÇÕES";btn.style.background="#00e676";btn.style.color="#121216";}
-function removeCustomCommand(cmd){delete customChatCommands[cmd];saveCustomCommands();renderCustomCommands();}
-let announcements={};let globalChatMessages=0;let editingAnnouncementId=null;
-function loadAnnouncements(){try{const saved=localStorage.getItem('tw_announcements');if(saved){announcements=JSON.parse(saved);renderAnnouncements();}}catch(e){announcements={};}}
-function saveAnnouncements(){localStorage.setItem('tw_announcements',JSON.stringify(announcements)); salvarNuvem();}
-function renderAnnouncements(){const list=document.getElementById('announcement-list');if(!list)return;list.innerHTML='';for(let id in announcements){let a=announcements[id];let card=document.createElement('div');card.className='announcement-card';let announceStatus=a.announceNative?`<span style="color:#bf94ff; font-size:0.75rem;">/announce</span>`:'';let lastSentDate=a.lastSent?new Date(a.lastSent).toLocaleTimeString('pt-BR'):'---';card.innerHTML=`<div class="announcement-card-header"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.2rem; color:#ffca28;">⏳</span><span class="announcement-name" style="font-weight:700;">Anúncio ${a.intervalMinutes}m / ${a.messagesMin}msgs</span>${announceStatus}</div><div style="display:flex;gap:10px;"><button class="btn-edit-announcement" onclick="editAnnouncement('${id}')" title="Editar">✏️</button><button class="btn-del-announcement" onclick="removeAnnouncement('${id}')" title="Remover">&times;</button></div></div><div class="announcement-message" style="font-size:0.9rem; color:#adadb8; word-break:break-word; margin-bottom:10px;">${a.message}</div><div class="announcement-card-meta"><span>Int: ${a.intervalMinutes}m</span><span>Msgs Mín: ${a.messagesMin}</span><span>Últ: ${lastSentDate}</span></div>`;list.appendChild(card);}}
-function addAnnouncement(){let message=document.getElementById('announcement-message').value.trim();let intervalInput=document.getElementById('announcement-interval').value;let messagesMinInput=document.getElementById('announcement-messages-min').value;let announceNative=document.getElementById('announcement-announce').checked;let intervalMinutes=intervalInput===''?5:parseInt(intervalInput);let messagesMin=messagesMinInput===''?2:parseInt(messagesMinInput);if(!message||intervalMinutes<1||messagesMin<1)return alert("Preencha mensagem, intervalo (minutos) e mensagens mínimas!");if(editingAnnouncementId){let a=announcements[editingAnnouncementId];a.message=message;a.intervalMinutes=intervalMinutes;a.messagesMin=messagesMin;a.announceNative=announceNative;editingAnnouncementId=null;let btn=document.getElementById('btn-add-announcement');btn.innerText="➕ ADICIONAR ANÚNCIO";btn.style.background="#ffca28";btn.style.color="#121216";}else{let id=Date.now().toString(36);announcements[id]={id:id,message:message,intervalMinutes:intervalMinutes,messagesMin:messagesMin,announceNative:announceNative,lastSent:null};}saveAnnouncements();document.getElementById('announcement-message').value='';document.getElementById('announcement-interval').value='';document.getElementById('announcement-messages-min').value='';document.getElementById('announcement-announce').checked=false;renderAnnouncements();}
-function editAnnouncement(id){let a=announcements[id];document.getElementById('announcement-message').value=a.message;document.getElementById('announcement-interval').value=a.intervalMinutes;document.getElementById('announcement-messages-min').value=a.messagesMin;document.getElementById('announcement-announce').checked=a.announceNative;editingAnnouncementId=id;let btn=document.getElementById('btn-add-announcement');btn.innerText="💾 SALVAR ALTERAÇÕES";btn.style.background="#00e676";btn.style.color="#121216";}
-function removeAnnouncement(id){delete announcements[id];saveAnnouncements();renderAnnouncements();}
-let ws=null;let isRunning=false;let participants={};let currentWinnerLogin=null;let countdownTime=30;let giveawayInterval=null;let winnerResponded=false;let winnerTimedOut=false;let spectacleTimeout=null;let luckyWinnersLog={};
-let overlayDrawPhase="idle";
-// Ponte segura para os modulos externos de importacao e overlay.
-Object.defineProperties(window,{
-  participants:{get:()=>participants,set:v=>{participants=v||{};}},
-  isRunning:{get:()=>isRunning},
-  currentWinnerLogin:{get:()=>currentWinnerLogin},
-  countdownTime:{get:()=>countdownTime},
-  activePrizeText:{get:()=>activePrizeText},
-  avatarCache:{get:()=>avatarCache},
-  avatarQueue:{get:()=>avatarQueue},
-  overlayDrawPhase:{get:()=>overlayDrawPhase,set:v=>{overlayDrawPhase=v||"idle";}}
-});
-function updateStatus(msg,color){const statusDiv=document.getElementById('conn-status');statusDiv.innerText=msg;statusDiv.style.color=color;statusDiv.style.background=color==='#e91e63'?'rgba(233,30,99,0.2)':'rgba(0,230,118,0.2)';}
-function connectTwitch(){saveSettingsLocal();let channelRaw=document.getElementById('channel-name').value.trim();let oauthTokenRaw=document.getElementById('oauth-token').value.trim();if(!channelRaw)return alert("Digite o canal!");let channel=channelRaw.toLowerCase();if(ws)ws.close();updateStatus("Conectando ao servidor...","#adadb8");ws=new WebSocket('wss://irc-ws.chat.twitch.tv:443');ws.onopen=()=>{let cleanToken=oauthTokenRaw.replace('oauth:','').trim();ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');if(cleanToken!==''){ws.send(`PASS oauth:${cleanToken}`);ws.send(`NICK ${channel}`);}else{ws.send(`PASS SCHMOOPIIE`);ws.send(`NICK justinfan12345`);}ws.send(`JOIN #${channel}`);updateStatus(cleanToken?"🟢 Conectado c/ Envio Automático!":"🟢 Conectado (Apenas Leitura)!","#00e676");document.getElementById('btn-toggle').disabled=false;globalChatMessages=0;};ws.onmessage=(event)=>{const lines=event.data.split('\r\n');for(let line of lines){if(!line)continue;if(line.startsWith('PING')){ws.send('PONG :tmi.twitch.tv');continue;}if(line.includes('Login authentication failed')){updateStatus("🔴 Falha! Token Inválido.","#e91e63");ws.close();continue;}const parsed=parseMessage(line);if(parsed){handleChatCommands(parsed);}}};ws.onclose=()=>{const statusDiv=document.getElementById('conn-status');if(!statusDiv.innerText.includes('Falha'))updateStatus(`🔴 Desconectado.`,"#e91e63");document.getElementById('btn-toggle').disabled=true;};}
-function parseMessage(raw){const privmsgIdx=raw.indexOf(' PRIVMSG ');if(privmsgIdx===-1)return null;let tags={};if(raw.startsWith('@')){const spaceIdx=raw.indexOf(' ');const tagsStr=raw.substring(1,spaceIdx);tagsStr.split(';').forEach(tag=>{const[key,val]=tag.split('=');tags[key]=val;});}const msgStartIdx=raw.indexOf(' :',privmsgIdx);let rawMessage=msgStartIdx!==-1?raw.substring(msgStartIdx+2).trim():'';let username='unknown_'+Math.random();const userMatch=raw.match(/ :([a-zA-Z0-9_]+)!/);if(userMatch){username=userMatch[1].toLowerCase();}else if(tags['display-name']){username=tags['display-name'].toLowerCase();}globalChatMessages++;if(ws&&ws.readyState===WebSocket.OPEN){let now=Date.now();let updated=false;for(let id in announcements){let a=announcements[id];let timeSinceLastSendMs=a.lastSent?now-a.lastSent:now-(a.intervalMinutes*60*1000);let timePassedMinutes=timeSinceLastSendMs/(1000*60);let isGiveawayActive=isRunning||document.getElementById('winner-overlay').style.display==='flex';if(!isGiveawayActive&&timePassedMinutes>=a.intervalMinutes&&globalChatMessages>=a.messagesMin){if(a.announceNative){sendTwitchAnnouncement(a.message);}else{sendChatMsg(`/me 📢 ${a.message}`);}a.lastSent=now;globalChatMessages=0;updated=true;}}if(updated){saveAnnouncements();renderAnnouncements();}}const isSub=tags['subscriber']==='1'||(tags['badges']&&tags['badges'].includes('founder/'));const isVip=(tags['badges']&&tags['badges'].includes('vip/'))||isUserCustomVip(username);const isBroadcaster=tags['badges']&&tags['badges'].includes('broadcaster/');const isMod=tags['mod']==='1'||isBroadcaster;return{username:username,displayName:tags['display-name']||username,isMod:isMod,isSub:isSub,isVip:isVip,isBroadcaster:isBroadcaster,message:rawMessage.toLowerCase(),rawMessage:rawMessage};}
-function sendChatMsg(text){if(ws&&ws.readyState===WebSocket.OPEN&&document.getElementById('oauth-token').value.trim()!==''){let channelRaw=document.getElementById('channel-name').value.trim().toLowerCase();ws.send(`PRIVMSG #${channelRaw} :${text}`);}}
-function handleChatCommands(msg){
-    const cSorteio=document.getElementById('cmd-sorteio').value.trim().toLowerCase();
-    const cFila=document.getElementById('cmd-fila').value.trim().toLowerCase();
-    const cFilaTxt=document.getElementById('cmd-fila-text').value;
-    const cSortudos=document.getElementById('cmd-sortudos').value.trim().toLowerCase();
-    const cSortudosTxt=document.getElementById('cmd-sortudos-text').value;
-    const cHype=document.getElementById('cmd-hype').value.trim().toLowerCase();
-    const cSorteioTxt=document.getElementById('cmd-sorteio-text').value;
-    let chatText=msg.message.trim().toLowerCase();
-    let firstWord=chatText.split(' ')[0];
-    if(customChatCommands[firstWord]){
-        let now=Date.now();
-        if(now-customChatCommands[firstWord].lastUsed>5000){
-            let reply=customChatCommands[firstWord].message.replace(/{user}/gi,'@'+msg.displayName).replace(/\\$\\(user\\)/gi,'@'+msg.displayName);
-            sendChatMsg(reply);
-            customChatCommands[firstWord].lastUsed=now;
-        }
-    }
-    if(chatText===cSorteio&&isRunning){
-        if(!participants[msg.username]){
-            let status=registerParticipant(msg);
-            if(status===true){
-                sendChatMsg(`⚔️ @${msg.displayName} ${cSorteioTxt}`);
-            }
-        }
-    }
-    if(chatText===cFila){let combined=getCombinedPrizes();const nextItems=combined.slice(0,3).map((p,i)=>`${i+1}º [${cleanPrizeDisplay(p)}]`).join(', ');sendChatMsg(cFilaTxt.replace('{premios}',nextItems||'Baú Vazio'));}
-    if(chatText===cSortudos){let ranking=Object.entries(luckyWinnersLog).sort((a,b)=>b[1]-a[1]).slice(0,3).map((item,i)=>`${i+1}º ${item[0]} (${item[1]})`).join(', ');sendChatMsg(cSortudosTxt.replace('{ranking}',ranking||'Ninguém'));}
-    if((chatText.includes(cHype))&&(msg.isSub||msg.isVip||msg.isMod||msg.isBroadcaster)){triggerHype();}
-    if(currentWinnerLogin&&msg.username===currentWinnerLogin){
-        if(!winnerTimedOut){
-            addWinnerChatMessage(msg);
-            if(!winnerResponded&&giveawayInterval!==null){
-                if(chatText.includes('!passar')){
-                    let passEnabled = document.getElementById('enable-pass-cmd').checked;
-                    if(!passEnabled) {
-                        sendChatMsg(`⛔ @${msg.displayName} a função de repassar o prêmio (!passar) está DESATIVADA! Mande outra mensagem para confirmar o prêmio ou deixe o tempo esgotar.`);
-                    } else if(participants[currentWinnerLogin].passCount>=1){
-                        sendChatMsg(`⛔ @${msg.displayName} você já utilizou o seu direito de repassar um prêmio nesta live! Aceite este ou deixe o tempo esgotar.`);
-                    }else{
-                        clearInterval(giveawayInterval);
-                        giveawayInterval=null;
-                        winnerResponded=true;
-                        document.getElementById('winner-card').className='winner-card-ui';
-                        document.getElementById('timer-box').style.borderColor='#ff9800';
-                        document.getElementById('winner-status').innerText="⏩ Repassando o prêmio...";
-                        participants[currentWinnerLogin].passCount++;
-                        let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
-                        winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:msg.displayName,prize:lPrize,status:"Repassou (!passar)"});
-                        saveHistory();
-                        sendChatMsg(`⏩ @${msg.displayName} abriu mão do prêmio! Girando a roleta novamente...`);
-                        participants[currentWinnerLogin].passedCurrentPrize=true;
-                        setTimeout(()=>{passTheLoot(true);},2000);
-                    }
-                }else{
-                    confirmWinnerPresence();
-                }
-            }
-        }
-    }
-}
-function triggerHype(){const view=document.getElementById('public-view');view.classList.add('hype-active');const audio=document.getElementById('sfx-bless');audio.currentTime=0;audio.play().catch(e=>{});startConfetti();setTimeout(()=>{view.classList.remove('hype-active');if(!currentWinnerLogin)stopConfetti();},3000);}
-function updateAllMultipliers(){
-    const wv=parseInt(document.getElementById('mult-viewer').value)||1;
-    const ws=parseInt(document.getElementById('mult-sub').value)||1;
-    const wp=parseInt(document.getElementById('mult-vip').value)||1;
-    const wm=parseInt(document.getElementById('mult-mod').value)||1;
-    document.getElementById('lbl-vw').innerText=wv+'x';
-    document.getElementById('lbl-sb').innerText=ws+'x';
-    document.getElementById('lbl-vp').innerText=wp+'x';
-    document.getElementById('lbl-md').innerText=wm+'x';
-    for(let user in participants){
-        let p=participants[user];
-        if(p.isMod){p.weight=wm;}
-        else if(p.isVip){p.weight=wp;}
-        else if(p.isSub){p.weight=ws;}
-        else{p.weight=wv;}
-    }
-    updateUI();
-    triggerAutoSave();
-}
-function toggleGiveaway(){
-    isRunning=!isRunning;
-    const btn=document.getElementById('btn-toggle');
-    const keyword=document.getElementById('cmd-sorteio').value.trim();
-    let openMsg=document.getElementById('cmd-open-msg').value||`⚔️ ENTRADAS PARA O SORTEIO ABERTAS ⚔️ Digite {comando} para participar!`;
-    if(isRunning){
-        btn.innerText="PAUSAR ENTRADAS";
-        btn.style.background="#e91e63";
-        sendTwitchAnnouncement(openMsg.replace(/{comando}/gi,keyword));
-    }else{
-        btn.innerText="INICIAR ENTRADAS";
-        btn.style.background="#9146ff";
-    }
-}
-function registerParticipant(user){
-    const username=user.username;
-    if(participants[username])return false;
-    let dName=user&&user.displayName?user.displayName.toLowerCase():"";
-    let alreadyWon=dName!==""&&sessionWinners.includes(dName);
-    if(alreadyWon)return 'rej_already_won';
-    const filterMode=document.querySelector('input[name="entry-filter"]:checked');
-    const filterValue=filterMode?filterMode.value:'all';
-    let isMod=user.isBroadcaster||user.isMod;
-    let isVip=user.isVip;
-    let isSub=user.isSub;
-    if(!isMod){
-        if(filterValue==='subvip'&&!isSub&&!isVip)return;
-        if(filterValue==='sub'&&!isSub)return;
-        if(filterValue==='vip'&&!isVip)return;
-    }
-    let weight=parseInt(document.getElementById('mult-viewer').value)||1;
-    let isVipBorder=false;
-    if(isMod){weight=parseInt(document.getElementById('mult-mod').value)||3;isVipBorder=true;}
-    else if(isVip){weight=parseInt(document.getElementById('mult-vip').value)||3;isVipBorder=true;}
-    else if(isSub){weight=parseInt(document.getElementById('mult-sub').value)||2;isVipBorder=true;}
-    participants[username]={
-        name:user.displayName,
-        weight:weight,
-        isMod:isMod,
-        isVip:isVip,
-        isSub:isSub,
-        vipBorder:isVipBorder,
-        eligible:true,
-        hasPassBuff:false,
-        passCount:0,
-        passedCurrentPrize:false
-    };
-    avatarQueue.add(username);
-    updateUI();
-    return true;
-}
-window.toggleEligible=function(username){if(participants[username]){participants[username].eligible=!participants[username].eligible;updateUI();}};
-function updateUI(){
-    const list=document.getElementById('participants-list');
-    list.innerHTML='';
-    let count=0;
-    let eligibleCount=0;
-    for(let user in participants){
-        count++;
-        if(participants[user].eligible)eligibleCount++;
-    }
-    for(let user in participants){
-        let p=participants[user];
-        let isExcludedClass=p.eligible?'':'excluded';
-        let roles=[];
-        let colorClass='role-txt-view';
-        let borderClass='';
-        if(p.isMod){roles.push("MOD");colorClass='role-txt-mod';borderClass='role-mod';}
-        if(p.isSub){roles.push("SUB");if(!p.isMod){colorClass='role-txt-sub';borderClass='role-sub';}}
-        if(p.isVip){roles.push("VIP");if(!p.isMod&&!p.isSub){colorClass='role-txt-vip';borderClass='role-vip';}}
-        if(roles.length===0){roles.push("VIEW");}
-        let roleLabel=roles.join("+");
-        let showWeight=(p.weight>1);
-        let badgeHTML=showWeight?`<div class="part-luck-badge">${p.weight}x LUCK</div>`:'';
-        let avatarSrc=avatarCache[user]||'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png';
-        const div=document.createElement('div');
-        div.className=`part-card ${borderClass} ${isExcludedClass}`;
-        div.onclick=()=>toggleEligible(user);
-        div.innerHTML=`${badgeHTML}<img id="avatar-${user}" class="part-avatar" src="${avatarSrc}"><div class="part-role-label ${colorClass}">${roleLabel}</div><div class="part-name-grid" title="${p.name}">${p.name}</div>`;
-        list.appendChild(div);
-    }
-    document.getElementById('users-count').innerText=`${count} Participantes (${eligibleCount} Elegíveis)`;
-    if(count>0){
-        document.getElementById('placeholder-entries').style.display='none';
-    }else{
-        document.getElementById('placeholder-entries').style.display='block';
-    }
-}
-function startNextGiveaway(){hideWinner();setTimeout(()=>{drawWinner(false);},300);}
-function passTheLoot(fromCommand=false){
-    if(currentWinnerLogin&&participants[currentWinnerLogin]){
-        participants[currentWinnerLogin].eligible=true;
-        if(!fromCommand&&!winnerResponded&&!winnerTimedOut&&giveawayInterval!==null){
-            clearInterval(giveawayInterval);
-            giveawayInterval=null;
-            participants[currentWinnerLogin].passCount++;
-            participants[currentWinnerLogin].passedCurrentPrize=true;
-            let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
-            winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:participants[currentWinnerLogin].name,prize:lPrize,status:"Repassou (Manual)"});
-            saveHistory();
-            sendChatMsg(`⏩ @${participants[currentWinnerLogin].name} abriu mão do prêmio! Girando a roleta novamente...`);
-        }
-    }
-    drawWinner(true);
-}
-let fetchedAvatarUrl=null;
-function downloadHistory(){
-    if(winnersHistory.length===0)return alert("Nenhum sorteio registrado nesta sessão ainda.");
-    const {jsPDF}=window.jspdf;
-    const doc=new jsPDF();
-    doc.setFontSize(16);
-    doc.text("Relatorio MegaLoot Pro - Ganhadores",14,20);
-    doc.setFontSize(10);
-    let yPos=35;
-    doc.text("DATA/HORA",14,yPos);
-    doc.text("NICK",60,yPos);
-    doc.text("PREMIO",100,yPos);
-    doc.text("STATUS",160,yPos);
-    yPos+=5;
-    doc.line(14,yPos,196,yPos);
-    yPos+=8;
-    winnersHistory.forEach(w=>{
-        if(yPos>280){
-            doc.addPage();
-            yPos=20;
-        }
-        doc.text(w.time,14,yPos);
-        doc.text(w.name,60,yPos);
-        let splitPrize=doc.splitTextToSize(w.prize,55);
-        doc.text(splitPrize,100,yPos);
-        doc.text(w.status,160,yPos);
-        yPos+=(splitPrize.length*5)+3;
-    });
-    doc.save(`MegaLoot_Relatorio_${new Date().toISOString().split('T')[0]}.pdf`);
-}
-function sendDiscordWebhook(msg){
-    const url=document.getElementById('discord-webhook').value.trim();
-    if(!url)return;
-    fetch(url,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({content:msg})
-    }).catch(e=>{});
-}
-function drawWinner(isReroll){
-    overlayDrawPhase="prize";
-    stopConfetti();
-    clearInterval(giveawayInterval);
-    giveawayInterval=null;
-    clearTimeout(spectacleTimeout);
-    winnerResponded=false;
-    winnerTimedOut=false;
-    countdownTime=30;
-    document.getElementById('winner-pass-alert').style.display='none';
-    document.getElementById('winner-actions').style.display='none';
-    document.getElementById('winner-chat-messages').innerHTML='';
-    document.getElementById('timer-box').style.borderColor='#444';
-    document.getElementById('timer-box').style.display='inline-block';
-    document.getElementById('winner-card').className='winner-card-ui';
-    document.getElementById('winner-name').style.display='none';
-    document.getElementById('winner-prize').style.display='none';
-    document.getElementById('response-area').style.display='none';
-    document.getElementById('winner-message-log').style.display='none';
-    document.getElementById('winner-title-status').innerText="Descriptografando Vencedor...";
-    let combined=getCombinedPrizes();
-    if(!isReroll){
-        activePrizeText=combined.length>0?combined[0]:"";
-        for(let u in participants){
-            participants[u].passedCurrentPrize=false;
-        }
-    }
-    let pool=[];
-    for(let user in participants){
-        let hasConfirmedAlready=sessionWinners.includes(participants[user]?.name?.toLowerCase());
-        if(participants[user].eligible&&!hasConfirmedAlready){
-            for(let i=0;i<participants[user].weight;i++)pool.push(user);
-        }
-    }
-    if(pool.length===0){
-        alert("Nenhum participante válido na urna!");
-        hideWinner();
-        return;
-    }
-    currentWinnerLogin=pool[Math.floor(Math.random()*pool.length)];
-    while(participants[currentWinnerLogin]&&participants[currentWinnerLogin].passedCurrentPrize){
-        sendChatMsg(`🔄 O bot sorteou @${participants[currentWinnerLogin].name}, mas ele já repassou esse prêmio! Girando de novo...`);
-        pool=pool.filter(u=>u!==currentWinnerLogin);
-        if(pool.length===0){
-            alert("Todos os participantes na urna já repassaram este prêmio!");
-            hideWinner();
-            return;
-        }
-        currentWinnerLogin=pool[Math.floor(Math.random()*pool.length)];
-    }
-    if(activePrizeText!==""&&!isReroll){
-        flyPrizeToCenter();
-    }else if(isReroll){
-        const firstPrize=document.querySelector('.prize-item');
-        if(firstPrize)firstPrize.style.opacity='0.3';
-    }
-    const winnerDisplayName=participants[currentWinnerLogin].name;
-    if(activePrizeText!==""&&!isReroll){
-        document.getElementById('hype-prize-text').innerText="🎁 "+cleanPrizeDisplay(activePrizeText);
-        document.getElementById('hype-overlay').style.display='flex';
-        spectacleTimeout=setTimeout(()=>{
-            document.getElementById('hype-overlay').style.display='none';
-            document.getElementById('winner-overlay').style.display='flex';
-            startTheSpectacle(winnerDisplayName,currentWinnerLogin);
-        },3500);
-    }else{
-        document.getElementById('winner-overlay').style.display='flex';
-        startTheSpectacle(winnerDisplayName,currentWinnerLogin);
-    }
-}
-function startTheSpectacle(finalWinnerName,winnerLogin){
-    overlayDrawPhase="drawing";
-    window.dispatchEvent(new CustomEvent("megaloot:overlay-state"));
-    fetchedAvatarUrl=avatarCache[winnerLogin]||null;
-    document.getElementById('winner-avatar').style.display='none';
-    if(!fetchedAvatarUrl){
-        fetchWinnerAvatar(winnerLogin).then(url=>fetchedAvatarUrl=url);
-    }
-    const nameEl=document.getElementById('winner-name');
-    nameEl.style.display='block';
-    nameEl.style.color='#fff';
-    const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?/";
-    let iterations=0;
-    const maxIterations=45;
-    const scrambleInterval=setInterval(()=>{
-        let scrambled="";
-        for(let i=0;i<finalWinnerName.length;i++){scrambled+=chars[Math.floor(Math.random()*chars.length)];}
-        nameEl.innerText=scrambled;
-        iterations++;
-        if(iterations>=maxIterations){
-            clearInterval(scrambleInterval);
-            nameEl.style.color='#00e676';
-            revealFinalWinner(finalWinnerName);
-        }
-    },60);
-}
-function revealFinalWinner(winnerDisplayName){
-    overlayDrawPhase="winner";
-    window.dispatchEvent(new CustomEvent("megaloot:overlay-state"));
-    document.getElementById('winner-title-status').innerText="Vencedor Selecionado";
-    const nameEl=document.getElementById('winner-name');
-    nameEl.innerText=winnerDisplayName;
-    const avatarEl=document.getElementById('winner-avatar');
-    if(fetchedAvatarUrl){
-        avatarEl.src=fetchedAvatarUrl;
-        avatarEl.style.display='block';
-    }
-    startConfetti();
-    const pCount=participants[currentWinnerLogin].passCount;
-    const passAlert=document.getElementById('winner-pass-alert');
-    if(pCount>0){
-        passAlert.innerText=`⚠️ ATENÇÃO: ESTE JOGADOR JÁ REPASSOU PRÊMIO(S) ${pCount} VEZ(ES) NESTA LIVE!`;
-        passAlert.style.display='block';
-    }else{
-        passAlert.style.display='none';
-    }
-    const prizeEl=document.getElementById('winner-prize');
-    if(activePrizeText!==""){prizeEl.innerText="🎁 "+cleanPrizeDisplay(activePrizeText);prizeEl.style.display='inline-block';prizeEl.style.animation='popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards';}
-    participants[currentWinnerLogin].eligible=false;
-    updateUI();
-    let announceText="";
-    if(activePrizeText!==""){announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio e levou: ${cleanPrizeDisplay(activePrizeText)}! Você tem 30 segundos para mandar mensagem aqui no chat!`;}else{announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio! Você tem 30 segundos para mandar alguma coisa aqui no chat!`;}
-    sendTwitchAnnouncement(announceText);
-    document.getElementById('response-area').style.display='flex';
-    document.getElementById('winner-actions').style.display='flex';
-    if(winnerResponded){confirmWinnerPresence();}else{updateTimerUI();document.getElementById('timer-box').style.display='inline-block';document.getElementById('winner-status').innerText="Avisando no chat! Aguardando resposta...";giveawayInterval=setInterval(tictac,1000);}
-}
-function tictac(){countdownTime--;updateTimerUI();if(countdownTime<=0)timeOutWinner();}
-function updateTimerUI(){document.getElementById('timer-count').innerText=countdownTime+"s";}
-function confirmWinnerPresence(){
-    overlayDrawPhase="confirmed";
-    winnerResponded=true;
-    clearInterval(giveawayInterval);
-    giveawayInterval=null;
-    document.getElementById('winner-card').className='winner-card-ui confirmed';
-    document.getElementById('winner-status').innerText="✅ Vencedor confirmado no chat!";
-    document.getElementById('timer-box').style.borderColor='#00e676';
-    document.getElementById('winner-message-log').style.display='flex';
-    luckyWinnersLog[participants[currentWinnerLogin].name]=(luckyWinnersLog[participants[currentWinnerLogin].name]||0)+1;
-    let wName=participants[currentWinnerLogin].name;
-    let wPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
-    winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:wName,prize:wPrize,status:"Confirmado"});
-    sessionWinners.push(wName.toLowerCase());
-    saveHistory();
-    sendDiscordWebhook(`🎉 **${wName}** confirmou presença e ganhou **${wPrize}** na live!`);
-    if(activePrizeText!==""){
-        if(manualPrizes.includes(activePrizeText)){manualPrizes.splice(manualPrizes.indexOf(activePrizeText),1);}
-        else if(apiPrizes.includes(activePrizeText)){apiPrizes.splice(apiPrizes.indexOf(activePrizeText),1);}
-        savePrizes();
-        updatePrizeUI();
-    }
-}
-function timeOutWinner(){
-    overlayDrawPhase="timeout";
-    clearInterval(giveawayInterval);
-    giveawayInterval=null;
-    winnerTimedOut=true;
-    stopConfetti();
-    document.getElementById('winner-card').className='winner-card-ui timed-out';
-    document.getElementById('winner-status').innerText="❌ Tempo esgotado! Atrasado.";
-    document.getElementById('timer-box').style.borderColor='#e91e63';
-    document.getElementById('winner-message-log').style.display='flex';
-    updatePrizeUI();
-    if(currentWinnerLogin&&participants[currentWinnerLogin]){
-        const loserName=participants[currentWinnerLogin].name;
-        let timeoutTemplate=document.getElementById('cmd-timeout-msg').value||`@{user} VOCÊ... MAMOU!🔞`;
-        const loserMsg=timeoutTemplate.replace(/{user}/gi,loserName);
-        sendChatMsg(loserMsg);
-        let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
-        winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:loserName,prize:lPrize,status:"Mamou (Tempo Esgotado)"});
-        saveHistory();
-    }
-}
-function addWinnerChatMessage(user){const container=document.getElementById('winner-chat-messages');const div=document.createElement('div');div.className='winner-chat-msg';div.innerHTML=`<span class="winner-chat-author">${user.displayName}:</span> ${user.rawMessage}`;container.appendChild(div);container.scrollTop=container.scrollHeight;}
-function hideWinner(){overlayDrawPhase="idle";clearInterval(giveawayInterval);giveawayInterval=null;clearTimeout(spectacleTimeout);currentWinnerLogin=null;document.getElementById('winner-overlay').style.display='none';document.getElementById('winner-avatar').style.display='none';document.getElementById('winner-avatar').src='';stopConfetti();updatePrizeUI();}
-function clearGiveaway(){
-    hideWinner();
-    isRunning=false;
-    participants={};
-    sessionWinners=[];
-    activePrizeText="";
-    document.getElementById('btn-toggle').innerText="INICIAR ENTRADAS";
-    document.getElementById('btn-toggle').style.background="#9146ff";
-    updateUI();
-}
-</script>
-<script src="megaloot-supabase.js"></script>
-<script src="overlay-control.js"></script>
-</body>
-</html>
+û1§uºp9ÿÚRt=«o½˜âQc15åÖ} n¶ ÏÒL‚i~ñÀÿ½ž?îÝƒo~êSÖÔ+{		ðÒ]¸°M¼p¯Gúpñ	C>\†û†7¹fd›’Ü|Ñ„Ú®ÉÈ mwCwA²Y!Ãc®Äª¬ÁÜ Ž0³•Rº´ú¯Ú¥ùÜØ¶Æ!Œç+ób‹°¶
+W‰÷Ò'Ï;nQÿ¯µ·ÑÖÎˆtëýknw‚78”sßx€¼¶›¡Â5äLQ_²t¬bÏàÙqµÂå–d¸\=AœŠÉõÐˆÉ%³`É˜‘Q.¨˜üj±Ã%,Õ¤r¦ þ•“ó?}ö‰ONhOV|a}þòÂíÒ1Û3·çÃy2Øx¡ÌxòÆ&ñ&å
+ê±S·Æ]¶Çëvck
+êáÜSxUÌQÎæWñƒ)-.»Ù_#È”õÉ8Ê:B[¾Þ©¤C-„&¬þ¥)çd&è-Bí“©@U˜ÙE ÑÅv/<
+Ð-aŒvÈBó˜†1W› 4ZÝ¥ìúæÈÑ»Œ±(9Æ>F—ñQ'RV}6¹~$Ø…8ÑàìBóW”'WfËü¥ÙôÀÙ¸cÊe60ó$
+/là ›¡öíïäS«Ìk˜¦/‚/½´"3·¿éÂÀÁâzÌ:°É¤•\/iE×KVYy6×iKY¤ç}ïÂÃ	»x‚î-<lC2¶8Šª0žgIØÆ¦$>fÁ×>Ê¸gÜ¬uÆ¿hZ=ÈÖ¼#ÏèK.
+ã–Í ó¾0Í ¯52?tµªU/x-‰5®Ú©_üá{o…¯yÕˆÎ%â¬ÙXËãÈW‰·¦2i•„“D*?‘A8¬žÁ’ïäÁ¼¿ý,lQe;üƒöÏ‰¦m"rî¶ÉûW¿½¬_Ÿü·’
+~õ†lv3•K	Bwñ”ÁP;îÓ¯¢Þ_Bˆß--"è1csFû¨Xˆxl‹¡øc'þ¥¶x@­èÚ.|M_wZKS›h“˜«Úøö›¿ùŸ˜8¯îò€÷mÁ0Bh
+ýé_©ûæ‰ë:Aä’Ë:!%Î*f#q2¶5,Š‚­è­ÍzúP *›ST…¨–þgëÚ¤æ„º³Ï£	Q¦FçƒS¯â*gÊtÄS¶…Oï¦Ïˆ`j­C
+¡I•;»¸*ÍýN)¶
+Ú4ê‡ûMŠ0#|ÜSA-pµ{‚z•kÈ’|±Hm~¨%A¼"ƒ":„Ö¤`½”I{ü&ˆ¼Rß;¬=¯ïâ9kíiýàèåAÔSl	ÏS
+èÛÉý$ Ï ë¡
+â%C	§]åuE0áµ(¶íŸb8ÍkÁ±&ÜÝ=ºÊ¹ôdE6j ­ÅÍŽ±•è›~nÞ½áˆld°Ì5Ô³ù¬jyšú‘¼m¤î¨¾»ßdõÃçÍ£º¾¥‘LÈÕ¾wî&ìUsëöç Q³ÝÚnóå¨êùQ@Ã‰@èiÁî£'
+Îq¬zøV z FKƒ~Í]Ï\@Æÿ‹mƒAXf×<*d8IrîOTÕ8’T6ET•?$ìAmï³ÆÞs`<èðž˜Î8·ÉuèÍBõmÿâØÞa»ºýwÀd#Ï”ûGH„è×{m‰&
+Žü1ßàÛÄÞtIg¼¾Ûêzüd²!ç½øòHÏùC)å±%~^©¦FŠ|› $lÿ\2‰¯ úNü2[\Ø
+Î‰°.'¡•
+4)ËµDƒùf!^ ÆÆ½kbQ­Ð”^>õ›œ9ª-ŽÁ%s~lá^zhµÒÎèq²|:†×¬ÚËÖé"8‹„\Ä2Bêá)ÄÃÁe’éZÈµq÷J!8%b©E)£àÍR¦4UUü{sàÅ,V¥dxiDš^DX
+>)Á«Ì™êâ|ËÉ÷¿›U%5<CüŽôD< F÷ŽÄ5e¬#3„µ
+>N]ÓVÁœ{TüÈLW®ôç®Úp×ïCCåi}Ÿ&¤LB=›ÍÜþ®_ä÷ç1Ü“Ö'æ¬ÝÀ:ã¡P ¥©{„™ü[ÀK4Åºfx2ÅþV¿gÎõo®÷š ¾Ük{·¿ÙÛj,ºÞ•¾»à‚7¨¢–»fèHZïF¥ÅW|Â+î8·ñÁÊ
+¼˜ó?,½Z”i
+€rGÂ³Õ5†‚só¨~û3rqm²­Û?Ýn<o.\Åc‚!«c8Ü†dÅ…	_ÇÙ<£X¬ºÁŠxƒ þn{'î¸
+ìTX‹NÑŒÇª ÷ôÉÓ)ç9ìšœ&ý–ó0êÇL'À•­®­;°1ŽÆÃ>#·ªŠV®=vñšÖò2óŠá™2R¿4ÙF¶,kˆ¿k£\É¹7À­÷
+ð w¨ƒx9Ä¤òÁâsk-š[*ÝI5öŽêÏÉ™f×ófóùN¾¨×lfQ8b‡[ ý£·x‹µÊ”
+_ÅÓ 8íz$³ç¶‡A¸®Ô>;¹j·®F?úú³­ñWáéájÇo¹{õ‡W;_­mý¨µ?|õøâÇÏôÂ½üÑYãëúóFïëÇ;çû[…NódëäãµvóÙùùãÚŠwéµ30=?èzÀàÇCô¢ÇH0üö  “©Ð§
+÷ 2ó;xÕ ahébhZ5ƒØ_½pô¹(—ãz4¼[à^¸þØì¹JÎ9òSQÀÈeyÒ˜¬ƒ?v†þ89o8 “&ÓÖ%åuõ»þèŠKý°89¢€¬OÄç‘Âf©Ê;„óI€ŽÜ‘ÇðˆŒ±Y¹Ry/bÝ&”?˜Àßm¢¤#·ÕèHª=BpuHÇFÁ°Öíæ²E•Þ#ëO‚aÝmŸåˆÃŒŠÄg±Ç@¯^pîå²Üø˜uœŠ	×
+#Ç×êù¢Ê•™8‰F=Ä¨W¤Ý®(ŽC`€³x"‚':Î‚‹Ýð4çwòYgg~Xƒ¡¤ Î3Øñ«©ð;K¯[$ßÏ#€å	œúBýÛs{0n²¶Éb<XÙ|¼Ë(v‡2².C²æ½žFGëGW¬ŸÔ~2ÕP“Ôô"hY½œèBà)XfB\¤ƒ ye •ïG¾`³¹%ŽýÍ
+[",+•c˜U‰v`}eöq±Ârã)K˜Çsß30Îèš[ù@!t`ÔEåûæ~ˆUD†\?¾
+½6†Ø!2øH%ÎPvÝÑYqˆ:	tº8
+¡ûýÓÜúÇNVð_ky¶úÈa)]Q-ˆ†‰ˆæ	Üá±Â„÷(kLÐÌ«ÚNcu8ê+ôfZ,°'H¦Jú8EÄvâ3“‰#n+	>âz:þð:Úc&›nÛ
+ªp™þ­~x
+ã ûæËƒ(€b)_>Y¦\„OŽÉ2R ¹Ñfr\1’w	ÔVpâaTdÀÕ1
+â‰®*$k¿A`’³JL,Yä÷ 8·¦­úmó3Å®å	{õ´b–r‡xsHÑR9tî}ì˜åŒ3VªÜÔRØee>X2ÑOtr³à$îO)ø“²´
+‚íY÷j«ë¹&•§b¥‚}ÚhU³Ä:-¬ð[Zâl”ðe¶Iü¢;ÎÅ¿êzÕ”êÂÐ’XB€W˜EHtUÞ7µìšÉ¡•Ì28MÓè§G·Ø9H(Ù¬cNb-3¤¸ÙÖDýšÀ~K
+…žØ"iìÕŽ¯šYäô±Ok{íflý$o'_$>G·¿e>)Ñ.º5ÁøÃÄØÑ†0r/>ol¿mìçœ
+Ì&á²/!¿³ƒw
+¼ ×wú2öÌÊþÖ‚ÈÐ¥KÀf«ypP?ªÍKÚÂý>5… ó ãÜªÏ/
+£úIñ@òˆKÍ‘b™%$´¾LïÀ[0'É;š•!0¾©Iµ+&1™yÚ‘™¢´r÷yTº¾HÄà{]¢”#Kër†¤ á°eœ•(åÜ=¶}…kêÆÍ.²ï
+ˆsìüÿ»v3ó½%¢ÍZóÚ¸ìE
+ùzWÄyUÉ—`œø´„åž€ÆÁAóía}÷-á3?€Â¸—2‘²Ü "°pLÑëîÄ
+´¦îÎRA¦³4`äS\€ /ùêëŸWœ¶üÉsªÖ$`€ÚTºé€(
+æ|`úÞÅ}Ø‡4E}ÂGÄ*™M	(:—RÛ.¬ìp&¯âaîÁ¬dOÞ¯â çVRjD¨ä‚œˆPIx˜®Ò…ÿ-X—0ølÏ0¢ÁælãU†cÊÀ›Äò7:âŽ*9nKÎHšgk¥Ri>v¹pá^ãvFqm•ÜxY)‚ý¾øcqqö(Ãvy¦±Ç…­Òëh•ÞÛ:hî5~"¬Ðõ]¶÷òü[gÛõ§Í—{[u–ÃL^»·?=jl5[Ñìº)w9¯[CP—Ú˜5tØèÐË*™†é¶é®¼-ÿ´Åuþ:“©L4aÜCCl‰†˜ÑÅ[¡8Á-¤[‰)Àíïä6Ð SÃ)¼ZK%%¡T¦ãÆËæ5ø‘È©µ¹¼¬•(v½þéèŒm°GšÎ—nY°Ò{Í°.Ä–Ð½ ëšýd:)0>ñ[CzÚPi¡¦­‘š9·f‚Å2‹À<÷ s :Xf/èÌ„‰eæ„éü·°	M)’Î
+±Ýë¼.®S—Tä.{ Èo¹ËØ\à¹{Ùm ê[rÁœ_ù«. [xxÎ^w] twœšÊ,s.’G¾–
+Ž)úÎ3žTî°çž0‘Câ­ wä,àTfN˜Üñ-zNk9,b^'î±¨©Þ‰¾#Gr¹,ù¹¼NÈó¦, i&ïÄ™†1Ô~Ëk£7ÃÉ|¥Ýü-`ñÖŸÊÙ¬Xó’’· ÷ÑÐ­9êyºÍÚÌ½‘ut¹5%Që­¬5­XjãtÔ´ˆK_\òI™&÷8êÛYLJ=†ÓWfâ¡oìsá’°ÅOCÅ€?':´ÓÏ‹&ÌD„ÊÎM”ÁB,@ŽÁÜX417šì1
+*;
+)£Ì…„%­LÃAÁ‚`sÈ¿	Òþ4lDÁH±œŸdQÿ}Šû‰"ÿ{û#Ñÿ»V-¦2CMj!Æå×©üP‡?{¾ÅDÝEq2D˜9-Í‡’çÆÌ—gaµ0Fºh=7R	Bö,¼ŒvæCËÛóâ¤Kç³áeçÇbÁÙ“ççÁg¡y	õ‹Ìp]
+˜gvóò‹at‡…SæÅm!’qMb^¼t½c:¼ìl,týd.DR5•i™­Í¥YK¹™R_ÓI=Æ<=¶ÒU¤ãtéµ¸÷áµw2É¼96·îaËÀZ7éôcÎÝïe¿Å/£ßÚ†	¾ºaù'‘I’Ÿ‰Ì+'ÇNZ7ð€‚‰°Å€Ô!à¤—šäÙjdäŸÝ1[ß›kò¤h~Ó†>ÖÎì9­+Š
+ 5·|gÀŸŽ­$:É~Æ³5Ò9Ä©-sZobè%i¤<8 w€‹n'ä–l :y©zBÛ×þû–!¾óá]©ž˜hq><x`-ìwvÞyW9ß\§ïŠâ6üÜQÏ€Ò77Ì|ýîzí÷ÛÝqÇ
+sY
+sÆßó ´	x2û­Œáÿb¦pì3±ÖëwoÒ†è]ü€JÑvà^¡© ªþà°¹Wä~«þÉU®%*ñ£É¤ÓT> ÓNScC;9Îkx÷¼ÑYÐ)³,ÆkÈæÕ{ï‚³ìÜR8ÂÍŠºƒ¦‚ÇµrY¸¸¸(`ö
+d^¼ýNØ‚„q8 R o.½ÅcÓj–=`	˜
+28œ:°!ñó;`¦Gž©â¥€åjÚöZ4eÆ3:Ø4W'ŸŽñò¯L·1Ç<¶,z’F C+¸ÃªŸnEày•`åêb„ææ@×f‰óB9µˆ¹GÑ :Œ"òÈBÿRQp¢ÆcçºÚ~£¯dóÀZFÜŸ¶Ù¡ùuW¾3=ef	h4ˆºï• L®RdH„#2®¥—LpÏW=ŽcJeîœ€»¡väíqž˜0eÖÐ&Á½ÈŸBú¿øOF¼h-XŒá`Á˜Jøùˆ~G‚¯ÇIlz^#àžú’Äqÿ‘–d†°TCO¯¢M±
+½c~ŸµŒÛ&ÉÚû.O\Zw¶Ý®Í-3ÁZsoÜ•¾#·ð.Ø¶;¾€CNoë0ìY6u'§Ro{XÌò b9
+‚.}•ý‘ö‹':~¦)\÷ŠÖ¶_–»¥ø´Jöv
+[fÊª”þ —yå“
+0ÛÞíßcÒ¥å(v—X“œù†QÚíýígX.ŠØ	Cì³–ë_º”•/Ð²öˆÜ_£gè,ù=Lº†ñÁ]Ø^ˆÁSîŒ…šÙE‹×o,‡ cB·Œ;í0A¾¼9 ‰|ƒolMøÉ¾DÉk]ê¯ÊˆÆ½½nX!ï+‡‚%0ò”ãõï®ŠŒYÜD$})LU¨èØ÷\Ì€B&|^>ÏôWòººù–ÇDÄ)Ê›P7Èøemµ]ÑÏ¤ë¶ò2Ÿµ©Ê3¥ÅÜ]¸½O¬E×úpØ&7¢skßþ# 
+ ¼ßw»R~„ä1gêØeç0È	]œÎ½.¿PiÌ«*Î*~ë+•ðÔ!½†’°|Š- ªº2ì ˆ	±ä4×|Hi^ÁTÓµI5N0@ „¨*ÖUŽª¼Ìá\§Öç	Ú‚Ó
+	ëîdb_‘Ô"»õó-çzÚmD=.„v%ñ²ºq9õŠä<0Í{—óƒŒ™pôØÙ ýôË—­Ô/0 }$½ˆ¥çè¤µ‹,²˜¥wðÒö½ðzx¿“Éyã¥Î¼í†Š çÅOL´*ò6¤¦0è_››ž°Oð!ÿµ^¤ÞïlnºQ¤*‹† .x¹RÞuŒ˜/¿v ô	`…] Fz( {È¹¤ÿT>zÄ¢Ä
+a~ÑBÏáÎËŸäR¿n[­®–ÑT3q¡%›Gl„Ž_O!Š=Ëùm, ”ßÁ±B[i£rvXÈë”OY
+s-Øä‚¨‹UL)ÍÍîs¦»ú©Ï¶»Ÿí
+Øð;L¨v:cçš¤¥t~•bR’V0¬=šUÛ°üˆš°²)@‰8ý+góY¾þ–Ú77K#1Ý¹š b(¡9¬êÁÇòò¾;ð‹<“Cqt¾BM®`l¡pSªßcÐ­¯¥æ|åé>
+N¶ÜÎgaË9ƒÝäkÒ›³åã§ ÂVÿáõhr<™ð.vDËCé_Œ¾EtÎ]^æÅØ(IÌùë×¥7E¿S™DB¬Þ±Iì‚3öŒïG<çT;‚6Õï•U¡F¨‚Ú~ñËÑyÿ¢Ø÷F4…ÑQøm¨â……ñùÊêº÷èÄ}ü¾­­}Ò^-†Á‰ßõÞú=Ì
+:Ë%ü¯8èŸfßÃ4´¼Ïl@ƒu1xÇ‡ã^ÓÂè)¯?‰M“²rÎÃÓžqÆÂNôî‡c¶äã m£`ŒBµf”¸¨çÖ¢’ùµG¤gZ3;^¤&”¢E¼ô	\YÒªòïtÆ_ë8“ÝˆvByB—,pÖÏp~VkÃ¡{U<=½¯ŽÚ{W‘Zz
+%
+«zKØAƒ;¼k$QaÍ^X5ª÷ÜV=žb{;“c§øeà÷sÙeèÛWÖ‡×ÿ
+Ë
+6V¾¬ êÆµ6{_ã+Òã
+&a¡‘‘¼wZï¦Nc±À™  4#É+:ôo“¦´1Aù@[Ðš¬à]â½4ž©5Ç»ÜÂE§ì÷ÕRÅ’dº'Ë=ÙVªIæúd+½s¦•jšù{Bs¶Õ¥%þ´´r¯cæî7ùkŒñU¦-+°:ü~FlnDCŠýæ	2æ2.¨÷n‘F½<Ø_›­/AŠ„ß¹V?KcEõ“qcB»·œ0o?¼Ö¬6£ qØa$`íº>”GY é¤8º(
+ùe	Ü=Òb=ñ—g§*â… ‚÷‰Îv†Dgðý€f4®ð˜Vè3k§UÕìbðE¶¸³S±¬b×ic•bãÖ±ÉÄ4R[ï “I€;a‚d56¸ý-jËÂ83ô„áï‰Ã(üÌ PÅþ!Å´Ùñ&èJŽ°.Æûgîð«±N–œµp& r§¢‘4wb…a‘RT#£LòÔD‚Åý­ç9¦:Îµ¥ÔkÔçôí4n ˜X7a"ÔR
+H62yk™˜` 2s°ÄFKº¦‘&¡JI%4C,Â	*èI5O¦©Ø¯õ,
+oQ²Ó5d[•ÒÙZØv Ü,òbÔëæÎQ")F,ÜóÍMØIÕöºòzùÉF&ûfå4ß®nä®a+*g—ÝÞ ;î|îŽðqOé1ƒ_ü‘ÉfàÇ÷Ö?­d'¯ÛoLERŒžŒ!çU‰ÂÍ
+¢0
+v‚
+Ðó(ó³Ø»Ù¹qÖHY7²Î¦–’£¬—zÜÝbSæ¸(«”:"4#¹ˆ—K¥`áÔ£Éº’û¢s½6q¾0NœüæáGâeYüÍm–å£³¹¢z2ØT¬óÁàõú›<ü»ö¦°ŠWé×Cú÷ü›¼þøÍÍMÉqÊB'Ñ®£c-ð>"Siy8„Ètj.¾ª¦ûˆ›i|€²\*K1AAJº3^N Hë¡ô5³aP1Ïb#¡PŠ§°z­&K¹”Óžø)—&Ëˆ/äEuƒCx­OÜ
+qóÓyÛ~ºá+Ê1…tÎ+Î…«‰'3àD³Ý„ÅÑ+ªÏ³ÐK!ˆø8„XV‰ø7Aû~pQD!”X}G¡8w‘÷d4Åbó£r"±órlÑ^Î¬²"ç¦8b¸…µ¼¼$–1¨d [>È²ìƒ‹"¹<X³6b_9Ž/õ 8sÇ`48Q——¡yø‘P$F,	QÔ•‹bG"¿*£å•ÊÊïPÆþJA
+Ê q­—’ÉÀ—TyRÝ£x´¬óÑ'?,áïÐm/—»Ì_áùJƒfyN§ìæeÑ/\ý2ü¯ ÏœaH•Ù¹>å ®/ŽvwªÙ¤t>^o0ºÊð„t­áþO„…Ê,ÒÚ…dû4«45¼KÇ”O)ŠØZ…žs#¡\›Ù­æÞ³ÆÁ.FÌ(‹ÏbžnfêûµÃCú”53*ÈFÙñÊÑõTW($û‡× kb%›ã‡õ7"5ùètÖVkLA`N›$ÃÀ½äôs&	‰‘xèrî •ƒÃz-œ9©_VŒf=
+îYËíœzˆ7Ñur«Ðá	Ñ)mvRS|YÉŽ¬bnO¤6›5¤ 3Í®W1–¹Ì·ßüæÿd0Jl«~pTÿIm“5@Vfç®ÏÜ{ê)¤ƒy´iž¢p„”§ÄÃ>ï÷½n‘Õ1 ¼<!Ä33$Ãœ?ñ|¼mï$	¤æÑfLÌŠ™
+yb`nÍÅ<œã¼ûïÌFHÈœ¥Ã›‡+²¶ÀÿÚgR†À·q¹“`5çÛÜ
+¸îßI)0¦–ãð–—ýŽƒ:ËÜöÑ¹p}Ù65ˆo)|_¼‰É2øW¿ƒ¶áææïjT1¬Öô	a‚ñ®ñ±q¯¾œÞ}6é—þï5©VþŸU+4«tÜî6¹,Y2r¶Tó,zÅ
+~H¬­3w„¡*ŽWz£œW@g Z…ä–"f®5Ç\ì`¶rhjzH ã §}V™èï½`‰çJÖ%)Nïžw Â¬vÂìL;aöî†AÛÍz)Bí…#Ü&É½‡bÏæ²{ÈsÑ=e„áíïÎ½.¬vhÏÇÜñC†a[0l°v={1kµ$;‚+:«5,ƒÌè5’ç8q$ ý€ÝyÓüYô;\³¼ZÒÇæfòØÅˆ²å¢§D0Ž:O
+ÎŽÙdà$XÀ$Œ™VŒ#ñùøžJvÏ‹$ö	ù¡AnÁ…{ì]fWÞòŸ5Ügq„³š³,þG³–ÍçZä\(#+ÈóLÛèïŒ¹+³'KkÑqc7'ñ‰ëwÇCÏ2z
+7Ûi,xLnª¨VÜÜóuÎ^íC‡B¡A%¤Ô~€
+ ]¯èñùñÌíbd£€‡t‹¥g@§MS¨-;lòžS™ÅÑgwÜ¹qòP£(í’6ð­¤àÐ;4 â6½×)ä¡Stæí‡ø†¢*ü’_Ÿ mósö-‹½¼¹ÉdôÝæÛo~õ_¿?Zç÷ðê‹×Û¯jûrn³ÜÜôÚ7=ïÔ…
+ÞÁ7ˆæ
+ï§óÅ(ýáŠOÄ~¨É¥À“·‚^
+$F}U ötSVyø­èôÆ‚Q» å>Á]åø)1N.z-I%¹Šo­­ýX4“VËíž’MKVF¯\»ˆÆãŽËNº´±Ê’ŸÆ
+^ c.
+N€Ó…rYô“GÉEµq`˜ 5Ú­>Žƒ’=wt¦·úøa¬èp<¡åæÆ ApÉø{Yñã82½v€a»Ìš½¼Eõ%Ôã³%*Šr%"µ>ºöE¢kuUiŠkYòE%^³5ê§×¤\+P›_¤"1¯3IÛÿ°
+Ø91gŒ<, †Îó‡ÁR&~Ðˆa­T@50uZû^I^ÛFx/J÷‡¬±×ØÂˆg«pøã½­ãÎ4xq:„§SE—êO×ëŸ‰/Ã—“““L%=ÂºK–Ï?RX|rµ³°CGp…Ã ¿ ñOAŽû{Ç‘[]ƒÿƒ/ˆAmàã0ø.F&ý·ˆ„JùGäð=Wwù­9»·œuƒj>ªID9ÈSÒZd¨²äò³G]W…æáœéçËFt¦µëõPívå”£f¤²¸m‚Úú`|‰®Å!óa/Q¶ùÚÒ–5Þþã¥ßƒ½Ëow:¡ŠiA&ÙZÀ_âÄÇc^¹·(åSm6dHC1_h7˜HxäöU4“ûÁ…Zu'è¢
+«²Æ6³Îæ1DüÃdù-ˆ>
+Òä¸¬}Û´¾UdøÃªrÂW×dóN¥É±PH
+°¦@0B'Ë+D×óÜn—{Û†E`Ô+À<6‘%z¨ËdœdÊˆ¿·ÑC[¥üZiªC‡º¢ö%án˜)ä$HÜÃé/ÅUt^Ÿ+zÀÅåeò1pq{
+——ã5Å'€x•‡?&@±‘(¦aBEAÐ=’Ÿ}â§¬¶ Ó BôZØeÝ|ËQ6O”jÕœ+lˆþÅz{âO
+OòTFY…# O«¹– Ò@Z–ÒJ‚&•D	§fzš\è)?'&0 mó¢rÓå¿
+ü« Fââ€ÑÎ(K…O/ôEøEÏ)ÓN¢Tý§TÿéüõÑ&©GË€‚$ñ>‰—{¸Ú@ÉiE%õÇ½ZUÝ9á=ÇŠ_t¬8 ²”¢¢OÍ¢OãE•¯bïiaW„Ï (!ŠÃWµÉEVtZÕ
+ú#ç=‹ùDÏÚœ¢ßrJäÐÍdF¤ZÍrU+»I/Ê™ýáíßCA¶íÁøõÏ¼¶ß	2‘ÑÒÌt1®¿õ9¾K9|­ÝÎæe
+Ñ#'^JÙ
+ªªèëÁ›jNÿ…ç©V±"€:V:(Uˆ@é¿tPn§ãu¤¶ÄOíé§ô- o‰ª,œ©ü““ª°ÃÔr<ÂäiDÍ ãPžj´¢`h­èp
+±N¤µ"úµ#¼ÛÆÞ]DéåN–“TC¿/nÌ½¬*é6ØŽwÙ<É
+…—÷%}aDYU‡`eÂ§<Õhˆ6váŽÆ;¯Ü7¯5u2üj)gqP\{íøAºèž\H
+×A°44†ŠâŽ^ö’ñw¤ËZwp'“™KŸiYÇÎ¹ž*M"Ç5ô 2TJHS`ô¢œÉc)˜¸õw¯®m¥|b9)Wðqº—îÄµá·ò¹r Úu›‚íþ³«ö	üUK‡±­bÀkN4Ü6äš™{èoÑãimp¦“0rvƒ¼`|”L &EÖô¨¨%mï%šÎ4µ!¢—
+BÑl¾ú‚"6”$Îw¥R}‡•HEÕ„¢k&é
+Ö…Zp¼êSüzš}E*¬NÎ¤HsÕjT³Ùé*Í¿Ð= Ü~§ËqøÌ»Ú ±:Ìqû¹‹âÞZïS¼—ˆ‚¦ó²[þ˜*×Šðé‰Ay\o¼”L‹#›åš³°ú5ðm•¾@¹O-«hZ¤l@~Ê‹’¦Tv„„[n
+¾EI¾?$-ÈrÔ‹él“ÔåÌøÃa»®™)Å«FÈ/³
+¾¨}iŠËŒœ0¥Š=ŠÛX]EqGg~(L ÁÀmƒÌ[Í–Š³•¨e,R±[UÂ@]–%'Š“4¢•Dä,¨›Ó –§}Ly
+
+Ý~xâ
+‹ÞÉ‰×Õ@ÿ¼€-5‹2k—ˆ¨üoA×ä³Q¯›ÍSsÊ»ÃtTmž{Cµ"Ì,²Îµý†Œ?fÃa0¨‚3Ã'±MZqj-K€1Ì¦ »ãaT‹xEéº™^7¨N†£`°/ÜS:äÀ^Z¯°›¨zÊ™‹2”ã“`Ú¸VTQ9ñT½ÄY&‹ÛÓ,°© ”ÕS*ß 7›ØLMâOISúëÒ›rŒÕ¤—¥û	ÂÉ¼0ÖÉ|)¯°•2¡Õéµ¦s¤yfd'©¬f+‘eÚM^Ú·
+X7/R¥®|åñ5LCøwÊì5&°Õ±»«”äé[)G ³bó-ž—×ÉxÇÚâ¦špS‘UOøYQÔ†ÈdÒñÏÓn?dá4ÿF9R«YRô	çÔ)Ænãú½ÒWSš£·ñ‹óX•®dóÖ&áL©A”Î›L0½|0ˆÊƒip=%ò§›V£‹M¯A,nz³…/
+ì±áv›¼@”[YÚÙ òKYè<á•
+hZvy]FB¯Ë‰“ÙX&KmE%”?Öæ ;Ð©ßíä u{ÊŸt¯øég°EU³þÄ†#ú”²c«/´¨JÒ„½‰
+ëYe°…M+	«ã)^€xÎ× €fù
+úž^œ^ì/Ç3¶H H©§£~•¾Ç·‰Ì» j9êIò L€x?Aè#«ÙÿÒëd]ïdTÅ^ÑÓƒìàÒü[ ÿñ¯~gtÆ¿Óc¼Ä×|ËÊ~Šÿ™Ÿzî/áeKV‹(C„Agf¥â'!k[~»Ðò¾öaàKÅµGùÕ|©ÿ:fåVpyˆ>ˆ –•ØzipÉ†§-7·öèQ~­´–X‚zÇj‘÷mv
+Jƒ6ïwØ÷NNÚîÚ'f1·ï÷\Ž¿—®¦z?ó—ªáñ%=­ÉŠÏ†°Öx¬Å)ŸÄä¡YþãªˆºÁ²çŸžVÖ
+Ÿ”â£xJe;÷¨ô ¬€jPVÖ&ƒKç86¬¢„1').öªÙmª¹Õâ#‹bÑÚÈÒ2Eg 3–$/­&ä$ÿÉ£®gµSQúÒ-·î†S<ÕD¹B›
+*µ´=º¬š0Š´QõQÐÍe×:ÒÅR”ÙÞ°ÊB~Pôot¸N"N„¡hØÀûŠä=OOÐ‹è5ÝnÌÒo~SØ8ó3´^[ˆòE£ëçø¦b;£±N~ ¢xß
+xÛÙ¼‰ƒ£_ŸÂ]PC.–N6‘d¦yÝð²e¬(7\_–$×% 5½ï~!ñmQ¶ª¯•¬•ò»éµÂj¾c7µþ`-?ò»°ø`§µ¾Ñ¯ýFô½Ño—sf™RqÕ)”Š¥G®,%Ì&%"lìò>EF—ü¶4íÀ£ò‰4K¤FÂi‚®ÅAñêAuPì\UÅË UêLè÷sƒ¢ê¥ó,ò Pæ²¢½ÅZ:!*ˆgèò-‰Stñ ÎC3üõ0ñwxz‚Ê_JÑBÊt·}eM{ââ€é¡»·8‚–6iñ ˜v·ZxTÂÎVgOD²i'±ƒdmii®ª©Ûo{]«zÒLIl3£{M
+="°
+®¡§kÎðbžaäêZ}U³ZX8JÛŒƒÊCX”1<‡‰ùÊÃ¹ª(ùÈ?92Ëp( ~æ]EÇ)NÊšþ>ˆ©£ðµVñcø/¥–+b2æ¦åá;»B5ŠË,ÿã*©šI^«¦…T½×I[½à{2-,”·ìæf•ÃKíF5ê.¾*+BG>žƒ2ÿ½öÃÝ S&ZùÊÄ_Ž[öËsð”d/ûƒ¤+ÅAÒ¼ºá>èOÇ''v
+¼iDGjå’ùÒëlq1‰à¼'/§ŠFMMaÄÈÙ#i·m¶UBøªÍN¹¤Ì¸àÍ!b–•ðíùºq¿[k,~·›†¯~9ð‡^G$¨×C7‰WÚ
+puûö·|z+Yûà"jbêEué€"½æAÄ¯Ïè' RBÁáÃ3X­AºÛ¤~ÒÌ‡•K„KUâ´ËËiž@ƒÎ5/ÂìB•¶~¢»uEòÙíúNý¨ŽDÇ&¬uj£>‰9>uÕÑ
+PiŽûÜ9ê*lLçù jë*Ç¤¬[ Taþo–"S¶úÂ•lÍ×¶B=è'ñzžå86¼œþÊE	AãQ³|\< w­=üèãþ?“;ÑÆ›æFçÑe¨‘cZæ'•Ø(ØCˆòÜ~Ê%ã$ú#gXˆ¾X!i™Ú§NÑÔàNÍñ©IÝž·ojzÎjÛþzÀfÄ%ø¡?åâ9ö]Ü\®´O¯ ¯½Ë¹m»	-!D9Õð9nÑ´¦Ø~Á\^^¢6Ê3‘¿v´Zù}µ(Fn5Æ”OÊ¶ð8àw°¹?¾çklíqv0*<=Èª%@•3…B!£ŽðÆá7¾ñ~3@ÿÎ}okt=!×èŸø}8¼Ä`œâyç¾7D@}«ùuÏÝa?òLù•M>Ië/¡C¢Ôì.¡gË®ðÆ•
+0 êÛ62ÚÛžßÍñâ+9\Ûb™¯=Ažèº»
++"oÅî)Aí¹— GóGÐ€ n^6"à9ÈH¸×”DhcÝ¹Ö({,(ûáµ,0é8Çü‚éÕJ²š9`œÐ™Š“ê)1¸ÑÈp:
+I‚ËiÐI‚Û	Žcô(ÁŽ”
+Ëç³¦ÕDŸ5xÕØ x•Ï‹Ícýª2®XY£Ð:5ojOün—©¶—ªÒjÊ0PÉÈ›Ðôïqù>í|x­H¹™ƒ-g³«á¯-RMbxpÝð¦q`ýŒ‘ÂwYþE·Î[¨ã÷¿º%ú%p±1ËÕ³â‚œÜ'»vXæö¼Ê©;(2¸DŒÉà/ª Ç*Ý}ØI*hòÿå/¥Y_?Àæù¡ ðeÝIŸ À„ycÆÿh«Ê
+HY'ÃFþ: "Cöª±?àMEón’J…/¡2
+ÂÇ¹Ø¶½BË]x^?‰FÜô\hÐXÏ –F‘YþC}}L&ÑòJ¿­ zÞÈp7jN@©
+a¢~)~¼Õ„zÌ÷3ÃºsÃŒ°ê‡¨×GôŽ"c&*ÜwVíXEÐ«š}<ëö†£«¨vEWmð*›ûJþŸ¸Cu|Ì1 bÂö:Òp‘¤þD!cV¢ì&1ÈÀ*®
+¥Ä¬)?vç’• ­
+³!…r²&¤·7U#Jî€Å1ÅrN50M–<íE1©kFòª<ä\ª
+}o›TZ4!bK·Qû¶BÒÃ¤<SÆ
+.z›ÇêfXp˜Å‹;”%6=æõ»|ûSÝˆÅiãº6?½"Öi-ê¶ˆ£ž$¤]£“N
+¤KcflæçóãÃa²¾wÈ÷6~ÿ¿ø—úEÄâfÒyhØ·ßüù/
+hÚîdCÜ€Mî³ø˜4$ŠRž^F„”#
+;bÇ
+Íˆ2,I±•ÝáÊ­ ü\sY”­åŠ®ÍT”MŠ³!Ú»¹Y’´ÜSÜÄÚÂJ=
+ð: 4ƒ…{x PcÄ4\Ê:Žì:üx ž±|œ­./Çß¡’˜´¦¨¯ß×ñzo¤’l” @_Oeñ7/¯q‹¿yô |)bv¥m I<s6'‰ðT5:}¥Ò7ûf'háŒo]`üË?cµíÆV£¹W;`[ÍÝÚÞ”
+Œ­GëŸà5Ê”Û•i›‘&0Æ> +º&aÐàë›;‘Uñ»;QWqŽ¤ñ‡
+ï‡öß~ó«ÿÆk;¯ðfëÎQý vû³Û?«ÞãþhŠ5Å vúR"j'ÎìÔ‘%+€öAJN§Ý åv)< 'eX-é"•y&Yª²"îÏ/TY™4‘ÊÄ4MšŠ‡úWÂT¬«¶e#î
+o ó¦×¿Î!?ÙÍÎŸô LÄÒ—¦ä$cNÜItò;y7]v2fgáNÒ…µ¨Ñæ*NÑ—¯wýþxä…Ç½…*#S–Â@Ý]¨Jö>„*7&TiQ#-:r-xÝ?ñDíˆ7‘bD?LRÓyE¬#‡p#’x›Ùo¿ùæ¯ý`† èß1`Jã^v’çö7]ÐÁRR‹¸Ãm¢P©Ñ»ÈÆ‡þ>–¯œÝDÜ¬¥ßU®T±Vf
+–Æòs¦hLý!l£bBÏ851W’¨cŸhƒ»,Y­Ðóû<sàç„&Dé“NŠU[5;M'=¢“ã«cw®ë(Õ_‹êÛ8wUáz,dž¬ÞÜh5ž¬¦IáRîÎ«î,×C Aè€d®ëÝþ½-B!¡'îº|¹Uƒ©¿N,ú¦¢–®ì|%Æ	«ÖïŠ±Üu¢UìE]5V¦H	sË^z·fI¾µ½ÛßìÁsªìÅ&§Ê^êš“ßÑNb¢+îë;“Ô~ Ô¿S†-ÌVB,R–­ßy˜eí9oÒ±lþÌK&GÑÆ&ü-îÜ‰LÕc¦2Žùk&±‰ùkÇÙ‚º[<#sWl{öSVŽ?MY™J=µPîJÄØZ¼Me{wòÚk<eQû
+¨SÓ—ô¿†B›BŠÏ„¤µ•6×È	*Ôƒ›ŒûÚi%QiîMRË·CyÖ(J%Á ©SlÐÝÑu®}Â8¸îU<žJËÃvÔâˆ¾ ”N¶ºèC8À´¡í®ÌŽëŽÛï®DnE@KeÂ‘®{µ=t/öÏÜÐ¶Óõ2Ìõ¸šå‡º"y(lcAgÜÅ,›—€/fÝìx"± ¦ÚÆü£bñ¡¨t¼¿ï	S?j,Ü—˜"ê,_Ã+£+·þ6*Zù]JubŸßÜª‡ŽWjd" êˆIT2þWÑGJ+­¿¦‚V¼¨¨õŽòâh£—Z!ò³
+ÑK*dZTÒþ¢èh ¡kP™'ºÇ6w?;¤C§\/<å‘Uˆ z¿­_¶Jp¢ï‹Ó,Œc%+hœ jïõ•NÿÆ¾iL‚ñî{Þ§«ÞÇëÙÍ,¿p±¾ž_/å?ý4_*®9 †ÐÛR~
+^®®~Âß®_€%LPîŸ’ãQìÖÒí«ïuÜ)‰D§EO¦e†1s)¸éT0T,1þ.Á¬0±ÄÑmÌÐŽ©)0$J˜âÕ¨ZÜå"t.ð
+k@/Œ‘ÏlH21»”JøÜïÃb±˜Ég¾ úQ§õ	´„\”¶Ï½Öa »¨·!«ò‡í‚>sGQpÒòÃ‡èWïƒ>¦—¬ÒÕ
+å¢KªÄJŒf-‰p0æe.»UÛg õ²ruäž†,úižèE­a\ÿ¬s-!cÔx>\eq9ŠaøLUf¯±õ^]ãt¥Èš$jš@·^ì6›ûF=V—Îû'numýá#¬¯¾ÿ ÙØcß3€£¡´	Ûë7ÅÄ(áaÈ
+«÷ÏAy­E©Ž—2e»X®„wC¶ãù0‡\g	‡Sl¼S„MÜñy D Çñ¢¤Ü”m‹>ÌRIÉÑ
+îèºQv…°J/y1‘Gê‹á0ù•»Ã¸•TœGÔÄÇÈ!
+Þà
+ã¤c¿±÷Ó7©ù±ßÜ{“£§ÅÉ×Q	ÆD‰"ÂÑf€ÑNÏ Aˆ–‚ÃbçÚ\)ß~óëÿ›QÜÖ%Â˜5úç·¿íÂz¡ÅÂ9-µÖ¢ÆEè5ÔT;ÜåZP‘pâ÷è£sÍ/\ê6bù	ãMp‚SUíb×Â‰œÀµ5êP_Ž‰<ŸkÅc½ó
+N-î|Kß#iY)Ï?‡#MÀ[Z"Ëö¯vŸ³¬_§ŠQ˜	=ù'
+Ç@Áï:ºÆ„ú>Ž¹ &úzÄ›RÞ…ôKúŽ[Ü„œ[ÍËzNE”¾¢å‚‚OrØ^¿ó®ò°¼©ÂKY¶šåÕñã›*|¥Ëp">vÈoÇq¦õï
+P`WZ¢z~cÓÄ\ûü`MrÞ²8î’ŽÕì¸ÿ´ëþÛìãŒ 
+–ÛE›=a&B›±rîµ[øºVøI©ðéÛ7œ¥'UØQIB«êÝëÕ7Ö.¦Üàˆ0Yá¨Ã·â7ˆ¤Ï6¨8#{ð€o“ËË°¸0ŸÚ
+T­ª¯ØÜ¯ï	·é¸[1_"¶×¸ßAPÓxŸªÂÒäDÛ',@o‡[:»aU·›…è'úr14rZ–÷é¾‚´%´¡<!…a2|.ô•	¸U%jßÜ¤.o®®„šµs.Wµ„ÑKvËË147âºõòr|à6L­™ç7µ`žL !óBdT—î)¡µUA’¢@ñämQÎ Þç;Ã%Ð9T±æé’‹˜Ù¸dÛC¿å
+³o¨«YŒàGŸ(åK˜}Ô4~ký…ko¸‚	ç$ìWþ :?„s€µonR}Ãà§QàùêÜðµhõ+ÙÖnÐ0@5zn4"<Ð/(Ë‡¼˜„è,YNb77ª(¿zDÿæùå"ú7ÏoÑ¿y£Õ²ñK#ÖkrŸ|ôA+cl€ú,äÉAæâMËËwÐ8„`ü4 ‹ÉFR²Ø#iZ˜°²°>%Å}`k2Ó£bôËi½Ð· ä…æÈC" >ó»ît'Pb1xG—SÎb$ÈÒA¿Øw‚iÙEO±Ôü¨I¸3Ñ“ ÓQ|q5˜æ0Î0ÓÃB¨Á°Í…”K@LLå‘´@HÖ=¥m¬Bá4>†ª¬,¥1F‰½ÔuÐ UW¿š (è×Eqïž
+ª(ý¡6(¨¸yu” #t¯’¼w4²ï*6.÷—^9õó í>@òh¼QÏ¼ðÅ‡_|A<ý‹/œ´âæÍTmnv~—¹zK[ªu³u¢h/ÇµZ•3eyY	'Óîã"ê’Ç¿I &W„ª<‰7Üêÿ‰åÄå«´Á[ðlbÿþ7¿þ—úûþ‡×'h_ˆ¦<2CÒdB £|zt%ºð•xPjmIfE_w¸gÇ€R6xí?XüÿÌ^'†ïq&oÔ©{õ"½Ç’ùEfkm8œdó
+…››ìS÷öŸÙ+÷kdÔ2eJÂ8#â]ãÚç-ÿËðíÁ¶[ M\øÇ‰õ½P¬î~H³0É5^™¡çÕ7gJg5vªuX`
+OÐÝ=ø3¾ý»žÑYÕÛH
+"¶ê8ËË8ùŠ$€ÜÜðG?ä#ˆ(òQ“@GzZ"œNÕ˜|yY_HíXkQ™‡ÖÄw;^S†“—Ï’uì¢½uB¢n†Å––6?4¹q	/e»˜}$^C.r,Rï“ÝUYêþâQJ†Ê=•CC"dÎkd‡%#ç
+ÿË¯Y‚‹¹x6ÃŽÇxÎcL·€É(wNôÕa^8ºý-Û®òµ%¶
+|ÕcÁx4Œ¼ø©N›§a4 chÂ¿D›2ÌóA  Oƒ‘;,ÚŒH±!&Õpƒ»Æ§Í›¢º9¿Q]M“¹Ir´oÿž}	}ü®ÿ5àÍS@vü¡çLB{ª}LßÀº0µ–X­í¡õÞxwè7©‡©0S®ØS9&þ—|.˜ZÜ>,Œ‡‡Ðÿ›¥ªÓ1G¿G¦}(Œýì@£?,´‚Ke àQ°¶è<'û½““O?)•îYà&Í—†OÉ/þŽðáïSQ1þxˆ‘ÞÒü3øÁƒt(d½æaâ¬Ó@à`™Ìf|ë´Š9åŒ Ø^ ë³;e+Ã2‹„$/GÉ˜•åC—'•ØZZyŠüVæÈsÚ–3œ–°H§ÉØiõÿÌ4ªs®t²Dæ×úcÖ#æ§Æq‰=—X]6€â.HÖç.Î
+Æ8mÑÎ=Èf,«ÊŽH† ŽÎ¼ ‰ð{“ü™ß’9IìíÞ"x6GãI{ý¶—Dcj\lÔÓ\éÂ°vch—)Á=Ç-›(þ
+ˆ>øÇ£‹:ž¸0®l6sß¦pMY§²XÈm+ÔX,Dœ… xjâH ­qaÇŒµ#¹Î£?ØÇæµnwwÜù !Âz4]œß7¢Ž€Î
+'·RæGf
+¤7/4ÎÅ€¤Vé¶º…ó
+ƒ—_œ?È^fç¨¶ÌzáœõÎ f½ÁœõHÔêõ¢zvÌ çX
+3ZÒÃ,0àr=FÑ™.zZ&Z%}qM@/6H)ºƒ^,´ŠiŸÎ+º–i‡'|ƒòãñPmW¡ƒ=iÕ—
+"ò§ZRúÄšé|&Ï
+õJï¼«‹`8%Hºù/2÷ [lDÓ`¡lQÊÍTåë{G  o²ýÚA5Ùaóà¨Þh²ÚÓúÁ¼Å„ÇÆµ¸Ã7á’¸šÃ¥ceVJ²bX~vûµ—‡µÕ¶&'¤øÙ‰3Ù¨\Ê9ˆ †f%’£åGÐÛÔ³¶+
+G™2p~$?]}ø1Þb‹ïTIÆ\1·5Î•*;=xÛÇÒ­&EgOZ¦Ìàºh²i¿0
+‰åL&‚ãvÉLÿy ³‹’$¸¼Ân ýfŠHwíhÆ4<¾Rµ%šÙ¡÷å[ñúíEÐÏêËáÄï0yojœbŠ,Fñ{ª´˜\x¥Ì›²ÐlÍÆ¿¾"§ÔüfôÈ—Céf£nóSÙF·HðÓÎØôÒxð$¾À£þ»ÄxŒ"ÿ	Þ¨3LWÌ]5náF¶¼¼DUé/2J= ^jMUmŽâªúû¯§hÅCÚUµ9Klƒ(²XSæ.½^ÑÁóËô]Dl5‹vg°X´O-Ö†)÷¬¥µ‘Ììè„öúž3H!?)Ô^FÇ„ÚËèQ½Œ‚jhÿ»
+U˜§P0%®%© Á|§®ËÀ•*	A2$_'¿Â`&ÇÖŒ
+T4'“˜“+å2Ðø^¼œ¢îhmÉ;š|%¢:a ‹œî˜EF¾˜méæÛ¶Í!‰rZTQ£-Yoò~ESÎ…ê—´euxP§B®ŒzâcÖ¬…
+;{6Þ’/ “Å…Ñ%gVma=â³&I¤¨L-pcHf·¹A
+4:r½Š>Ñë‰
+˜¸‘øðåStAµ›Ø
+ò¤„Vèõ$Ö1V½[d4{ŒÂ'…hƒ¤éµÙ oG]ô-Ù-×?Ï8%äàí¸-¯[åEé$ó ã˜£žŸsÖ“úÄÆªUˆœ=håDÅÍ _8
+x”S ²x
+UB›\²—[ŸÉx]Ykšpv8lW5O{>‡on²2³.Ú·üv¡Ýé¿÷/Š}o´‚…
+žr¨0ðÛÀÜ¼°0>_Y]÷¸Â·µµOÚ«ö
+„ ï­¦
+ë¥Ò%üO„iÖî|IJT3[É1‘ í¯ìÃkmP'eÌX~“cˆ¼‹Œ6“s¡Ù,­…Ã¤Çbd&OüÞ)Þ£Ëp2D|­Œ1Bü[†a¬úÌ‡×ŠöóŠ7•¥¹ØÅ„GjþRÀ+5¹®4SedòÔQE÷Â	o'|nÐ£ŒgM²KÙi?4®˜Êú±³¡º7©5Çˆ;¼œ0MñB< 4˜ï„¸ÓÛß{~èDºÕÝÐÏðÓ7TÀÎ‚.|AnÆ\éDšˆ$mì~p[Ý ýNþÀAÝÞJh
+þ™ßñ¸*“`ƒÃìâ#‰Â”æ˜~¾‘áôd¨\pW’O-gYu5JÏ4 §ÄÚ¦l.VÀ†cG–Öaè¼g˜
+Íq@t÷sŒ÷cÿÎO@îê1³£ý9ÎBD¢±ØQÈ”ã¤#¹p¹ÿAˆnÊÓV#?¡±Å);¼×©ÇôV8¼‡!aTïÔ¢´†D“)Ì+K"à‚°Æ	‹Æ[G³hÁ.º D¸ÅŒa…¸þ2Üß~6‘©J¾ ý;ð:º“DÅ$åá%Æ{yôG‡˜"jõcíeqíº€5 ³ëºÈ~Øþ0`öÜíc’Øþ3ùÕ‡ùµRÌ’fH¼ÚÂêú#»‘íÚQmåEó F °P¼#”É\JþºPßm4¡v)¥ÀáQíèå!0!àãƒª†Þ.É	ò«Ÿ~/ü	ÿa©¼¬pì\çŠXgcíÛ#
+›Â¬¦<£ñ‰H´V²ç¦ÑP aA[´²JÐ"5{+G\õT².î¹‡¬å( »à™ºò%AŽ*ÛÔ¶à<Á¦xDH
+’X=r¬‹
+UŸMh@?–Óï­š‘o?¼6XZã°)ø™#½ÈqR„Åplšà‘Ù ‡mƒÔø¹×:
+‚w1×ÙñpJl¢¯[¸à•Mç¸+ÃàE\$ oóÑŒèy£³ Sæ!Î5ëž
+Ë×Y¨p„Þ¡å,Hk]qýjåË0èg'Q%Ì‚U¶5]Ë˜¬ÐÃ‰#èkê¤Ñ xÀ:å¦¿ÍÎñ®YÇœ’ólßS¶mª/…%û*·£/EûR¸öÉº.†Øºx>]ÖþäåDÜzªœ9
+Œˆºt/èÕ¥"#HùÛ0µÜÙíäáÃ‡‹ƒP}ðûÈD
+ºxüž|kf~öw§©ÈìwCš~¡WpA½bL
+Ýàô^pH	Lô ÂëˆC zïÐ=!éºJˆ‹ÌºnŠ‡¬vÌ`ðüÏY#ïYÎç7J›ò
+&²Íh¬2ÁM±¿á¦õ-QöÖ;q<ë¼a]eh[Àò |o‹;š€,ÈO™ªigUqá&íË›æq˜éë>Åx	ZTBóiÌ4q	Ð¸ˆ²Ç!¸Š`Y=,j*§ÛÂ¢¡6DW­5‰Û¾¬ïÂVÚw—t;˜¡«·ñ“¡„Ø!ˆËkºPyÒ
+ ¯fv1
+SGîÅ™ßõfº`ÎÖ“&™FC{ùö›_ÿ!kÂf<âÒ<hDs+3yÖsCæu=ráJ
+¦˜×l:ê4¥ÎÐÜ&Jðs¸Ü¸º1^JtX6§^ê0kC}t‚ÃžëŽe
+iwèö¸ ©D;cÉºÉ³Àž	Ñlx_3BÍë$œÎ)c,-žùV3)	—»ÎSãê#¢¥È‘W_4Ü‰(´ÑUçš•Åi“º‘ï›¸zdBúãŸ²ÌƒÙÊœ
+¥]¦Wi£•jG²íq¶ªv—6µz&¤—mü©hc<:óe_r±áÎO]í“üú#åv9¯]tADï…dÜ¤j@:Á|ó¼Á¹ˆ]Âˆ++¨ØPÎ© ¥‘GMˆ’¸æP¡ä·tùïLÔN`*£² G•—‘{vÌ(¤Ÿ¨h8½¹¹‰”š™êÁ˜:§Èàjµ­s+üÄ©Ã?çtú1€ ê Õþ¨¯Æy	2†úmØÀyu^ešÑÜ(ÑV.ï'†Ã¨9Ã°š©=ÝÚ®?{þ¢ñƒÏvv÷šû?<8<zùêóýø'%ŠóñãO>]úþ÷>üƒå6W4XêåP+‹Àîe#úôð‘þ
+„c·×Â\«BÅÈR…5YSDñN5IåR˜5[ÅvÄøªúªÔÙôŒ>G[Y´'
+JFÌUÁÔ6Õ]ë°<ú°Q5È2ÕoÉÚ¿Ç– Ô±8ÙÐå¿û,"½´ãRiC/˜¾o6Œ£Ie
+¼äûä	wWÌ¤ÆH4€ž¹ Sy/ëPsÆµI£7ÀYÏMH¥ØÑn$R¾n»\%¡Ø´ƒ6ü×vj×:0à>$óó•áe
+¥Ü™Ý×
+AŠ¼mãèRAÔÏGÿ›ÿ
+ý]kGõ½ÛŸÝþÇf™Õêì ÍçµíæûÁíOÙAãe5_²ýƒÛŸï6š¹C‡!ÎM_Õ’«Ã›=¨Wc;Wõ%íD7js!Í-?µŽ~zªS
+¥³9¦‰°¨L*kínÒ¡¬<ÕereŽçjv}V*>
+A³hùíBËûÚ R*®>~”/?ùÿ]_Ë¯×?r¯_¸ÃN˜Mr—›zbªÙ#l'1=Œ4ï~fÅŒÒ nþñ‡ínëöïú!ªš±Ej%¿xêöÏø@qÌäAóçÁƒŽÏ¦öd‰½"0µ~½D‘0û®ºÏ~Ýat•Òýjìƒ~J–Dr¾÷ˆú<¸¸ÝÓqïsú¡Ã‡3“”p7š³ûãŸ&ßÙ2¬ÁP'ŠÊäM7“ï>q’óù†:Î&ÝýÍºw¹xX;÷ù•C9¬v:†µDïˆ„P‹,±]ƒå*@^dš5®UÐº§¥÷
+…ŠÝée"‹<©–ìzs<RæˆØ-&Uýzùâ1Fc2aÆŠ¹™4tiòJ[Zÿ"‘%å–ë}Ï^îkµg
+Õ9'âmÕ¿øOÊ:­neks(sÏ³C&½—i^[¡V€…×s^ÞTíÀsÖ»¹)94ÿ÷‹E=Té»ðI¹¿/Ê…vïöÂô5ÙR“A9™Xvxjï"~ýD–Ž»¢$œ
+óê£`c¢Íè£ä4„­h@Ëõöo]ØEÅîD%	S,Úêg‰@ºFÖ#ß~Ò&Ø4w®rxâ
+|ÃªËÃÚUó«NÂý7wàÏn3*$ÔkÍÓRÝ<DŠ$"z‰Es7øs{qC^æý°@ëü8â­IgÝ÷æ—ˆ{§ Øß‡_þ¯ÿ™iQ: %ÕFC7ÄÐ£÷e–"ºôûe–‰CWFqy!¹a~(y¢˜KHÎ.Æ›zýQ¶n@~Ÿ»³WÍ­ÛŸƒlÃvk»Í—Kß~óë¿Ô46
+W¼fiµ›JõK[Cú	”„eyþ|gž‡÷çôªGÉž…».òÛŸÚu1µM÷Â~npÄ€;üŠ¤°5ý‘
+Bî”,˜ÉÎ•yÙMÿuÌ›Šåln¤ˆÒ
+c„Â`(sCA!Ê"ëß´°‰ÇÕÃ¸Çwô)lãùÎQ0¨Úï^ð“c=¡v‚§/‚éÏâÂÉx†ëOZV‰;^pKÇýlóó×¶ÑOÇÚFlV¨k	H
+ûÆxüüÔÎÉ³QP–‹¸¬¤<!l×Ì¬=ÃT=ûnó|pfÝ|Ö
+(“`Æ“?ËÆ Oø¿l!Í´…p<p[0‹_bÞ·äÂÒ”‹S¦º]týêðïÙ¨×Ýøàÿ PK    |2]À}(b
+z  yé 
+         ÿ    index.htmlUT Œánjux
+     è  PK      P   Nz    
