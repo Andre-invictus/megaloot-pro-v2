@@ -3,7 +3,7 @@
   "use strict";
 
   const DENIED_BACKUP_KEYS = new Set([
-    "tw_token", "tw_helix_token", "tw_api_url"
+    "tw_token", "tw_helix_token", "tw_api_url", "tw_dvapi_dv", "tw_dvapi_key"
   ]);
   const PRIZE_PREFIX = "💰";
   let supa = null;
@@ -80,28 +80,11 @@
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
 
-  async function applyCloudPayload(payload) {
-    if (!payload) return false;
-    Object.entries(payload.local_storage || {}).forEach(([key, value]) => {
-      if (!DENIED_BACKUP_KEYS.has(key) && value !== null && value !== undefined) localStorage.setItem(key, value);
-    });
-    const dvapi = payload.dvapi_credentials || {};
-    if (dvapi.dv) { localStorage.setItem("tw_dvapi_dv", dvapi.dv); sessionStorage.setItem("ml_dv", dvapi.dv); }
-    if (dvapi.key) { localStorage.setItem("tw_dvapi_key", dvapi.key); sessionStorage.setItem("ml_dv_key", dvapi.key); }
-    return true;
-  }
-  async function hydrateFromSupabase() {
-    const session = await getSession();
-    const { data, error } = await supa.from("user_backups").select("payload,updated_at").eq("user_id", session.user.id).maybeSingle();
-    if (error) throw error;
-    return data?.payload ? applyCloudPayload(data.payload) : false;
-  }
   async function openApplication() {
-    try { await hydrateFromSupabase(); } catch (e) { console.error("Falha na restauração inicial:", e); }
     $("login-screen").style.display = "none";
     $("app-core").style.display = "flex";
     requestWakeLock();
-    loadSettings(); loadPrizes(); loadCustomVips(); loadAnnouncements(); loadCustomCommands(); loadHistory(); loadDvSession();
+    loadSettings(); loadPrizes(); loadCustomVips(); loadAnnouncements(); loadCustomCommands(); loadHistory();
     resizeConfetti(); updateAllMultipliers();
     if ($("channel-name")?.value.trim()) connectTwitch();
   }
@@ -113,8 +96,7 @@
       if (!key || DENIED_BACKUP_KEYS.has(key)) continue;
       if (key.startsWith("tw_") || key.startsWith("kk_") || /prizes|winners|vips|commands|announcements/i.test(key)) data[key] = localStorage.getItem(key);
     }
-    const dvapi = { dv: $("dvapi-dv")?.value.trim() || localStorage.getItem("tw_dvapi_dv") || "", key: $("dvapi-key")?.value.trim() || localStorage.getItem("tw_dvapi_key") || "" };
-    return { version: 4, created_at: new Date().toISOString(), local_storage: data, dvapi_credentials: dvapi };
+    return { version: 3, created_at: new Date().toISOString(), local_storage: data };
   }
 
   window.salvarBackupSupabase = async function (feedback = false) {
@@ -128,9 +110,14 @@
 
   window.restaurarBackupSupabase = async function () {
     try {
-      const restored = await hydrateFromSupabase();
-      if (!restored) throw new Error("Nenhum backup encontrado para esta conta.");
-      setMsg("cloud-status", "Backup restaurado com sucesso. Recarregando...", "ok");
+      const session = await getSession();
+      const { data, error } = await supa.from("user_backups").select("payload,updated_at").eq("user_id", session.user.id).maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Nenhum backup encontrado para esta conta.");
+      Object.entries(data.payload?.local_storage || {}).forEach(([key, value]) => {
+        if (!DENIED_BACKUP_KEYS.has(key)) localStorage.setItem(key, value);
+      });
+      setMsg("cloud-status", "Backup restaurado. Recarregando...", "ok");
       setTimeout(() => location.reload(), 800);
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
@@ -144,11 +131,10 @@
   function saveDvSession() {
     const c = dvCredentials();
     sessionStorage.setItem("ml_dv", c.dv); sessionStorage.setItem("ml_dv_key", c.key);
-    localStorage.setItem("tw_dvapi_dv", c.dv); localStorage.setItem("tw_dvapi_key", c.key);
   }
   function loadDvSession() {
-    if ($("dvapi-dv")) $("dvapi-dv").value = localStorage.getItem("tw_dvapi_dv") || sessionStorage.getItem("ml_dv") || "";
-    if ($("dvapi-key")) $("dvapi-key").value = localStorage.getItem("tw_dvapi_key") || sessionStorage.getItem("ml_dv_key") || "";
+    if ($("dvapi-dv")) $("dvapi-dv").value = sessionStorage.getItem("ml_dv") || "";
+    if ($("dvapi-key")) $("dvapi-key").value = sessionStorage.getItem("ml_dv_key") || "";
   }
   async function callDvapi(action, extra = {}) {
     const session = await getSession();
@@ -236,7 +222,7 @@
 
   document.addEventListener("DOMContentLoaded",async()=>{
     initSupabase(); loadDvSession(); window.calcularLoteDvapi();
-    [$("dvapi-dv"), $("dvapi-key")].forEach(el => { el?.addEventListener("input", saveDvSession); el?.addEventListener("change", saveDvSession); });
+    $("dvapi-dv")?.addEventListener("change",saveDvSession); $("dvapi-key")?.addEventListener("change",saveDvSession);
     if(supa){const{data}=await supa.auth.getSession();if(data.session){currentUserLogin=data.session.user.email;await openApplication();}}
   });
 })();
