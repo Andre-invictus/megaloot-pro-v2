@@ -1,23 +1,46 @@
 (function(){
   "use strict";
-  const $=id=>document.getElementById(id),room=new URLSearchParams(location.search).get("room");
+  const $=id=>document.getElementById(id);
+  const room=new URLSearchParams(location.search).get("room");
   if(!room){$("empty").textContent="URL do overlay invalida";return;}
   const client=window.supabase.createClient(window.MEGALOOT_SUPABASE_URL,window.MEGALOOT_SUPABASE_ANON_KEY);
-  let last="",timerValue=0,timerInterval=null,scrambleInterval=null,lastPhase="";
+  let last="", sequenceRunning=false, activeWinnerKey="", timers=[];
   function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-  function extra(){let e=$("winner-extra");if(e)return e;e=document.createElement("div");e.id="winner-extra";e.innerHTML='<div id="prize-stage" class="prize-stage hidden"><small>PRÊMIO DA RODADA</small><b id="prize-stage-name">PRÊMIO</b></div><div id="decode-label" class="decode-label hidden">DESCRIPTOGRAFANDO VENCEDOR...</div><div id="winner-timer" class="winner-timer hidden"><small>TEMPO PARA RESPONDER</small><b id="winner-timer-value">30s</b></div>';$("winner")?.prepend(e);return e;}
-  function hideStages(){extra();$("prize-stage").classList.add("hidden");$("decode-label").classList.add("hidden");$("winner-timer").classList.add("hidden");}
-  function stopScramble(){if(scrambleInterval){clearInterval(scrambleInterval);scrambleInterval=null;}}
-  function showPrize(s){hideStages();stopScramble();$("winner").classList.remove("hidden");$("prize-stage").classList.remove("hidden");$("prize-stage-name").textContent=s.active_prize||"Sorteio";$("winner-avatar").style.display="none";$("winner-name").style.display="none";$("winner-prize").style.display="none";}
-  function showDecoding(s){hideStages();stopScramble();$("winner").classList.remove("hidden");$("decode-label").classList.remove("hidden");$("winner-avatar").style.display="none";$("winner-name").style.display="block";$("winner-prize").style.display="none";const target=s.winner?.name||"VENCEDOR",chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";scrambleInterval=setInterval(()=>{$("winner-name").textContent=Array.from(target).map(()=>chars[Math.floor(Math.random()*chars.length)]).join("");},60);}
-  function showWinner(s,ps){hideStages();stopScramble();$("winner").classList.remove("hidden");$("winner-avatar").style.display="block";$("winner-name").style.display="block";$("winner-prize").style.display="block";$("winner-name").textContent=s.winner.name;$("winner-prize").textContent=s.active_prize||"Sorteio";const p=ps.find(x=>x.login===s.winner.login);$("winner-avatar").src=p?.avatar||"https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png";}
-  function paintTimer(){const box=$("winner-timer"),value=$("winner-timer-value");if(value)value.textContent=Math.max(0,timerValue)+"s";box?.classList.toggle("urgent",timerValue>0&&timerValue<=10);}
-  function syncTimer(s){extra();timerValue=Math.max(0,Number(s.countdown||0));const show=!!s.winner&&timerValue>0&&["winner"].includes(s.status);$("winner-timer").classList.toggle("hidden",!show);paintTimer();if(timerInterval)clearInterval(timerInterval);timerInterval=show?setInterval(()=>{if(timerValue>0)timerValue--;paintTimer();if(timerValue<=0){clearInterval(timerInterval);timerInterval=null;}},1000):null;}
-  function render(s){if(!s)return;$("prizes").innerHTML=(s.prizes||[]).map(x=>`<div class="prize">🎁 ${esc(x)}</div>`).join("")||'<div class="prize">Aguardando prêmio</div>';const m=s.multipliers||{};$("multipliers").innerHTML=`<span>👤 VIEW: ${m.viewer||1}x</span><span>⭐ SUB: ${m.sub||1}x</span><span>👑 VIP: ${m.vip||1}x</span><span>🛡 MOD: ${m.mod||1}x</span>`;const ps=s.participants||[];$("empty").style.display=ps.length?"none":"grid";$("participants").innerHTML=ps.map(p=>`<div class="card ${p.isMod?'mod':p.isVip?'vip':p.isSub?'sub':''}"><div class="luck">${p.weight||1}x LUCK</div><div class="badges">${p.isMod?'🛡 MOD ':''}${p.isVip?'👑 VIP ':''}${p.isSub?'⭐ SUB':''}</div><img src="${esc(p.avatar||'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png')}"><span class="name">${esc(p.name)}</span></div>`).join("");$("count").textContent=`${ps.length} participantes (${ps.filter(p=>p.eligible).length} elegíveis)`;$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":s.status==="prize"?"PRÊMIO DA RODADA":s.status==="drawing"?"DESCRIPTOGRAFANDO":s.status==="confirmed"?"VENCEDOR CONFIRMADO":s.status==="timeout"?"TEMPO ESGOTADO":s.winner?"VENCEDOR SELECIONADO":"AGUARDANDO";
-    if(s.status!==lastPhase){lastPhase=s.status;if(s.status==="prize")showPrize(s);else if(s.status==="drawing"&&s.winner)showDecoding(s);else if(s.winner)showWinner(s,ps);else{$("winner").classList.add("hidden");stopScramble();}}
-    else if(["winner","confirmed","timeout"].includes(s.status)&&s.winner)showWinner(s,ps);
-    syncTimer(s);
+  function later(fn,ms){const id=setTimeout(fn,ms);timers.push(id);return id;}
+  function clearSequence(){timers.forEach(clearTimeout);timers=[];sequenceRunning=false;}
+  function ensureSequenceUi(){
+    let ui=$("obs-sequence-ui");
+    if(ui)return ui;
+    ui=document.createElement("div");
+    ui.id="obs-sequence-ui";
+    ui.innerHTML='<div id="obs-prize-stage" class="obs-stage hidden"><small>PRÊMIO DA RODADA</small><b id="obs-prize-name">PRÊMIO</b></div><div id="obs-decode-stage" class="obs-stage hidden"><small>DESCRIPTOGRAFANDO VENCEDOR...</small><b id="obs-scramble">????????</b></div><div id="obs-timer" class="obs-timer hidden"><small>TEMPO PARA RESPONDER</small><b id="obs-timer-value">30s</b></div>';
+    $("winner").prepend(ui);
+    return ui;
+  }
+  function hideAllSequenceStages(){ensureSequenceUi();$("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.add("hidden");$("obs-timer").classList.add("hidden");}
+  function hideWinnerIdentity(){$("winner-avatar").style.display="none";$("winner-name").style.display="none";$("winner-prize").style.display="none";}
+  function showWinnerIdentity(s,ps){hideAllSequenceStages();$("winner-avatar").style.display="block";$("winner-name").style.display="block";$("winner-prize").style.display="block";$("winner-name").textContent=s.winner.name;$("winner-prize").textContent=s.active_prize||"Sorteio";const p=ps.find(x=>x.login===s.winner.login);$("winner-avatar").src=p?.avatar||"https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png";}
+  function startTimer(seconds){let value=Math.max(0,Number(seconds||30));const box=$("obs-timer"),txt=$("obs-timer-value");box.classList.remove("hidden");const tick=()=>{txt.textContent=value+"s";box.classList.toggle("urgent",value<=10);if(value>0){value--;later(tick,1000);}};tick();}
+  function runWinnerSequence(s,ps){
+    clearSequence();sequenceRunning=true;$("winner").classList.remove("hidden");hideWinnerIdentity();hideAllSequenceStages();
+    $("obs-prize-name").textContent=s.active_prize||"Sorteio";$("obs-prize-stage").classList.remove("hidden");$("status").textContent="PRÊMIO DA RODADA";
+    later(()=>{
+      $("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.remove("hidden");$("status").textContent="DESCRIPTOGRAFANDO";
+      const target=s.winner.name||"VENCEDOR",chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";let rounds=0;
+      const scramble=()=>{if(!sequenceRunning)return;$("obs-scramble").textContent=Array.from(target).map(()=>chars[Math.floor(Math.random()*chars.length)]).join("");rounds++;if(rounds<36)later(scramble,70);};scramble();
+      later(()=>{
+        showWinnerIdentity(s,ps);$("status").textContent="VENCEDOR SELECIONADO";startTimer(s.countdown||30);sequenceRunning=false;
+      },2800);
+    },3500);
+  }
+  function render(s){
+    if(!s)return;ensureSequenceUi();
+    $("prizes").innerHTML=(s.prizes||[]).map(x=>`<div class="prize">🎁 ${esc(x)}</div>`).join("")||'<div class="prize">Aguardando prêmio</div>';
+    const m=s.multipliers||{};$("multipliers").innerHTML=`<span>👤 VIEW: ${m.viewer||1}x</span><span>⭐ SUB: ${m.sub||1}x</span><span>👑 VIP: ${m.vip||1}x</span><span>🛡 MOD: ${m.mod||1}x</span>`;
+    const ps=s.participants||[];$("empty").style.display=ps.length?"none":"grid";$("participants").innerHTML=ps.map(p=>`<div class="card ${p.isMod?'mod':p.isVip?'vip':p.isSub?'sub':''}"><div class="luck">${p.weight||1}x LUCK</div><div class="badges">${p.isMod?'🛡 MOD ':''}${p.isVip?'👑 VIP ':''}${p.isSub?'⭐ SUB':''}</div><img src="${esc(p.avatar||'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png')}"><span class="name">${esc(p.name)}</span></div>`).join("");$("count").textContent=`${ps.length} participantes (${ps.filter(p=>p.eligible).length} elegíveis)`;
+    if(s.winner){const key=s.winner.login+"|"+(s.active_prize||"");if(key!==activeWinnerKey){activeWinnerKey=key;runWinnerSequence(s,ps);}else if(!sequenceRunning&&$("winner").classList.contains("hidden")){showWinnerIdentity(s,ps);$("winner").classList.remove("hidden");}}
+    else{activeWinnerKey="";clearSequence();hideAllSequenceStages();$("winner").classList.add("hidden");$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":"AGUARDANDO";}
   }
   async function load(){const {data,error}=await client.from("overlay_rooms").select("state,updated_at").eq("room_code",room).maybeSingle();if(error){$("empty").textContent="Overlay aguardando configuração";return;}if(data&&data.updated_at!==last){last=data.updated_at;render(data.state);}}
-  extra();load();setInterval(load,250);
+  ensureSequenceUi();load();setInterval(load,500);
 })();
