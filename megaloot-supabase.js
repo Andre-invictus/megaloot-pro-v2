@@ -209,7 +209,7 @@
   window.confirmWinnerPresence=function(){
     const login=currentWinnerLogin, text=activePrizeText, was=winnerResponded; originalConfirm.apply(this,arguments); const p=parsePrize(text);
     if(!was&&p&&login&&participants[login]){
-      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !NomeDoPersonagem. Exemplo: !Griefy`);}
+      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !NomeDoPersonagem.`);}
       else{sendChatMsg(`📋 O prêmio de ${p.value} ${p.label} foi registrado para pagamento manual.`);logDelivery({twitch_name:participants[login].name,player_name:null,prize_type:p.type,amount:p.value,status:"pending_manual",api_result:{}});}
     }
   };
