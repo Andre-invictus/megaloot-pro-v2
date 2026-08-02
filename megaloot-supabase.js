@@ -200,7 +200,7 @@
       sendChatMsg(`⏳ Validando ${charName} e processando o prêmio...`);
       const d=await callDvapi(action,{value:w.prize.value,player:charName,description:"MegaLoot"});
       if(Number(d.result)===1){sendChatMsg(`✅ ${w.prize.value} ${w.prize.label} enviados para ${charName}!`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"delivered",api_result:d});waitingDelivery=null;}
-      else if(Number(d.result)===-2){sendChatMsg(`❌ Personagem ${charName} não encontrado. Tente novamente: !nick NomeDoPersonagem`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"player_not_found",api_result:d});}
+      else if(Number(d.result)===-2){sendChatMsg(`❌ Personagem ${charName} não encontrado. Tente novamente digitando somente: !NomeDoPersonagem`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"player_not_found",api_result:d});}
       else{sendChatMsg("⚠️ Pagamento não concluído. O streamer deve verificar a pendência.");await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"failed",api_result:d});}
     }catch(e){sendChatMsg("⚠️ DVAPI indisponível. Prêmio registrado para conferência manual.");await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"error",api_result:{error:e.message}});} finally{deliveryInProgress=false;}
   }
@@ -209,12 +209,12 @@
   window.confirmWinnerPresence=function(){
     const login=currentWinnerLogin, text=activePrizeText, was=winnerResponded; originalConfirm.apply(this,arguments); const p=parsePrize(text);
     if(!was&&p&&login&&participants[login]){
-      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !nick NomeDoPersonagem.`);}
+      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !NomeDoPersonagem.`);}
       else{sendChatMsg(`📋 O prêmio de ${p.value} ${p.label} foi registrado para pagamento manual.`);logDelivery({twitch_name:participants[login].name,player_name:null,prize_type:p.type,amount:p.value,status:"pending_manual",api_result:{}});}
     }
   };
   const originalChat=window.handleChatCommands;
-  window.handleChatCommands=function(msg){originalChat.apply(this,arguments);if(waitingDelivery&&msg.username===waitingDelivery.login){const m=String(msg.rawMessage||"").trim().match(/^!nick\s+([A-Za-z0-9_]{2,20})$/i);if(m)deliver(m[1]);}};
+  window.handleChatCommands=function(msg){originalChat.apply(this,arguments);if(waitingDelivery&&msg.username===waitingDelivery.login){const m=String(msg.rawMessage||"").trim().match(/^!([A-Za-z0-9_]{2,20})$/i);if(m)deliver(m[1]);}};
 
   // Mantém avatar e mostra MOD, VIP e SUB simultaneamente.
   const originalUI=window.updateUI;
