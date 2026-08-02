@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>MegaLoot Pro - Streamer Edition</title>
+<link rel="icon" type="image/png" href="megaloot-icon.png">
+<link rel="apple-touch-icon" href="megaloot-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -854,12 +856,7 @@ function clearHistory(){if(confirm("🚨 TEM CERTEZA? Isso vai apagar todo o his
 async function manageTwitchVip(u,a){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch)return;if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);let id=await getTwitchUserId(u);if(broadcasterIdCache&&id)try{await fetch(`https://api.twitch.tv/helix/channels/vips?broadcaster_id=${broadcasterIdCache}&user_id=${id}`,{method:a,headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});}catch(e){}}
 async function sendTwitchAnnouncement(text){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch){sendChatMsg(`/me 📢 ${text}`);return;}if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);if(broadcasterIdCache){try{let r=await fetch(`https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${broadcasterIdCache}&moderator_id=${broadcasterIdCache}`,{method:'POST',headers:{'Client-Id':c,'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},body:JSON.stringify({message:text,color:"primary"})});if(!r.ok){sendChatMsg(`/me 📢 ${text}`);}}catch(e){sendChatMsg(`/me 📢 ${text}`);}}else{sendChatMsg(`/me 📢 ${text}`);}}
 let manualPrizes=[];let apiPrizes=[];let activePrizeText="";let autoSyncInterval=null;let isSyncing=false;
-function cleanPrizeDisplay(prize){
-    return String(prize || "")
-        .replace(/^💰\s*/u, "")
-        .replace(/\s*\[DVAPI:(?:mp|mc|megavip):(auto|manual)\]\s*$/i, "")
-        .trim();
-}
+function cleanPrizeDisplay(prize){return String(prize||"").replace(/^💰\s*/u,"").replace(/\s*\[DVAPI:(?:mp|mc|megavip):(?:auto|manual)\]\s*$/i,"").trim();}
 function getCombinedPrizes(){return[...manualPrizes,...apiPrizes];}
 function getAwardPriority(name){if(!name)return 0;const n=name.toLowerCase();if(n.includes('balgass'))return 1000;if(n.includes('garuda flame'))return 900;if(n.includes('wings of power'))return 850;if(n.includes('wings'))return 800;if(n.includes('condor flame'))return 750;if(n.includes('condor feather'))return 740;if(n.includes('ruud')||n.includes('box ruud'))return 600;if(n.includes('mcoin')||n.includes('mpoint'))return 500;if(n.includes('megavip'))return 400;return 100;}
 function toggleAutoSync(){const url=document.getElementById('api-url').value.trim();const btn=document.getElementById('btn-api-sync');if(!url){alert("Cole a URL da API primeiro!");return;}if(autoSyncInterval){clearInterval(autoSyncInterval);autoSyncInterval=null;btn.innerText="🔄 INICIAR AUTO-SYNC";btn.style.background="#0097A7";btn.style.color="#fff";localStorage.setItem('tw_auto_sync','false');salvarNuvem();}else{btn.innerText="✅ AUTO-SYNC ATIVADO";btn.style.background="#00e676";btn.style.color="#121216";syncApiRoutine(url);autoSyncInterval=setInterval(()=>syncApiRoutine(url),5000);localStorage.setItem('tw_auto_sync','true');salvarNuvem();}}
