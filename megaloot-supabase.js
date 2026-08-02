@@ -80,11 +80,28 @@
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
 
+  async function applyCloudPayload(payload) {
+    if (!payload) return false;
+    Object.entries(payload.local_storage || {}).forEach(([key, value]) => {
+      if (!DENIED_BACKUP_KEYS.has(key) && value !== null && value !== undefined) localStorage.setItem(key, value);
+    });
+    const dvapi = payload.dvapi_credentials || {};
+    if (dvapi.dv) { localStorage.setItem("tw_dvapi_dv", dvapi.dv); sessionStorage.setItem("ml_dv", dvapi.dv); }
+    if (dvapi.key) { localStorage.setItem("tw_dvapi_key", dvapi.key); sessionStorage.setItem("ml_dv_key", dvapi.key); }
+    return true;
+  }
+  async function hydrateFromSupabase() {
+    const session = await getSession();
+    const { data, error } = await supa.from("user_backups").select("payload,updated_at").eq("user_id", session.user.id).maybeSingle();
+    if (error) throw error;
+    return data?.payload ? applyCloudPayload(data.payload) : false;
+  }
   async function openApplication() {
+    try { await hydrateFromSupabase(); } catch (e) { console.error("Falha na restauração inicial:", e); }
     $("login-screen").style.display = "none";
     $("app-core").style.display = "flex";
     requestWakeLock();
-    loadSettings(); loadPrizes(); loadCustomVips(); loadAnnouncements(); loadCustomCommands(); loadHistory();
+    loadSettings(); loadPrizes(); loadCustomVips(); loadAnnouncements(); loadCustomCommands(); loadHistory(); loadDvSession();
     resizeConfetti(); updateAllMultipliers();
     if ($("channel-name")?.value.trim()) connectTwitch();
   }
@@ -111,17 +128,9 @@
 
   window.restaurarBackupSupabase = async function () {
     try {
-      const session = await getSession();
-      const { data, error } = await supa.from("user_backups").select("payload,updated_at").eq("user_id", session.user.id).maybeSingle();
-      if (error) throw error;
-      if (!data) throw new Error("Nenhum backup encontrado para esta conta.");
-      Object.entries(data.payload?.local_storage || {}).forEach(([key, value]) => {
-        if (!DENIED_BACKUP_KEYS.has(key)) localStorage.setItem(key, value);
-      });
-      const restoredDvapi = data.payload?.dvapi_credentials || {};
-      if (restoredDvapi.dv) { localStorage.setItem("tw_dvapi_dv", restoredDvapi.dv); sessionStorage.setItem("ml_dv", restoredDvapi.dv); }
-      if (restoredDvapi.key) { localStorage.setItem("tw_dvapi_key", restoredDvapi.key); sessionStorage.setItem("ml_dv_key", restoredDvapi.key); }
-      setMsg("cloud-status", "Backup restaurado, incluindo as credenciais DVAPI. Recarregando...", "ok");
+      const restored = await hydrateFromSupabase();
+      if (!restored) throw new Error("Nenhum backup encontrado para esta conta.");
+      setMsg("cloud-status", "Backup restaurado com sucesso. Recarregando...", "ok");
       setTimeout(() => location.reload(), 800);
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
