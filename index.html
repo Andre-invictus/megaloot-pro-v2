@@ -364,7 +364,7 @@ select option{background:#121216;color:#fff;}
 <select id="dv-lot-type" onchange="calcularLoteDvapi()"><option value="mp">MPoints</option><option value="mc">MCoins</option><option value="megavip">Dias MegaVIP</option></select>
 <div class="dv-row"><div><span class="config-desc">Valor total</span><input id="dv-lot-total" type="number" min="1" value="5000" oninput="calcularLoteDvapi()"></div><div><span class="config-desc">Quantidade de prêmios</span><input id="dv-lot-count" type="number" min="1" value="5" oninput="calcularLoteDvapi()"></div></div>
 <div id="dv-lot-preview" class="dv-preview">5 prêmios de 1.000 MPoints</div>
-<label class="checkbox-container"><input id="dv-auto" type="checkbox" checked> Entrega automática após o vencedor usar !nick</label>
+<label class="checkbox-container"><input id="dv-auto" type="checkbox" checked> Entrega automática após o vencedor informar !NomeDoPersonagem</label>
 <button class="btn-purple" style="background:#ffca28;color:#121216" onclick="adicionarLoteDvapi()">➕ ADICIONAR LOTE À FILA</button><div id="dv-lot-msg" class="dv-msg"></div>
 </div>
 <div class="config-card" style="border-color:#bf94ff;">
@@ -854,6 +854,12 @@ function clearHistory(){if(confirm("🚨 TEM CERTEZA? Isso vai apagar todo o his
 async function manageTwitchVip(u,a){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch)return;if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);let id=await getTwitchUserId(u);if(broadcasterIdCache&&id)try{await fetch(`https://api.twitch.tv/helix/channels/vips?broadcaster_id=${broadcasterIdCache}&user_id=${id}`,{method:a,headers:{'Client-Id':c,'Authorization':`Bearer ${t}`}});}catch(e){}}
 async function sendTwitchAnnouncement(text){let c=document.getElementById('helix-client-id').value.trim();let t=document.getElementById('helix-token').value.trim().replace('oauth:','');let ch=document.getElementById('channel-name').value.trim();if(!c||!t||!ch){sendChatMsg(`/me 📢 ${text}`);return;}if(!broadcasterIdCache)broadcasterIdCache=await getTwitchUserId(ch);if(broadcasterIdCache){try{let r=await fetch(`https://api.twitch.tv/helix/chat/announcements?broadcaster_id=${broadcasterIdCache}&moderator_id=${broadcasterIdCache}`,{method:'POST',headers:{'Client-Id':c,'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},body:JSON.stringify({message:text,color:"primary"})});if(!r.ok){sendChatMsg(`/me 📢 ${text}`);}}catch(e){sendChatMsg(`/me 📢 ${text}`);}}else{sendChatMsg(`/me 📢 ${text}`);}}
 let manualPrizes=[];let apiPrizes=[];let activePrizeText="";let autoSyncInterval=null;let isSyncing=false;
+function cleanPrizeDisplay(prize){
+    return String(prize || "")
+        .replace(/^💰\s*/u, "")
+        .replace(/\s*\[DVAPI:(?:mp|mc|megavip):(auto|manual)\]\s*$/i, "")
+        .trim();
+}
 function getCombinedPrizes(){return[...manualPrizes,...apiPrizes];}
 function getAwardPriority(name){if(!name)return 0;const n=name.toLowerCase();if(n.includes('balgass'))return 1000;if(n.includes('garuda flame'))return 900;if(n.includes('wings of power'))return 850;if(n.includes('wings'))return 800;if(n.includes('condor flame'))return 750;if(n.includes('condor feather'))return 740;if(n.includes('ruud')||n.includes('box ruud'))return 600;if(n.includes('mcoin')||n.includes('mpoint'))return 500;if(n.includes('megavip'))return 400;return 100;}
 function toggleAutoSync(){const url=document.getElementById('api-url').value.trim();const btn=document.getElementById('btn-api-sync');if(!url){alert("Cole a URL da API primeiro!");return;}if(autoSyncInterval){clearInterval(autoSyncInterval);autoSyncInterval=null;btn.innerText="🔄 INICIAR AUTO-SYNC";btn.style.background="#0097A7";btn.style.color="#fff";localStorage.setItem('tw_auto_sync','false');salvarNuvem();}else{btn.innerText="✅ AUTO-SYNC ATIVADO";btn.style.background="#00e676";btn.style.color="#121216";syncApiRoutine(url);autoSyncInterval=setInterval(()=>syncApiRoutine(url),5000);localStorage.setItem('tw_auto_sync','true');salvarNuvem();}}
@@ -872,7 +878,7 @@ function handleDragEnter(e){this.classList.add('over');}
 function handleDragLeave(e){this.classList.remove('over');}
 function handleDrop(e){if(e.stopPropagation){e.stopPropagation();}if(dragSrcEl!==this){let dropIndex=parseInt(this.dataset.index);let dropIsManual=dropIndex<manualPrizes.length;let dropOriginalIndex=dropIsManual?dropIndex:dropIndex-manualPrizes.length;let movedItem=dragSrcIsManual?manualPrizes.splice(dragSrcOriginalIndex,1)[0]:apiPrizes.splice(dragSrcOriginalIndex,1)[0];if(dropIsManual){manualPrizes.splice(dropOriginalIndex,0,movedItem);}else{apiPrizes.splice(dropOriginalIndex,0,movedItem);}savePrizes();updatePrizeUI();}return false;}
 function handleDragEnd(e){this.style.opacity='1';let items=document.querySelectorAll('.prize-item');items.forEach(function(item){item.classList.remove('over');});}
-function updatePrizeUI(){const container=document.getElementById('prize-list');container.innerHTML='';let combined=getCombinedPrizes();combined.forEach((prize,idx)=>{const div=document.createElement('div');div.className='prize-item';div.draggable=true;div.dataset.index=idx;div.addEventListener('dragstart',handleDragStart);div.addEventListener('dragover',handleDragOver);div.addEventListener('drop',handleDrop);div.addEventListener('dragenter',handleDragEnter);div.addEventListener('dragleave',handleDragLeave);div.addEventListener('dragend',handleDragEnd);div.innerHTML=`<span class="prize-item-name">🎁 ${prize}</span><button class="btn-remove-prize" onclick="removePrize(${idx})">&times;</button>`;container.appendChild(div);});}
+function updatePrizeUI(){const container=document.getElementById('prize-list');container.innerHTML='';let combined=getCombinedPrizes();combined.forEach((prize,idx)=>{const div=document.createElement('div');div.className='prize-item';div.draggable=true;div.dataset.index=idx;div.addEventListener('dragstart',handleDragStart);div.addEventListener('dragover',handleDragOver);div.addEventListener('drop',handleDrop);div.addEventListener('dragenter',handleDragEnter);div.addEventListener('dragleave',handleDragLeave);div.addEventListener('dragend',handleDragEnd);div.innerHTML=`<span class="prize-item-name">🎁 ${cleanPrizeDisplay(prize)}</span><button class="btn-remove-prize" onclick="removePrize(${idx})">&times;</button>`;container.appendChild(div);});}
 function flyPrizeToCenter(){const firstPrize=document.querySelector('.prize-item');if(!firstPrize)return;firstPrize.style.opacity='0.3';const rect=firstPrize.getBoundingClientRect();const clone=firstPrize.cloneNode(true);const removeBtn=clone.querySelector('.btn-remove-prize');if(removeBtn)removeBtn.remove();clone.style.position='fixed';clone.style.left=rect.left+'px';clone.style.top=rect.top+'px';clone.style.width=rect.width+'px';clone.style.zIndex='99999';clone.style.margin='0';clone.style.transition='all 0.8s cubic-bezier(0.25,1,0.5,1)';clone.style.boxShadow='0 0 30px rgba(255,202,40,0.6)';clone.style.border='2px solid #ffca28';clone.style.animation='none';document.body.appendChild(clone);requestAnimationFrame(()=>{requestAnimationFrame(()=>{const centerY=window.innerHeight/2-80;clone.style.left=`calc(50% - ${rect.width/2}px)`;clone.style.top=centerY+'px';clone.style.transform='scale(1.5)';clone.style.opacity='0';});});setTimeout(()=>{clone.remove();},850);}
 const confettiCanvas=document.getElementById('confetti-canvas');const ctx=confettiCanvas.getContext('2d');let confettiParticles=[];let confettiAnimationId=null;const blessImage=new Image();blessImage.src='bless.png';
 function resizeConfetti(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight;}
@@ -965,7 +971,7 @@ function handleChatCommands(msg){
             }
         }
     }
-    if(chatText===cFila){let combined=getCombinedPrizes();const nextItems=combined.slice(0,3).map((p,i)=>`${i+1}º [${p}]`).join(', ');sendChatMsg(cFilaTxt.replace('{premios}',nextItems||'Baú Vazio'));}
+    if(chatText===cFila){let combined=getCombinedPrizes();const nextItems=combined.slice(0,3).map((p,i)=>`${i+1}º [${cleanPrizeDisplay(p)}]`).join(', ');sendChatMsg(cFilaTxt.replace('{premios}',nextItems||'Baú Vazio'));}
     if(chatText===cSortudos){let ranking=Object.entries(luckyWinnersLog).sort((a,b)=>b[1]-a[1]).slice(0,3).map((item,i)=>`${i+1}º ${item[0]} (${item[1]})`).join(', ');sendChatMsg(cSortudosTxt.replace('{ranking}',ranking||'Ninguém'));}
     if((chatText.includes(cHype))&&(msg.isSub||msg.isVip||msg.isMod||msg.isBroadcaster)){triggerHype();}
     if(currentWinnerLogin&&msg.username===currentWinnerLogin){
@@ -986,7 +992,7 @@ function handleChatCommands(msg){
                         document.getElementById('timer-box').style.borderColor='#ff9800';
                         document.getElementById('winner-status').innerText="⏩ Repassando o prêmio...";
                         participants[currentWinnerLogin].passCount++;
-                        let lPrize=activePrizeText!==""?activePrizeText:"Sorteio Normal";
+                        let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
                         winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:msg.displayName,prize:lPrize,status:"Repassou (!passar)"});
                         saveHistory();
                         sendChatMsg(`⏩ @${msg.displayName} abriu mão do prêmio! Girando a roleta novamente...`);
@@ -1117,7 +1123,7 @@ function passTheLoot(fromCommand=false){
             giveawayInterval=null;
             participants[currentWinnerLogin].passCount++;
             participants[currentWinnerLogin].passedCurrentPrize=true;
-            let lPrize=activePrizeText!==""?activePrizeText:"Sorteio Normal";
+            let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
             winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:participants[currentWinnerLogin].name,prize:lPrize,status:"Repassou (Manual)"});
             saveHistory();
             sendChatMsg(`⏩ @${participants[currentWinnerLogin].name} abriu mão do prêmio! Girando a roleta novamente...`);
@@ -1221,7 +1227,7 @@ function drawWinner(isReroll){
     }
     const winnerDisplayName=participants[currentWinnerLogin].name;
     if(activePrizeText!==""&&!isReroll){
-        document.getElementById('hype-prize-text').innerText="🎁 "+activePrizeText;
+        document.getElementById('hype-prize-text').innerText="🎁 "+cleanPrizeDisplay(activePrizeText);
         document.getElementById('hype-overlay').style.display='flex';
         spectacleTimeout=setTimeout(()=>{
             document.getElementById('hype-overlay').style.display='none';
@@ -1276,11 +1282,11 @@ function revealFinalWinner(winnerDisplayName){
         passAlert.style.display='none';
     }
     const prizeEl=document.getElementById('winner-prize');
-    if(activePrizeText!==""){prizeEl.innerText="🎁 "+activePrizeText;prizeEl.style.display='inline-block';prizeEl.style.animation='popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards';}
+    if(activePrizeText!==""){prizeEl.innerText="🎁 "+cleanPrizeDisplay(activePrizeText);prizeEl.style.display='inline-block';prizeEl.style.animation='popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards';}
     participants[currentWinnerLogin].eligible=false;
     updateUI();
     let announceText="";
-    if(activePrizeText!==""){announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio e levou: ${activePrizeText}! Você tem 30 segundos para mandar mensagem aqui no chat!`;}else{announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio! Você tem 30 segundos para mandar alguma coisa aqui no chat!`;}
+    if(activePrizeText!==""){announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio e levou: ${cleanPrizeDisplay(activePrizeText)}! Você tem 30 segundos para mandar mensagem aqui no chat!`;}else{announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio! Você tem 30 segundos para mandar alguma coisa aqui no chat!`;}
     sendTwitchAnnouncement(announceText);
     document.getElementById('response-area').style.display='flex';
     document.getElementById('winner-actions').style.display='flex';
@@ -1298,7 +1304,7 @@ function confirmWinnerPresence(){
     document.getElementById('winner-message-log').style.display='flex';
     luckyWinnersLog[participants[currentWinnerLogin].name]=(luckyWinnersLog[participants[currentWinnerLogin].name]||0)+1;
     let wName=participants[currentWinnerLogin].name;
-    let wPrize=activePrizeText!==""?activePrizeText:"Sorteio Normal";
+    let wPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
     winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:wName,prize:wPrize,status:"Confirmado"});
     sessionWinners.push(wName.toLowerCase());
     saveHistory();
@@ -1325,7 +1331,7 @@ function timeOutWinner(){
         let timeoutTemplate=document.getElementById('cmd-timeout-msg').value||`@{user} VOCÊ... MAMOU!🔞`;
         const loserMsg=timeoutTemplate.replace(/{user}/gi,loserName);
         sendChatMsg(loserMsg);
-        let lPrize=activePrizeText!==""?activePrizeText:"Sorteio Normal";
+        let lPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
         winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:loserName,prize:lPrize,status:"Mamou (Tempo Esgotado)"});
         saveHistory();
     }
