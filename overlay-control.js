@@ -26,9 +26,9 @@
       updated_at:new Date().toISOString(),
       event_id:phase+":"+(window.currentWinnerLogin||"")+":"+cleanPrize(window.activePrizeText),
       title:"MEGALOOT PRO",
-      status:phase==="drawing"?"drawing":phase==="winner"?"winner":phase==="confirmed"?"confirmed":phase==="timeout"?"timeout":(window.isRunning?"entries_open":"waiting"),
+      status:phase==="prize"?"prize":phase==="drawing"?"drawing":phase==="winner"?"winner":phase==="confirmed"?"confirmed":phase==="timeout"?"timeout":(window.isRunning?"entries_open":"waiting"),
       entries_open:!!window.isRunning,
-      prizes:list.slice(0,5).map(cleanPrize),
+      prizes:list.map(cleanPrize),
       active_prize:cleanPrize(window.activePrizeText),
       participants:Object.entries(window.participants||{}).map(publicParticipant),
       winner,
@@ -63,5 +63,6 @@
   function mergeImported(item,kind){const login=String(item.user_login||"").toLowerCase(),name=item.user_name||item.user_login;if(!login)return;const old=window.participants[login]||{name,weight:1,isMod:false,isVip:false,isSub:false,vipBorder:false,eligible:true,hasPassBuff:false,passCount:0,passedCurrentPrize:false};old.name=name;old.eligible=true;if(kind==="sub")old.isSub=true;if(kind==="vip")old.isVip=true;const mv=Number($("mult-viewer")?.value||1),ms=Number($("mult-sub")?.value||1),mvi=Number($("mult-vip")?.value||1),mm=Number($("mult-mod")?.value||1);old.weight=old.isMod?mm:old.isVip?mvi:old.isSub?ms:mv;old.vipBorder=old.isMod||old.isVip||old.isSub;window.participants[login]=old;if(window.avatarQueue)window.avatarQueue.add(login);}
   window.importTwitchGroup=async(kind)=>{const clientId=$("helix-client-id")?.value.trim(),token=$("helix-token")?.value.trim().replace(/^oauth:/,"");if(!clientId||!token)return status("tw-import-status","Configure Client ID e Access Token no painel Twitch API.","err");status("tw-import-status","Consultando a Twitch...","warn");try{const me=await broadcaster(clientId,token);if($("tw-import-clear")?.checked)window.participants={};let subs=[],vips=[];if(kind==="subs"||kind==="both")subs=await paged(`https://api.twitch.tv/helix/subscriptions?broadcaster_id=${me.id}`,clientId,token);if(kind==="vips"||kind==="both")vips=await paged(`https://api.twitch.tv/helix/channels/vips?broadcaster_id=${me.id}`,clientId,token);subs.forEach(x=>mergeImported(x,"sub"));vips.forEach(x=>mergeImported(x,"vip"));window.updateUI();if(typeof window.saveSettingsLocal==="function")window.saveSettingsLocal();publishOverlayState();status("tw-import-status",`Concluido: ${subs.length} Subs, ${vips.length} VIPs, ${Object.keys(window.participants).length} participantes na urna.`,"ok");}catch(e){status("tw-import-status","Erro Twitch: "+e.message+" Verifique os escopos channel:read:subscriptions e channel:read:vips.","err");}};
   function wrap(name){const old=window[name];if(typeof old!=="function"||old.__overlayWrapped)return;const fn=function(){const r=old.apply(this,arguments);Promise.resolve(r).finally(()=>publishOverlayState(name==="drawWinner"||name==="revealFinalWinner"));return r;};fn.__overlayWrapped=true;window[name]=fn;}
+  window.addEventListener("megaloot:overlay-state",()=>publishOverlayState(true));
   document.addEventListener("DOMContentLoaded",()=>{setTimeout(async()=>{await ensureRoom();["updateUI","updatePrizeUI","drawWinner","revealFinalWinner","confirmWinnerPresence","timeOutWinner","hideWinner","toggleGiveaway","clearGiveaway","startNextGiveaway","passTheLoot","updateAllMultipliers"].forEach(wrap);setInterval(()=>{if(!overlayRoom)ensureRoom();else publishOverlayState();},2500);},800);});
 })();
