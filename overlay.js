@@ -4,42 +4,21 @@
   const room=new URLSearchParams(location.search).get("room");
   if(!room){$("empty").textContent="URL do overlay invalida";return;}
   const client=window.supabase.createClient(window.MEGALOOT_SUPABASE_URL,window.MEGALOOT_SUPABASE_ANON_KEY);
-  let last="", sequenceRunning=false, activeWinnerKey="", timers=[];
+  let last="",sequenceRunning=false,activeWinnerKey="",sequenceTimers=[],responseTimer=null,responseSeconds=0;
   function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-  function later(fn,ms){const id=setTimeout(fn,ms);timers.push(id);return id;}
-  function clearSequence(){timers.forEach(clearTimeout);timers=[];sequenceRunning=false;}
-  function ensureSequenceUi(){
-    let ui=$("obs-sequence-ui");
-    if(ui)return ui;
-    ui=document.createElement("div");
-    ui.id="obs-sequence-ui";
-    ui.innerHTML='<div id="obs-prize-stage" class="obs-stage hidden"><small>PRÊMIO DA RODADA</small><b id="obs-prize-name">PRÊMIO</b></div><div id="obs-decode-stage" class="obs-stage hidden"><small>DESCRIPTOGRAFANDO VENCEDOR...</small><b id="obs-scramble">????????</b></div><div id="obs-timer" class="obs-timer hidden"><small>TEMPO PARA RESPONDER</small><b id="obs-timer-value">30s</b></div>';
-    $("winner").prepend(ui);
-    return ui;
-  }
+  function later(fn,ms){const id=setTimeout(fn,ms);sequenceTimers.push(id);return id;}
+  function clearSequence(){sequenceTimers.forEach(clearTimeout);sequenceTimers=[];sequenceRunning=false;}
+  function ensureSequenceUi(){let ui=$("obs-sequence-ui");if(ui)return ui;ui=document.createElement("div");ui.id="obs-sequence-ui";ui.innerHTML='<div id="obs-prize-stage" class="obs-stage hidden"><small>PRÊMIO DA RODADA</small><b id="obs-prize-name">PRÊMIO</b></div><div id="obs-decode-stage" class="obs-stage hidden"><small>DESCRIPTOGRAFANDO VENCEDOR...</small><b id="obs-scramble">????????</b></div><div id="obs-timer" class="obs-timer hidden"><small>TEMPO PARA RESPONDER</small><b id="obs-timer-value">30s</b></div>';$("winner").prepend(ui);return ui;}
   function hideAllSequenceStages(){ensureSequenceUi();$("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.add("hidden");$("obs-timer").classList.add("hidden");}
   function hideWinnerIdentity(){$("winner-avatar").style.display="none";$("winner-name").style.display="none";$("winner-prize").style.display="none";}
-  function showWinnerIdentity(s,ps){hideAllSequenceStages();$("winner-avatar").style.display="block";$("winner-name").style.display="block";$("winner-prize").style.display="block";$("winner-name").textContent=s.winner.name;$("winner-prize").textContent=s.active_prize||"Sorteio";const p=ps.find(x=>x.login===s.winner.login);$("winner-avatar").src=p?.avatar||"https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png";}
-  function startTimer(seconds){let value=Math.max(0,Number(seconds||30));const box=$("obs-timer"),txt=$("obs-timer-value");box.classList.remove("hidden");const tick=()=>{txt.textContent=value+"s";box.classList.toggle("urgent",value<=10);if(value>0){value--;later(tick,1000);}};tick();}
-  function runWinnerSequence(s,ps){
-    clearSequence();sequenceRunning=true;$("winner").classList.remove("hidden");hideWinnerIdentity();hideAllSequenceStages();
-    $("obs-prize-name").textContent=s.active_prize||"Sorteio";$("obs-prize-stage").classList.remove("hidden");$("status").textContent="PRÊMIO DA RODADA";
-    later(()=>{
-      $("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.remove("hidden");$("status").textContent="DESCRIPTOGRAFANDO";
-      const target=s.winner.name||"VENCEDOR",chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";let rounds=0;
-      const scramble=()=>{if(!sequenceRunning)return;$("obs-scramble").textContent=Array.from(target).map(()=>chars[Math.floor(Math.random()*chars.length)]).join("");rounds++;if(rounds<36)later(scramble,70);};scramble();
-      later(()=>{
-        showWinnerIdentity(s,ps);$("status").textContent="VENCEDOR SELECIONADO";startTimer(s.countdown||30);sequenceRunning=false;
-      },2800);
-    },3500);
-  }
-  function render(s){
-    if(!s)return;ensureSequenceUi();
-    $("prizes").innerHTML=(s.prizes||[]).map(x=>`<div class="prize">🎁 ${esc(x)}</div>`).join("")||'<div class="prize">Aguardando prêmio</div>';
-    const m=s.multipliers||{};$("multipliers").innerHTML=`<span>👤 VIEW: ${m.viewer||1}x</span><span>⭐ SUB: ${m.sub||1}x</span><span>👑 VIP: ${m.vip||1}x</span><span>🛡 MOD: ${m.mod||1}x</span>`;
-    const ps=s.participants||[];$("empty").style.display=ps.length?"none":"grid";$("participants").innerHTML=ps.map(p=>`<div class="card ${p.isMod?'mod':p.isVip?'vip':p.isSub?'sub':''}"><div class="luck">${p.weight||1}x LUCK</div><div class="badges">${p.isMod?'🛡 MOD ':''}${p.isVip?'👑 VIP ':''}${p.isSub?'⭐ SUB':''}</div><img src="${esc(p.avatar||'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png')}"><span class="name">${esc(p.name)}</span></div>`).join("");$("count").textContent=`${ps.length} participantes (${ps.filter(p=>p.eligible).length} elegíveis)`;
-    if(s.winner){const key=s.winner.login+"|"+(s.active_prize||"");if(key!==activeWinnerKey){activeWinnerKey=key;runWinnerSequence(s,ps);}else if(!sequenceRunning&&$("winner").classList.contains("hidden")){showWinnerIdentity(s,ps);$("winner").classList.remove("hidden");}}
-    else{activeWinnerKey="";clearSequence();hideAllSequenceStages();$("winner").classList.add("hidden");$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":"AGUARDANDO";}
+  function showWinnerIdentity(s,ps){$("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.add("hidden");$("winner-avatar").style.display="block";$("winner-name").style.display="block";$("winner-prize").style.display="block";$("winner-name").textContent=s.winner.name;$("winner-prize").textContent=s.active_prize||"Sorteio";const p=ps.find(x=>x.login===s.winner.login);$("winner-avatar").src=p?.avatar||"https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png";}
+  function paintTimer(){const box=$("obs-timer"),txt=$("obs-timer-value");if(txt)txt.textContent=responseSeconds+"s";box?.classList.toggle("urgent",responseSeconds>0&&responseSeconds<=10);}
+  function stopResponseTimer(freeze=true){if(responseTimer){clearTimeout(responseTimer);responseTimer=null;}paintTimer();if(!freeze)$("obs-timer")?.classList.add("hidden");}
+  function startTimer(seconds){stopResponseTimer(false);responseSeconds=Math.max(0,Number(seconds||30));const box=$("obs-timer");box.classList.remove("hidden");const tick=()=>{paintTimer();if(responseSeconds>0){responseSeconds--;responseTimer=setTimeout(tick,1000);}else responseTimer=null;};tick();}
+  function runWinnerSequence(s,ps){clearSequence();stopResponseTimer(false);sequenceRunning=true;$("winner").classList.remove("hidden");hideWinnerIdentity();hideAllSequenceStages();$("obs-prize-name").textContent=s.active_prize||"Sorteio";$("obs-prize-stage").classList.remove("hidden");$("status").textContent="PRÊMIO DA RODADA";later(()=>{$("obs-prize-stage").classList.add("hidden");$("obs-decode-stage").classList.remove("hidden");$("status").textContent="DESCRIPTOGRAFANDO";const target=s.winner.name||"VENCEDOR",chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";let rounds=0;const scramble=()=>{if(!sequenceRunning)return;$("obs-scramble").textContent=Array.from(target).map(()=>chars[Math.floor(Math.random()*chars.length)]).join("");rounds++;if(rounds<36)later(scramble,70);};scramble();later(()=>{showWinnerIdentity(s,ps);$("status").textContent="VENCEDOR SELECIONADO";startTimer(s.countdown||30);sequenceRunning=false;},2800);},3500);}
+  function render(s){if(!s)return;ensureSequenceUi();$("prizes").innerHTML=(s.prizes||[]).map(x=>`<div class="prize">🎁 ${esc(x)}</div>`).join("")||'<div class="prize">Aguardando prêmio</div>';const m=s.multipliers||{};$("multipliers").innerHTML=`<span>👤 VIEW: ${m.viewer||1}x</span><span>⭐ SUB: ${m.sub||1}x</span><span>👑 VIP: ${m.vip||1}x</span><span>🛡 MOD: ${m.mod||1}x</span>`;const ps=s.participants||[];$("empty").style.display=ps.length?"none":"grid";$("participants").innerHTML=ps.map(p=>`<div class="card ${p.isMod?'mod':p.isVip?'vip':p.isSub?'sub':''}"><div class="luck">${p.weight||1}x LUCK</div><div class="badges">${p.isMod?'🛡 MOD ':''}${p.isVip?'👑 VIP ':''}${p.isSub?'⭐ SUB':''}</div><img src="${esc(p.avatar||'https://static-cdn.jtvnw.net/user-default-pictures-uv/13e5fa74def228c1-profile_image-300x300.png')}"><span class="name">${esc(p.name)}</span></div>`).join("");$("count").textContent=`${ps.length} participantes (${ps.filter(p=>p.eligible).length} elegíveis)`;
+    if(s.winner){const key=s.winner.login+"|"+(s.active_prize||"");if(key!==activeWinnerKey){activeWinnerKey=key;runWinnerSequence(s,ps);}if(s.status==="confirmed"){stopResponseTimer(true);$("status").textContent="VENCEDOR CONFIRMADO";}else if(s.status==="timeout"){stopResponseTimer(true);responseSeconds=0;paintTimer();$("status").textContent="TEMPO ESGOTADO";}}
+    else{activeWinnerKey="";clearSequence();stopResponseTimer(false);hideAllSequenceStages();$("winner").classList.add("hidden");$("status").textContent=s.status==="entries_open"?"ENTRADAS ABERTAS":"AGUARDANDO";}
   }
   async function load(){const {data,error}=await client.from("overlay_rooms").select("state,updated_at").eq("room_code",room).maybeSingle();if(error){$("empty").textContent="Overlay aguardando configuração";return;}if(data&&data.updated_at!==last){last=data.updated_at;render(data.state);}}
   ensureSequenceUi();load();setInterval(load,500);
