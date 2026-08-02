@@ -960,6 +960,7 @@ function addAnnouncement(){let message=document.getElementById('announcement-mes
 function editAnnouncement(id){let a=announcements[id];document.getElementById('announcement-message').value=a.message;document.getElementById('announcement-interval').value=a.intervalMinutes;document.getElementById('announcement-messages-min').value=a.messagesMin;document.getElementById('announcement-announce').checked=a.announceNative;editingAnnouncementId=id;let btn=document.getElementById('btn-add-announcement');btn.innerText="💾 SALVAR ALTERAÇÕES";btn.style.background="#00e676";btn.style.color="#121216";}
 function removeAnnouncement(id){delete announcements[id];saveAnnouncements();renderAnnouncements();}
 let ws=null;let isRunning=false;let participants={};let currentWinnerLogin=null;let countdownTime=30;let giveawayInterval=null;let winnerResponded=false;let winnerTimedOut=false;let spectacleTimeout=null;let luckyWinnersLog={};
+let overlayDrawPhase="idle";
 // Ponte segura para os modulos externos de importacao e overlay.
 Object.defineProperties(window,{
   participants:{get:()=>participants,set:v=>{participants=v||{};}},
@@ -968,7 +969,8 @@ Object.defineProperties(window,{
   countdownTime:{get:()=>countdownTime},
   activePrizeText:{get:()=>activePrizeText},
   avatarCache:{get:()=>avatarCache},
-  avatarQueue:{get:()=>avatarQueue}
+  avatarQueue:{get:()=>avatarQueue},
+  overlayDrawPhase:{get:()=>overlayDrawPhase,set:v=>{overlayDrawPhase=v||"idle";}}
 });
 function updateStatus(msg,color){const statusDiv=document.getElementById('conn-status');statusDiv.innerText=msg;statusDiv.style.color=color;statusDiv.style.background=color==='#e91e63'?'rgba(233,30,99,0.2)':'rgba(0,230,118,0.2)';}
 function connectTwitch(){saveSettingsLocal();let channelRaw=document.getElementById('channel-name').value.trim();let oauthTokenRaw=document.getElementById('oauth-token').value.trim();if(!channelRaw)return alert("Digite o canal!");let channel=channelRaw.toLowerCase();if(ws)ws.close();updateStatus("Conectando ao servidor...","#adadb8");ws=new WebSocket('wss://irc-ws.chat.twitch.tv:443');ws.onopen=()=>{let cleanToken=oauthTokenRaw.replace('oauth:','').trim();ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');if(cleanToken!==''){ws.send(`PASS oauth:${cleanToken}`);ws.send(`NICK ${channel}`);}else{ws.send(`PASS SCHMOOPIIE`);ws.send(`NICK justinfan12345`);}ws.send(`JOIN #${channel}`);updateStatus(cleanToken?"🟢 Conectado c/ Envio Automático!":"🟢 Conectado (Apenas Leitura)!","#00e676");document.getElementById('btn-toggle').disabled=false;globalChatMessages=0;};ws.onmessage=(event)=>{const lines=event.data.split('\r\n');for(let line of lines){if(!line)continue;if(line.startsWith('PING')){ws.send('PONG :tmi.twitch.tv');continue;}if(line.includes('Login authentication failed')){updateStatus("🔴 Falha! Token Inválido.","#e91e63");ws.close();continue;}const parsed=parseMessage(line);if(parsed){handleChatCommands(parsed);}}};ws.onclose=()=>{const statusDiv=document.getElementById('conn-status');if(!statusDiv.innerText.includes('Falha'))updateStatus(`🔴 Desconectado.`,"#e91e63");document.getElementById('btn-toggle').disabled=true;};}
@@ -1200,6 +1202,7 @@ function sendDiscordWebhook(msg){
     }).catch(e=>{});
 }
 function drawWinner(isReroll){
+    overlayDrawPhase="drawing";
     stopConfetti();
     clearInterval(giveawayInterval);
     giveawayInterval=null;
@@ -1293,6 +1296,7 @@ function startTheSpectacle(finalWinnerName,winnerLogin){
     },60);
 }
 function revealFinalWinner(winnerDisplayName){
+    overlayDrawPhase="winner";
     document.getElementById('winner-title-status').innerText="Vencedor Selecionado";
     const nameEl=document.getElementById('winner-name');
     nameEl.innerText=winnerDisplayName;
@@ -1324,6 +1328,7 @@ function revealFinalWinner(winnerDisplayName){
 function tictac(){countdownTime--;updateTimerUI();if(countdownTime<=0)timeOutWinner();}
 function updateTimerUI(){document.getElementById('timer-count').innerText=countdownTime+"s";}
 function confirmWinnerPresence(){
+    overlayDrawPhase="confirmed";
     winnerResponded=true;
     clearInterval(giveawayInterval);
     giveawayInterval=null;
@@ -1346,6 +1351,7 @@ function confirmWinnerPresence(){
     }
 }
 function timeOutWinner(){
+    overlayDrawPhase="timeout";
     clearInterval(giveawayInterval);
     giveawayInterval=null;
     winnerTimedOut=true;
@@ -1366,7 +1372,7 @@ function timeOutWinner(){
     }
 }
 function addWinnerChatMessage(user){const container=document.getElementById('winner-chat-messages');const div=document.createElement('div');div.className='winner-chat-msg';div.innerHTML=`<span class="winner-chat-author">${user.displayName}:</span> ${user.rawMessage}`;container.appendChild(div);container.scrollTop=container.scrollHeight;}
-function hideWinner(){clearInterval(giveawayInterval);giveawayInterval=null;clearTimeout(spectacleTimeout);currentWinnerLogin=null;document.getElementById('winner-overlay').style.display='none';document.getElementById('winner-avatar').style.display='none';document.getElementById('winner-avatar').src='';stopConfetti();updatePrizeUI();}
+function hideWinner(){overlayDrawPhase="idle";clearInterval(giveawayInterval);giveawayInterval=null;clearTimeout(spectacleTimeout);currentWinnerLogin=null;document.getElementById('winner-overlay').style.display='none';document.getElementById('winner-avatar').style.display='none';document.getElementById('winner-avatar').src='';stopConfetti();updatePrizeUI();}
 function clearGiveaway(){
     hideWinner();
     isRunning=false;
