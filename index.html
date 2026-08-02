@@ -1202,7 +1202,7 @@ function sendDiscordWebhook(msg){
     }).catch(e=>{});
 }
 function drawWinner(isReroll){
-    overlayDrawPhase="drawing";
+    overlayDrawPhase="prize";
     stopConfetti();
     clearInterval(giveawayInterval);
     giveawayInterval=null;
@@ -1272,6 +1272,8 @@ function drawWinner(isReroll){
     }
 }
 function startTheSpectacle(finalWinnerName,winnerLogin){
+    overlayDrawPhase="drawing";
+    window.dispatchEvent(new CustomEvent("megaloot:overlay-state"));
     fetchedAvatarUrl=avatarCache[winnerLogin]||null;
     document.getElementById('winner-avatar').style.display='none';
     if(!fetchedAvatarUrl){
@@ -1297,6 +1299,7 @@ function startTheSpectacle(finalWinnerName,winnerLogin){
 }
 function revealFinalWinner(winnerDisplayName){
     overlayDrawPhase="winner";
+    window.dispatchEvent(new CustomEvent("megaloot:overlay-state"));
     document.getElementById('winner-title-status').innerText="Vencedor Selecionado";
     const nameEl=document.getElementById('winner-name');
     nameEl.innerText=winnerDisplayName;
