@@ -887,6 +887,16 @@ function editAnnouncement(id){let a=announcements[id];document.getElementById('a
 function removeAnnouncement(id){delete announcements[id];saveAnnouncements();renderAnnouncements();}
 let ws=null;let isRunning=false;let participants={};let currentWinnerLogin=null;let countdownTime=30;let giveawayInterval=null;let winnerResponded=false;let winnerTimedOut=false;let spectacleTimeout=null;let luckyWinnersLog={};
 let overlayDrawPhase="idle";
+let overlayDrawId=Number(sessionStorage.getItem("ml_overlay_draw_id")||0);
+function nextOverlayDrawId(){overlayDrawId++;sessionStorage.setItem("ml_overlay_draw_id",String(overlayDrawId));return overlayDrawId;}
+function reliableDelay(callback,ms){
+  const due=Date.now()+ms;
+  const blob=new Blob([`onmessage=e=>{const d=Math.max(0,e.data-Date.now());setTimeout(()=>postMessage(1),d)}`],{type:'text/javascript'});
+  const worker=new Worker(URL.createObjectURL(blob));
+  worker.onmessage=()=>{worker.terminate();callback();};
+  worker.postMessage(due);
+  return {worker,due};
+}
 // Ponte segura para os modulos externos de importacao e overlay.
 Object.defineProperties(window,{
   participants:{get:()=>participants,set:v=>{participants=v||{};}},
@@ -896,7 +906,8 @@ Object.defineProperties(window,{
   activePrizeText:{get:()=>activePrizeText},
   avatarCache:{get:()=>avatarCache},
   avatarQueue:{get:()=>avatarQueue},
-  overlayDrawPhase:{get:()=>overlayDrawPhase,set:v=>{overlayDrawPhase=v||"idle";}}
+  overlayDrawPhase:{get:()=>overlayDrawPhase,set:v=>{overlayDrawPhase=v||"idle";}},
+  overlayDrawId:{get:()=>overlayDrawId}
 });
 function updateStatus(msg,color){const statusDiv=document.getElementById('conn-status');statusDiv.innerText=msg;statusDiv.style.color=color;statusDiv.style.background=color==='#e91e63'?'rgba(233,30,99,0.2)':'rgba(0,230,118,0.2)';}
 function connectTwitch(){saveSettingsLocal();let channelRaw=document.getElementById('channel-name').value.trim();let oauthTokenRaw=document.getElementById('oauth-token').value.trim();if(!channelRaw)return alert("Digite o canal!");let channel=channelRaw.toLowerCase();if(ws)ws.close();updateStatus("Conectando ao servidor...","#adadb8");ws=new WebSocket('wss://irc-ws.chat.twitch.tv:443');ws.onopen=()=>{let cleanToken=oauthTokenRaw.replace('oauth:','').trim();ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');if(cleanToken!==''){ws.send(`PASS oauth:${cleanToken}`);ws.send(`NICK ${channel}`);}else{ws.send(`PASS SCHMOOPIIE`);ws.send(`NICK justinfan12345`);}ws.send(`JOIN #${channel}`);updateStatus(cleanToken?"🟢 Conectado c/ Envio Automático!":"🟢 Conectado (Apenas Leitura)!","#00e676");document.getElementById('btn-toggle').disabled=false;globalChatMessages=0;};ws.onmessage=(event)=>{const lines=event.data.split('\r\n');for(let line of lines){if(!line)continue;if(line.startsWith('PING')){ws.send('PONG :tmi.twitch.tv');continue;}if(line.includes('Login authentication failed')){updateStatus("🔴 Falha! Token Inválido.","#e91e63");ws.close();continue;}const parsed=parseMessage(line);if(parsed){handleChatCommands(parsed);}}};ws.onclose=()=>{const statusDiv=document.getElementById('conn-status');if(!statusDiv.innerText.includes('Falha'))updateStatus(`🔴 Desconectado.`,"#e91e63");document.getElementById('btn-toggle').disabled=true;};}
@@ -1128,6 +1139,7 @@ function sendDiscordWebhook(msg){
     }).catch(e=>{});
 }
 function drawWinner(isReroll){
+    nextOverlayDrawId();
     overlayDrawPhase="prize";
     stopConfetti();
     clearInterval(giveawayInterval);
@@ -1177,17 +1189,15 @@ function drawWinner(isReroll){
         }
         currentWinnerLogin=pool[Math.floor(Math.random()*pool.length)];
     }
-    if(activePrizeText!==""&&!isReroll){
-        flyPrizeToCenter();
-    }else if(isReroll){
-        const firstPrize=document.querySelector('.prize-item');
-        if(firstPrize)firstPrize.style.opacity='0.3';
+    if(activePrizeText!==""){
+        if(!isReroll) flyPrizeToCenter();
+        else { const firstPrize=document.querySelector('.prize-item'); if(firstPrize) firstPrize.style.opacity='0.3'; }
     }
     const winnerDisplayName=participants[currentWinnerLogin].name;
-    if(activePrizeText!==""&&!isReroll){
+    if(activePrizeText!==""){
         document.getElementById('hype-prize-text').innerText="🎁 "+cleanPrizeDisplay(activePrizeText);
         document.getElementById('hype-overlay').style.display='flex';
-        spectacleTimeout=setTimeout(()=>{
+        spectacleTimeout=reliableDelay(()=>{
             document.getElementById('hype-overlay').style.display='none';
             document.getElementById('winner-overlay').style.display='flex';
             startTheSpectacle(winnerDisplayName,currentWinnerLogin);
@@ -1209,19 +1219,15 @@ function startTheSpectacle(finalWinnerName,winnerLogin){
     nameEl.style.display='block';
     nameEl.style.color='#fff';
     const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?/";
-    let iterations=0;
-    const maxIterations=45;
-    const scrambleInterval=setInterval(()=>{
+    const revealAt=Date.now()+2700;
+    const paintScramble=()=>{
+        if(Date.now()>=revealAt){nameEl.style.color='#00e676';revealFinalWinner(finalWinnerName);return;}
         let scrambled="";
-        for(let i=0;i<finalWinnerName.length;i++){scrambled+=chars[Math.floor(Math.random()*chars.length)];}
+        for(let i=0;i<finalWinnerName.length;i++) scrambled+=chars[Math.floor(Math.random()*chars.length)];
         nameEl.innerText=scrambled;
-        iterations++;
-        if(iterations>=maxIterations){
-            clearInterval(scrambleInterval);
-            nameEl.style.color='#00e676';
-            revealFinalWinner(finalWinnerName);
-        }
-    },60);
+        reliableDelay(paintScramble,60);
+    };
+    paintScramble();
 }
 function revealFinalWinner(winnerDisplayName){
     overlayDrawPhase="winner";
