@@ -3,7 +3,7 @@
   "use strict";
 
   const DENIED_BACKUP_KEYS = new Set([
-    "tw_token", "tw_helix_token", "tw_api_url", "tw_dvapi_dv", "tw_dvapi_key"
+    "tw_token", "tw_helix_token", "tw_api_url"
   ]);
   const PRIZE_PREFIX = "💰";
   let supa = null;
@@ -80,7 +80,21 @@
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
 
+  async function applyCloudBackupBeforeOpen() {
+    try {
+      const session = await getSession();
+      const { data, error } = await supa.from("user_backups").select("payload").eq("user_id", session.user.id).maybeSingle();
+      if (error || !data?.payload) return;
+      Object.entries(data.payload.local_storage || {}).forEach(([key, value]) => {
+        if (!DENIED_BACKUP_KEYS.has(key) && value !== null && value !== undefined) localStorage.setItem(key, value);
+      });
+      const c = data.payload.dvapi_credentials || {};
+      if (c.login) localStorage.setItem("tw_dvapi_dv", c.login);
+      if (c.key) localStorage.setItem("tw_dvapi_key", c.key);
+    } catch (e) { console.warn("Backup inicial indisponível:", e); }
+  }
   async function openApplication() {
+    await applyCloudBackupBeforeOpen();
     $("login-screen").style.display = "none";
     $("app-core").style.display = "flex";
     requestWakeLock();
@@ -96,7 +110,11 @@
       if (!key || DENIED_BACKUP_KEYS.has(key)) continue;
       if (key.startsWith("tw_") || key.startsWith("kk_") || /prizes|winners|vips|commands|announcements/i.test(key)) data[key] = localStorage.getItem(key);
     }
-    return { version: 3, created_at: new Date().toISOString(), local_storage: data };
+    const dvapi = {
+      login: $("dvapi-dv")?.value.trim() || localStorage.getItem("tw_dvapi_dv") || "",
+      key: $("dvapi-key")?.value.trim() || localStorage.getItem("tw_dvapi_key") || ""
+    };
+    return { version: 4, created_at: new Date().toISOString(), local_storage: data, dvapi_credentials: dvapi };
   }
 
   window.salvarBackupSupabase = async function (feedback = false) {
@@ -117,7 +135,10 @@
       Object.entries(data.payload?.local_storage || {}).forEach(([key, value]) => {
         if (!DENIED_BACKUP_KEYS.has(key)) localStorage.setItem(key, value);
       });
-      setMsg("cloud-status", "Backup restaurado. Recarregando...", "ok");
+      const c = data.payload?.dvapi_credentials || {};
+      if (c.login) localStorage.setItem("tw_dvapi_dv", c.login);
+      if (c.key) localStorage.setItem("tw_dvapi_key", c.key);
+      setMsg("cloud-status", "Backup restaurado, incluindo Login DV e API Key. Recarregando...", "ok");
       setTimeout(() => location.reload(), 800);
     } catch (e) { setMsg("cloud-status", e.message, "err"); }
   };
@@ -131,10 +152,11 @@
   function saveDvSession() {
     const c = dvCredentials();
     sessionStorage.setItem("ml_dv", c.dv); sessionStorage.setItem("ml_dv_key", c.key);
+    localStorage.setItem("tw_dvapi_dv", c.dv); localStorage.setItem("tw_dvapi_key", c.key);
   }
   function loadDvSession() {
-    if ($("dvapi-dv")) $("dvapi-dv").value = sessionStorage.getItem("ml_dv") || "";
-    if ($("dvapi-key")) $("dvapi-key").value = sessionStorage.getItem("ml_dv_key") || "";
+    if ($("dvapi-dv")) $("dvapi-dv").value = localStorage.getItem("tw_dvapi_dv") || sessionStorage.getItem("ml_dv") || "";
+    if ($("dvapi-key")) $("dvapi-key").value = localStorage.getItem("tw_dvapi_key") || sessionStorage.getItem("ml_dv_key") || "";
   }
   async function callDvapi(action, extra = {}) {
     const session = await getSession();
@@ -200,7 +222,7 @@
       sendChatMsg(`⏳ Validando ${charName} e processando o prêmio...`);
       const d=await callDvapi(action,{value:w.prize.value,player:charName,description:"MegaLoot"});
       if(Number(d.result)===1){sendChatMsg(`✅ ${w.prize.value} ${w.prize.label} enviados para ${charName}!`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"delivered",api_result:d});waitingDelivery=null;}
-      else if(Number(d.result)===-2){sendChatMsg(`❌ Personagem ${charName} não encontrado. Tente novamente: !nick NomeDoPersonagem`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"player_not_found",api_result:d});}
+      else if(Number(d.result)===-2){sendChatMsg(`❌ Personagem ${charName} não encontrado. Tente novamente digitando: !NomeDoPersonagem`);await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"player_not_found",api_result:d});}
       else{sendChatMsg("⚠️ Pagamento não concluído. O streamer deve verificar a pendência.");await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"failed",api_result:d});}
     }catch(e){sendChatMsg("⚠️ DVAPI indisponível. Prêmio registrado para conferência manual.");await logDelivery({twitch_name:w.twitchName,player_name:charName,prize_type:w.prize.type,amount:w.prize.value,status:"error",api_result:{error:e.message}});} finally{deliveryInProgress=false;}
   }
@@ -209,12 +231,12 @@
   window.confirmWinnerPresence=function(){
     const login=currentWinnerLogin, text=activePrizeText, was=winnerResponded; originalConfirm.apply(this,arguments); const p=parsePrize(text);
     if(!was&&p&&login&&participants[login]){
-      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !nick NomeDoPersonagem.`);}
+      if(p.auto){waitingDelivery={login,twitchName:participants[login].name,prize:p};sendChatMsg(`💰 @${participants[login].name}, para receber ${p.value} ${p.label}, digite !NomeDoPersonagem.`);}
       else{sendChatMsg(`📋 O prêmio de ${p.value} ${p.label} foi registrado para pagamento manual.`);logDelivery({twitch_name:participants[login].name,player_name:null,prize_type:p.type,amount:p.value,status:"pending_manual",api_result:{}});}
     }
   };
   const originalChat=window.handleChatCommands;
-  window.handleChatCommands=function(msg){originalChat.apply(this,arguments);if(waitingDelivery&&msg.username===waitingDelivery.login){const m=String(msg.rawMessage||"").trim().match(/^!nick\s+([A-Za-z0-9_]{2,20})$/i);if(m)deliver(m[1]);}};
+  window.handleChatCommands=function(msg){originalChat.apply(this,arguments);if(waitingDelivery&&msg.username===waitingDelivery.login){const m=String(msg.rawMessage||"").trim().match(/^!([A-Za-z0-9_]{2,20})$/i);if(m)deliver(m[1]);}};
 
   // Mantém avatar e mostra MOD, VIP e SUB simultaneamente.
   const originalUI=window.updateUI;
@@ -222,7 +244,10 @@
 
   document.addEventListener("DOMContentLoaded",async()=>{
     initSupabase(); loadDvSession(); window.calcularLoteDvapi();
-    $("dvapi-dv")?.addEventListener("change",saveDvSession); $("dvapi-key")?.addEventListener("change",saveDvSession);
+    [$("dvapi-dv"), $("dvapi-key")].forEach(el => {
+      el?.addEventListener("input", saveDvSession);
+      el?.addEventListener("change", saveDvSession);
+    });
     if(supa){const{data}=await supa.auth.getSession();if(data.session){currentUserLogin=data.session.user.email;await openApplication();}}
   });
 })();
