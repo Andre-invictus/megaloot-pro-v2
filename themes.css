@@ -28,3 +28,8 @@ body[data-theme="scarlet"]:before{background:radial-gradient(circle at 25% 30%,r
 /* Phase transitions */
 #overlay.ml-phase-prize #stage:after,#overlay.ml-phase-drawing #stage:after,#overlay.ml-phase-winner #stage:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4}#overlay.ml-phase-prize #stage:after{background:radial-gradient(circle,var(--ml-glow),transparent 58%);animation:phaseBloom 1.2s ease-out}#overlay.ml-phase-drawing #stage:after{background:repeating-linear-gradient(0deg,transparent 0 7px,color-mix(in srgb,var(--ml-secondary) 9%,transparent) 8px 9px);animation:decodeShift .17s steps(2) infinite}#overlay.ml-phase-winner #stage:after{background:radial-gradient(circle at center,color-mix(in srgb,var(--ml-accent) 18%,transparent),transparent 54%);animation:winnerPulse 2.4s ease-in-out infinite alternate}@keyframes phaseBloom{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}@keyframes decodeShift{to{transform:translateY(9px)}}@keyframes winnerPulse{from{opacity:.25}to{opacity:.85}}
 [data-theme-effects="off"] .ml-ambient .ml-particle,[data-theme-effects="off"] .ml-scan,[data-theme-effects="off"] .ml-lightning,[data-theme-effects="off"] .ml-speed-lines,[data-theme-effects="off"] .ml-grain{display:none}
+/* FIX OBS GRID: ambient layer must never become a grid item */
+#overlay{position:relative!important;isolation:isolate}
+#overlay>.ml-ambient{position:absolute!important;inset:0!important;z-index:0!important;display:block!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important}
+#overlay>aside,#overlay>section{position:relative!important;z-index:1!important}
+#overlay>.ml-ambient>*{position:absolute!important}
