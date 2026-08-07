@@ -362,6 +362,7 @@ select option{background:#121216;color:#fff;}
 <label style="color:#bf94ff;">⭐👑 IMPORTAR PARTICIPANTES TWITCH</label>
 <span class="config-desc">Importe todos os inscritos, VIPs ou os dois grupos diretamente para a urna. Requer Client ID e Access Token com os escopos corretos no painel Twitch API.</span>
 <label class="checkbox-container"><input type="checkbox" id="tw-import-clear" checked> Limpar participantes antes de importar</label>
+<label class="checkbox-container" style="margin-top:10px;padding:10px;border:1px solid #ffca28;border-radius:10px;background:rgba(255,202,40,.06)"><input type="checkbox" id="tw-exclusive-draw" onchange="setExclusiveDrawMode(this.checked)"> <span><b style="color:#ffca28">Sorteio exclusivo sem confirmação no chat</b><small style="display:block;color:#aaa;margin-top:3px">O vencedor ganha automaticamente, o prêmio sai da fila e o próximo sorteio usa o próximo prêmio.</small></span></label>
 <div class="dv-row">
 <button class="btn-purple" onclick="importTwitchGroup('subs')">⭐ IMPORTAR SUBS</button>
 <button class="btn-purple" style="background:#ffca28;color:#121216" onclick="importTwitchGroup('vips')">👑 IMPORTAR VIPS</button>
@@ -661,6 +662,7 @@ function saveSettingsLocal(){
     if(ef) localStorage.setItem('tw_entry_filter', ef.value);
     localStorage.setItem('tw_helix_client_id', document.getElementById('helix-client-id').value);
     localStorage.setItem('tw_helix_token', document.getElementById('helix-token').value);
+    localStorage.setItem('tw_exclusive_draw', document.getElementById('tw-exclusive-draw')?.checked ? 'true' : 'false');
     if(document.getElementById('discord-webhook')) {
         localStorage.setItem('tw_discord_webhook', document.getElementById('discord-webhook').value);
     }
@@ -706,6 +708,7 @@ function loadSettings(){
     }
     if(localStorage.getItem('tw_helix_client_id') !== null) document.getElementById('helix-client-id').value = localStorage.getItem('tw_helix_client_id');
     if(localStorage.getItem('tw_helix_token') !== null) document.getElementById('helix-token').value = localStorage.getItem('tw_helix_token');
+    if(document.getElementById('tw-exclusive-draw')) document.getElementById('tw-exclusive-draw').checked = localStorage.getItem('tw_exclusive_draw') === 'true';
     if(localStorage.getItem('tw_discord_webhook') !== null && document.getElementById('discord-webhook')){
         document.getElementById('discord-webhook').value = localStorage.getItem('tw_discord_webhook');
     }
@@ -1087,6 +1090,9 @@ function updateUI(){
         document.getElementById('placeholder-entries').style.display='block';
     }
 }
+function isExclusiveDrawMode(){return document.getElementById('tw-exclusive-draw')?.checked===true;}
+function setExclusiveDrawMode(enabled){localStorage.setItem('tw_exclusive_draw',enabled?'true':'false');saveSettingsLocal();}
+function exclusiveAudienceLabel(){const kind=localStorage.getItem('tw_last_import_group')||'both';return kind==='subs'?'Subs':kind==='vips'?'VIPs':'Subs e VIPs';}
 function startNextGiveaway(){hideWinner();setTimeout(()=>{drawWinner(false);},300);}
 function passTheLoot(fromCommand=false){
     if(currentWinnerLogin&&participants[currentWinnerLogin]){
@@ -1259,11 +1265,22 @@ function revealFinalWinner(winnerDisplayName){
     participants[currentWinnerLogin].eligible=false;
     updateUI();
     let announceText="";
-    if(activePrizeText!==""){announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio e levou: ${cleanPrizeDisplay(activePrizeText)}! Você tem 30 segundos para mandar mensagem aqui no chat!`;}else{announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio! Você tem 30 segundos para mandar alguma coisa aqui no chat!`;}
-    sendTwitchAnnouncement(announceText);
-    document.getElementById('response-area').style.display='flex';
-    document.getElementById('winner-actions').style.display='flex';
-    if(winnerResponded){confirmWinnerPresence();}else{updateTimerUI();document.getElementById('timer-box').style.display='inline-block';document.getElementById('winner-status').innerText="Avisando no chat! Aguardando resposta...";giveawayInterval=setInterval(tictac,1000);}
+    if(isExclusiveDrawMode()){
+        const audience=exclusiveAudienceLabel();
+        announceText=activePrizeText!==""?`🎉 Parabéns @${winnerDisplayName}! Você ganhou o sorteio exclusivo para ${audience} e levou: ${cleanPrizeDisplay(activePrizeText)}!`:`🎉 Parabéns @${winnerDisplayName}! Você ganhou o sorteio exclusivo para ${audience}!`;
+        sendTwitchAnnouncement(announceText);
+        document.getElementById('response-area').style.display='none';
+        document.getElementById('winner-actions').style.display='flex';
+        document.getElementById('timer-box').style.display='none';
+        document.getElementById('winner-status').innerText="✅ Sorteio exclusivo confirmado automaticamente!";
+        setTimeout(()=>confirmWinnerPresence(),250);
+    }else{
+        if(activePrizeText!==""){announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio e levou: ${cleanPrizeDisplay(activePrizeText)}! Você tem 30 segundos para mandar mensagem aqui no chat!`;}else{announceText=`🎉 Parabéns @${winnerDisplayName}, você ganhou o sorteio! Você tem 30 segundos para mandar alguma coisa aqui no chat!`;}
+        sendTwitchAnnouncement(announceText);
+        document.getElementById('response-area').style.display='flex';
+        document.getElementById('winner-actions').style.display='flex';
+        if(winnerResponded){confirmWinnerPresence();}else{updateTimerUI();document.getElementById('timer-box').style.display='inline-block';document.getElementById('winner-status').innerText="Avisando no chat! Aguardando resposta...";giveawayInterval=setInterval(tictac,1000);}
+    }
 }
 function tictac(){countdownTime--;updateTimerUI();if(countdownTime<=0)timeOutWinner();}
 function updateTimerUI(){document.getElementById('timer-count').innerText=countdownTime+"s";}
@@ -1273,13 +1290,14 @@ function confirmWinnerPresence(){
     clearInterval(giveawayInterval);
     giveawayInterval=null;
     document.getElementById('winner-card').className='winner-card-ui confirmed';
-    document.getElementById('winner-status').innerText="✅ Vencedor confirmado no chat!";
+    const exclusive=isExclusiveDrawMode();
+    document.getElementById('winner-status').innerText=exclusive?"✅ Sorteio exclusivo confirmado automaticamente!":"✅ Vencedor confirmado no chat!";
     document.getElementById('timer-box').style.borderColor='#00e676';
     document.getElementById('winner-message-log').style.display='flex';
     luckyWinnersLog[participants[currentWinnerLogin].name]=(luckyWinnersLog[participants[currentWinnerLogin].name]||0)+1;
     let wName=participants[currentWinnerLogin].name;
     let wPrize=activePrizeText!==""?cleanPrizeDisplay(activePrizeText):"Sorteio Normal";
-    winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:wName,prize:wPrize,status:"Confirmado"});
+    winnersHistory.push({time:new Date().toLocaleString('pt-BR'),name:wName,prize:wPrize,status:exclusive?"Sorteio Exclusivo":"Confirmado"});
     sessionWinners.push(wName.toLowerCase());
     saveHistory();
     sendDiscordWebhook(`🎉 **${wName}** confirmou presença e ganhou **${wPrize}** na live!`);
