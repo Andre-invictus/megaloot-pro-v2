@@ -2,7 +2,7 @@
 (function(){
   "use strict";
   const $=id=>document.getElementById(id);
-  let overlayClient=null, overlayUser=null, overlayRoom=null, publishTimer=null;
+  let overlayClient=null, overlayUser=null, overlayRoom=null, publishTimer=null,publishChain=Promise.resolve();
   const baseUrl=()=>location.origin + location.pathname.replace(/[^/]*$/,"");
   function status(id,text,cls=""){const e=$(id);if(e){e.textContent=text;e.className="dv-msg "+cls;}}
   function uuid(){return crypto.randomUUID ? crypto.randomUUID() : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
@@ -35,7 +35,7 @@
     if(!overlayRoom||!overlayUser)return;
     if(publishTimer&&!immediate)clearTimeout(publishTimer);
     const run=async()=>{try{const {error}=await overlayClient.from("overlay_rooms").update({state:collectState(),updated_at:new Date().toISOString()}).eq("owner_id",overlayUser.id);if(error)throw error;}catch(e){console.error("Overlay sync:",e);}};
-    if(immediate)await run(); else publishTimer=setTimeout(run,180);
+    if(immediate){publishChain=publishChain.then(run,run);await publishChain;}else publishTimer=setTimeout(()=>{publishChain=publishChain.then(run,run);},180);
   }
   window.publishMegaLootOverlayState=(immediate=true)=>publishOverlayState(immediate);
   window.copyOverlayUrl=async()=>{const v=$("overlay-url")?.value;if(!v)return status("overlay-status","A sala ainda nao foi criada.","err");await navigator.clipboard.writeText(v);status("overlay-status","URL copiada. Cole em uma Fonte de Navegador do OBS.","ok");};
