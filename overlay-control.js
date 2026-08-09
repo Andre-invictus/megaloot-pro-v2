@@ -26,7 +26,7 @@
       if(error) throw error;
       overlayRoom=data?.room_code||uuid();
       if(!data){const r=await overlayClient.from("overlay_rooms").insert({owner_id:overlayUser.id,room_code:overlayRoom,state:collectState()});if(r.error)throw r.error;}
-      const url=baseUrl()+"overlay.html?room="+encodeURIComponent(overlayRoom); if($("overlay-url"))$("overlay-url").value=url; const bitsUrl=baseUrl()+"bits-overlay.html?room="+encodeURIComponent(overlayRoom); if($("bits-overlay-url"))$("bits-overlay-url").value=bitsUrl;
+      const url=baseUrl()+"overlay.html?room="+encodeURIComponent(overlayRoom); if($("overlay-url"))$("overlay-url").value=url;
       status("overlay-status","Sala pronta. O overlay sera atualizado automaticamente.","ok");
       await publishOverlayState(true);
     }catch(e){status("overlay-status","Erro ao criar sala: "+e.message,"err");}
@@ -39,7 +39,7 @@
   }
   window.copyOverlayUrl=async()=>{const v=$("overlay-url")?.value;if(!v)return status("overlay-status","A sala ainda nao foi criada.","err");await navigator.clipboard.writeText(v);status("overlay-status","URL copiada. Cole em uma Fonte de Navegador do OBS.","ok");};
   window.openOverlayUrl=()=>{const v=$("overlay-url")?.value;if(v)window.open(v,"_blank","noopener");};
-  window.regenerateOverlayRoom=async()=>{if(!confirm("A URL atual deixara de funcionar. Gerar uma nova sala?"))return;try{await getAuth();overlayRoom=uuid();const {error}=await overlayClient.from("overlay_rooms").update({room_code:overlayRoom,state:collectState(),updated_at:new Date().toISOString()}).eq("owner_id",overlayUser.id);if(error)throw error;const url=baseUrl()+"overlay.html?room="+encodeURIComponent(overlayRoom);$("overlay-url").value=url;const bitsUrl=baseUrl()+"bits-overlay.html?room="+encodeURIComponent(overlayRoom);if($("bits-overlay-url"))$("bits-overlay-url").value=bitsUrl;status("overlay-status","Nova URL criada. Atualize as Fontes de Navegador no OBS.","ok");}catch(e){status("overlay-status",e.message,"err");}};
+  window.regenerateOverlayRoom=async()=>{if(!confirm("A URL atual deixara de funcionar. Gerar uma nova sala?"))return;try{await getAuth();overlayRoom=uuid();const {error}=await overlayClient.from("overlay_rooms").update({room_code:overlayRoom,state:collectState(),updated_at:new Date().toISOString()}).eq("owner_id",overlayUser.id);if(error)throw error;const url=baseUrl()+"overlay.html?room="+encodeURIComponent(overlayRoom);$("overlay-url").value=url;status("overlay-status","Nova URL criada. Atualize a Fonte de Navegador no OBS.","ok");}catch(e){status("overlay-status",e.message,"err");}};
   async function twitchFetch(url,clientId,token){const r=await fetch(url,{headers:{"Client-Id":clientId,"Authorization":"Bearer "+token}});const d=await r.json();if(!r.ok)throw new Error(d.message||("Twitch HTTP "+r.status));return d;}
   async function broadcaster(clientId,token){const d=await twitchFetch("https://api.twitch.tv/helix/users",clientId,token);if(!d.data?.[0])throw new Error("Token Twitch invalido ou nao pertence ao canal.");return d.data[0];}
   async function paged(endpoint,clientId,token){let out=[],cursor="";do{const sep=endpoint.includes("?")?"&":"?";const d=await twitchFetch(endpoint+sep+"first=100"+(cursor?"&after="+encodeURIComponent(cursor):""),clientId,token);out.push(...(d.data||[]));cursor=d.pagination?.cursor||"";}while(cursor);return out;}
