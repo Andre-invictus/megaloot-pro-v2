@@ -37,6 +37,7 @@
     const run=async()=>{try{const {error}=await overlayClient.from("overlay_rooms").update({state:collectState(),updated_at:new Date().toISOString()}).eq("owner_id",overlayUser.id);if(error)throw error;}catch(e){console.error("Overlay sync:",e);}};
     if(immediate)await run(); else publishTimer=setTimeout(run,180);
   }
+  window.publishMegaLootOverlayState=(immediate=true)=>publishOverlayState(immediate);
   window.copyOverlayUrl=async()=>{const v=$("overlay-url")?.value;if(!v)return status("overlay-status","A sala ainda nao foi criada.","err");await navigator.clipboard.writeText(v);status("overlay-status","URL copiada. Cole em uma Fonte de Navegador do OBS.","ok");};
   window.openOverlayUrl=()=>{const v=$("overlay-url")?.value;if(v)window.open(v,"_blank","noopener");};
   window.regenerateOverlayRoom=async()=>{if(!confirm("A URL atual deixara de funcionar. Gerar uma nova sala?"))return;try{await getAuth();overlayRoom=uuid();const {error}=await overlayClient.from("overlay_rooms").update({room_code:overlayRoom,state:collectState(),updated_at:new Date().toISOString()}).eq("owner_id",overlayUser.id);if(error)throw error;const url=baseUrl()+"overlay.html?room="+encodeURIComponent(overlayRoom);$("overlay-url").value=url;status("overlay-status","Nova URL criada. Atualize a Fonte de Navegador no OBS.","ok");}catch(e){status("overlay-status",e.message,"err");}};
