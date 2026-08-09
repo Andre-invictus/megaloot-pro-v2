@@ -27,7 +27,7 @@
     const modal=document.createElement("div");modal.id="bits-wheel-modal";modal.className="modal-overlay";modal.innerHTML=`<div class="modal-content modern-modal bw-shell"><div class="modern-head"><div class="modern-title"><i>🎡</i><div><h2>Roleta de Bits</h2><p>Giros automáticos, prêmios manuais e controle completo</p></div></div><button class="modern-close" onclick="closeModal('bits-wheel-modal')">&times;</button></div><div class="bw-tabs"><button class="bw-tab active" onclick="BitsWheel.tab('config',this)">⚙️ Configuração</button><button class="bw-tab" onclick="BitsWheel.tab('prizes',this)">🎁 Prêmios</button><button class="bw-tab" onclick="BitsWheel.tab('manual',this)">🎡 Giros manuais</button><button class="bw-tab" onclick="BitsWheel.tab('queue',this)">📋 Fila</button><button class="bw-tab" onclick="BitsWheel.tab('history',this)">🏆 Histórico</button></div><div class="bw-body">
     <section id="bw-pane-config" class="bw-pane active"><div class="mcard full bw-overlay-url-card"><label>URL EXCLUSIVA DA ROLETA NO OBS</label><div class="bw-url-row"><input id="bits-overlay-url" class="modern-input" readonly placeholder="A URL aparecerá após o login"><button class="modern-save" onclick="BitsWheel.copyUrl()">📋 COPIAR URL</button><button class="secondary-btn" onclick="BitsWheel.openUrl()">🔗 ABRIR</button></div><small>Use esta URL em uma nova Fonte de Navegador, separada do overlay do sorteador. O fundo é transparente.</small></div><div class="pane-head"><div><h3>Configuração da Roleta</h3><small>As alterações são salvas no navegador e no backup da conta</small></div><button class="modern-save" onclick="BitsWheel.saveSettings()">💾 SALVAR</button></div><div class="settings-grid"><div class="mcard full bw-toggle-card"><label class="checkbox-container"><input id="bw-enabled" type="checkbox"> <span><b>Ativar Roleta de Bits</b><small>Somente Cheers reais geram giros automáticos</small></span></label></div><div class="mcard"><label>BITS NECESSÁRIOS POR FAIXA</label><input id="bw-bits-tier" type="number" min="1"><label>GIROS CONCEDIDOS POR FAIXA</label><input id="bw-spins-tier" type="number" min="1"><div id="bw-rule-preview" class="bw-rule-preview"></div></div><div class="mcard"><label>LIMITE E TEMPO</label><input id="bw-max-spins" type="number" min="1" placeholder="Máximo de giros"><input id="bw-duration" type="number" min="3" placeholder="Duração do giro"><input id="bw-gap" type="number" min="0" placeholder="Intervalo entre giros"></div><div class="mcard"><label>EXIBIÇÃO NO OVERLAY</label><select id="bw-display-mode"><option value="on_bits">Mostrar somente ao receber Bits</option><option value="always">Manter sempre visível</option><option value="hidden">Ocultar do overlay</option></select><label>Durante o sorteio principal</label><select id="bw-during-giveaway"><option value="wait">Aguardar o sorteio terminar</option><option value="small">Mostrar em tamanho reduzido</option><option value="immediate">Mostrar imediatamente</option></select><label>Ocultar após o resultado</label><input id="bw-hide-delay" type="number" min="1"></div><div class="mcard"><label>COMPORTAMENTO</label><label class="checkbox-container"><input id="bw-accumulate" type="checkbox"> Acumular Bits restantes por usuário</label><label class="checkbox-container"><input id="bw-repeat" type="checkbox"> Permitir prêmios repetidos</label><label class="checkbox-container"><input id="bw-send-chat" type="checkbox"> Enviar resultados no chat</label><label class="checkbox-container"><input id="bw-summary" type="checkbox"> Mostrar resumo final</label><label class="checkbox-container"><input id="bw-history-enabled" type="checkbox"> Salvar no histórico</label></div></div></section>
     <section id="bw-pane-prizes" class="bw-pane"><div class="bw-two"><div class="creator"><h3>Novo prêmio</h3><input id="bw-prize-name" class="modern-input" placeholder="Nome do prêmio"><div class="field-row"><input id="bw-prize-chance" class="modern-input" type="number" min="0.01" step="0.01" placeholder="Chance %"><input id="bw-prize-color" type="color" value="#9146ff"></div><button class="modern-save" style="width:100%" onclick="BitsWheel.addPrize()">➕ ADICIONAR PRÊMIO</button></div><div><div class="pane-head"><div><h3>Prêmios cadastrados</h3><small id="bw-total-chance"></small></div><button class="secondary-btn" onclick="BitsWheel.normalize()">NORMALIZAR</button></div><div id="bw-prize-list" class="item-list"></div></div></div></section>
-    <section id="bw-pane-manual" class="bw-pane"><div class="creator-grid"><div class="creator"><h3>Conceder giros de brinde</h3><input id="bw-manual-user" class="modern-input" placeholder="Usuário da Twitch"><input id="bw-manual-spins" class="modern-input" type="number" min="1" value="1"><input id="bw-manual-reason" class="modern-input" placeholder="Motivo, exemplo: brinde"><label class="checkbox-container"><input id="bw-manual-chat" type="checkbox" checked> Avisar no chat</label><button class="modern-save" style="width:100%" onclick="BitsWheel.manual()">🎁 ADICIONAR À FILA</button></div><div class="creator"><h3>Teste visual</h3><p class="config-desc">Envia anúncio e prêmio como TESTE no chat; não registra entrega oficial nem altera Bits.</p><button class="modern-save" style="width:100%" onclick="BitsWheel.test()">🧪 TESTAR ROLETA</button></div></div></section>
+    <section id="bw-pane-manual" class="bw-pane"><div class="creator-grid"><div class="creator"><h3>Conceder giros de brinde</h3><input id="bw-manual-user" class="modern-input" placeholder="Usuário da Twitch"><input id="bw-manual-spins" class="modern-input" type="number" min="1" value="1"><input id="bw-manual-reason" class="modern-input" placeholder="Motivo, exemplo: brinde"><label class="checkbox-container"><input id="bw-manual-chat" type="checkbox" checked> Avisar no chat</label><button class="modern-save" style="width:100%" onclick="BitsWheel.manual()">🎁 ADICIONAR À FILA</button></div><div class="creator"><h3>Teste visual</h3><p class="config-desc">Envia anúncio, cada prêmio e o resumo como TESTE no chat; não registra entrega oficial nem altera Bits.</p><button class="modern-save" style="width:100%" onclick="BitsWheel.test()">🧪 TESTAR ROLETA</button></div></div></section>
     <section id="bw-pane-queue" class="bw-pane"><div class="pane-head"><div><h3>Fila automática</h3><small id="bw-queue-count"></small><small id="bw-sync-status" style="display:block;color:#00e5ff;margin-top:4px">Sincronização pronta</small></div><div class="actions"><button class="secondary-btn" onclick="BitsWheel.pause()">⏯ PAUSAR / CONTINUAR</button><button class="danger-btn" onclick="BitsWheel.clearQueue()">LIMPAR</button></div></div><div id="bw-queue-list" class="item-list"></div></section>
     <section id="bw-pane-history" class="bw-pane"><div class="pane-head"><div><h3>Histórico da Roleta</h3><small>Todos os prêmios são de entrega manual</small></div><button class="danger-btn" onclick="BitsWheel.clearHistory()">LIMPAR HISTÓRICO</button></div><div id="bw-history-list" class="item-list"></div></section>
     </div></div>`;document.body.appendChild(modal);syncUI();renderAll();
@@ -38,54 +38,99 @@
   function pick(exclude){const ps=activePrizes().filter(p=>data.repeat||p.id!==exclude);let r=Math.random()*ps.reduce((a,p)=>a+Number(p.chance),0);for(const p of ps){r-=Number(p.chance);if(r<=0)return p}return ps.at(-1)}
   function wheelAngle(prize){const ps=activePrizes(),idx=ps.findIndex(p=>p.id===prize.id),seg=360/ps.length;return 1800+(360-(idx*seg+seg/2))}
   function publicState(){return {config:{enabled:data.enabled,bitsPerTier:data.bitsPerTier,spinsPerTier:data.spinsPerTier,displayMode:data.displayMode,hideDelay:data.hideDelay,duration:data.spinDuration,prizes:activePrizes().map(p=>({name:p.name,color:p.color,chance:p.chance}))},current:current?{...current}:null,queueLength:data.queue.length,paused:data.paused,lastCompleted:data.lastCompleted,heartbeat:Date.now()}}
-  function enqueue(evt){if(!evt.spins||evt.spins<1)return;data.queue.push(evt);save();process()}
-  function startDirectEvent(evt){
-    if(spinTimer){try{clearTimeout(spinTimer)}catch(_){}try{spinTimer.terminate?.()}catch(_){}spinTimer=null}
-    const ps=activePrizes();const prize=pick(null);if(!prize)return alert("Nenhum prêmio ativo disponível.");
-    data.paused=false;data.queue=data.queue.filter(q=>!q.test);processing=true;
-    current={...evt,index:0,results:[],phase:"spinning",prize:{id:prize.id,name:prize.name,color:prize.color},angle:wheelAngle(prize)+Math.random()*30-15,spinId:id(),startedAt:Date.now(),endAt:Date.now()+data.spinDuration*1000};
-    if(typeof sendChatMsg==="function")sendChatMsg(`🎡 TESTE: @${evt.user} recebeu ${evt.spins} giro na Roleta de Bits!`);
-    save();
-    spinTimer=later(()=>{if(!current||current.id!==evt.id)return;current.phase="result";current.results.push({id:prize.id,name:prize.name});current.index=1;save();if(typeof sendChatMsg==="function")sendChatMsg(`🎯 TESTE: @${evt.user} ganhou ${prize.name} na Roleta de Bits!`);spinTimer=later(()=>finish(),Math.max(1200,data.gapSeconds*1000));},data.spinDuration*1000);
+  function sendWheelChat(text){
+    if(typeof sendChatMsg!=="function")return false;
+    sendChatMsg(text);
+    return true;
   }
-  function process(){if(processing||data.paused||!data.queue.length||totalChance()!==100)return;if(!data.enabled&&!data.queue[0]?.test&&!String(data.queue[0]?.id||"").startsWith("manual:"))return;if(data.duringGiveaway==='wait'&&window.currentWinnerLogin){later(process,1500);return}processing=true;current=data.queue.shift();current.index=0;current.results=[];current.phase="intro";current.spinId=id();save();if(data.sendChat&&!current.test)sendChatMsg?.(`🎡 @${current.user} recebeu ${current.spins} giro${current.spins>1?'s':''} na Roleta de Bits!`);later(runSpin,1600)}
-  function runSpin(){if(!current)return;if(current.index>=current.spins){finish();return}const prev=current.results.at(-1)?.id||null,p=pick(prev);if(!p){finish();return}current.phase="preparing";current.prize={id:p.id,name:p.name,color:p.color};current.angle=wheelAngle(p)+Math.random()*30-15;current.spinId=id();save();later(()=>{if(!current)return;current.phase="spinning";save();spinTimer=later(()=>{current.phase="result";current.results.push({id:p.id,name:p.name});current.index++;save();if(data.sendChat&&!current.test)sendChatMsg?.(`🎯 Giro ${current.index}/${current.spins}: @${current.user} ganhou ${p.name}!`);spinTimer=later(runSpin,data.gapSeconds*1000+1800)},data.spinDuration*1000)},350)}
-  function finish(){if(!current)return;current.phase="summary";save();const done=current;if(data.summary&&data.sendChat&&!done.test){const counts={};done.results.forEach(r=>counts[r.name]=(counts[r.name]||0)+1);const text=Object.entries(counts).map(([n,c])=>`${c>1?c+'x ':''}${n}`).join(', ');sendChatMsg?.(`🏆 Resultado de @${done.user}: ${text}`)}if(data.history&&!done.test)data.history.push({user:done.user,bits:done.bits||0,spins:done.spins,results:done.results.map(r=>r.name),time:new Date().toISOString(),source:done.source});later(()=>{data.lastCompleted={...done,phase:"completed"};current=null;processing=false;save();later(process,250)},data.hideDelay*1000)}
-  function watchdogAdvance(){
+  function enqueue(evt){
+    if(!evt.spins||evt.spins<1)return;
+    data.queue.push(evt);
+    save();
+    process();
+  }
+  function eventPrefix(evt){return evt.test?"🧪 TESTE:":"🎡";}
+  function beginEvent(evt){
+    processing=true;
+    current={...evt,index:0,results:[],phase:"intro",phaseUntil:Date.now()+1200,spinId:id()};
+    if(data.sendChat||evt.test)sendWheelChat(`${eventPrefix(evt)} @${evt.user} recebeu ${evt.spins} giro${evt.spins>1?"s":""} na Roleta de Bits!`);
+    save();
+  }
+  function process(){
+    if(processing||current||data.paused||!data.queue.length||Math.abs(totalChance()-100)>0.001)return;
+    const evt=data.queue[0];
+    if(!data.enabled&&!evt?.test&&!String(evt?.id||"").startsWith("manual:"))return;
+    if(data.duringGiveaway==="wait"&&window.currentWinnerLogin)return;
+    data.queue.shift();
+    beginEvent(evt);
+  }
+  function beginSpin(){
     if(!current)return;
-    const now=Date.now();
-    if(current.phase==="spinning"&&current.endAt&&now>=current.endAt&&!current.watchdogDone){
-      current.watchdogDone=true;
-      const p=current.prize;
-      if(!current.results.some(r=>r.spinId===current.spinId))current.results.push({id:p.id,name:p.name,spinId:current.spinId});
-      current.index=Math.min(current.spins,current.index+1);
-      current.phase="result";
-      current.resultUntil=now+Math.max(1600,data.gapSeconds*1000);
-      save();
-      if(typeof sendChatMsg==="function"&&(data.sendChat||current.test))sendChatMsg(`${current.test?"🧪 TESTE: ":"🎯 "}Giro ${current.index}/${current.spins}: @${current.user} ganhou ${p.name}!`);
-      return;
+    if(current.index>=current.spins){beginSummary();return;}
+    const previous=current.results.at(-1)?.id||null;
+    const prize=pick(previous);
+    if(!prize){beginSummary();return;}
+    current.phase="spinning";
+    current.prize={id:prize.id,name:prize.name,color:prize.color};
+    current.angle=wheelAngle(prize)+Math.random()*30-15;
+    current.spinId=id();
+    current.phaseUntil=Date.now()+data.spinDuration*1000;
+    save();
+  }
+  function finishCurrentSpin(){
+    if(!current||current.phase!=="spinning")return;
+    const prize=current.prize;
+    current.results.push({id:prize.id,name:prize.name,spinId:current.spinId});
+    current.index++;
+    current.phase="result";
+    current.phaseUntil=Date.now()+Math.max(1800,data.gapSeconds*1000);
+    save();
+    if(data.sendChat||current.test){
+      sendWheelChat(`${current.test?"🧪 TESTE:":"🎯"} Giro ${current.index}/${current.spins}: @${current.user} ganhou ${prize.name}!`);
     }
-    if(current.phase==="result"&&current.resultUntil&&now>=current.resultUntil&&!current.resultAdvancing){
-      current.resultAdvancing=true;
-      if(current.index>=current.spins){
-        current.phase="summary";
-        const counts={};current.results.forEach(r=>counts[r.name]=(counts[r.name]||0)+1);
-        const text=Object.entries(counts).map(([n,c])=>`${c>1?c+'x ':''}${n}`).join(', ');
-        current.summaryText=text;current.summaryUntil=now+data.hideDelay*1000;save();
-        if(typeof sendChatMsg==="function"&&(data.sendChat||current.test))sendChatMsg(`${current.test?"🧪 TESTE FINAL":"🏆 Resultado"} de @${current.user}: ${text}`);
-      }else{
-        current.resultAdvancing=false;runSpin();
-      }
-      return;
+  }
+  function beginSummary(){
+    if(!current)return;
+    const counts={};
+    current.results.forEach(r=>counts[r.name]=(counts[r.name]||0)+1);
+    const text=Object.entries(counts).map(([name,count])=>`${count>1?count+"x ":""}${name}`).join(", ")||"Nenhum prêmio";
+    current.summaryText=text;
+    current.phase="summary";
+    current.phaseUntil=Date.now()+data.hideDelay*1000;
+    save();
+    if(data.summary&&(data.sendChat||current.test)){
+      sendWheelChat(`${current.test?"🧪 TESTE FINAL:":"🏆 Resultado final de"} @${current.user}: ${text}`);
     }
-    if(current.phase==="summary"&&current.summaryUntil&&now>=current.summaryUntil&&!current.completing){
-      current.completing=true;const done=current;
-      if(data.history&&!done.test)data.history.push({user:done.user,bits:done.bits||0,spins:done.spins,results:done.results.map(r=>r.name),time:new Date().toISOString(),source:done.source});
-      data.lastCompleted={...done,phase:"completed"};current=null;processing=false;save();process();
+    if(data.history&&!current.test){
+      data.history.push({user:current.user,bits:current.bits||0,spins:current.spins,results:current.results.map(r=>r.name),time:new Date().toISOString(),source:current.source});
     }
+  }
+  function completeEvent(){
+    if(!current)return;
+    data.lastCompleted={...current,phase:"completed"};
+    current=null;
+    processing=false;
+    save();
+    process();
+  }
+  function lifecycleTick(){
+    if(!current){process();return;}
+    if(Date.now()<(current.phaseUntil||0))return;
+    if(current.phase==="intro")beginSpin();
+    else if(current.phase==="spinning")finishCurrentSpin();
+    else if(current.phase==="result")beginSpin();
+    else if(current.phase==="summary")completeEvent();
+  }
+  function startDirectEvent(evt){
+    if(spinTimer){try{clearTimeout(spinTimer)}catch(_){}try{spinTimer.terminate?.()}catch(_){}spinTimer=null;}
+    data.paused=false;
+    data.queue=data.queue.filter(q=>!q.test);
+    current=null;
+    processing=false;
+    beginEvent(evt);
   }
   function cheer(msg){if(!data.enabled||!msg?.bits||msg.bits<1)return;const eventId=msg.messageId||`${msg.username}:${msg.bits}:${Date.now()}`;if(data.processedIds.includes(eventId))return;data.processedIds.push(eventId);data.processedIds=data.processedIds.slice(-300);const user=msg.displayName||msg.username||"Anônimo",key=(msg.username||"anonymous").toLowerCase();let total=Number(msg.bits)+(data.accumulate?Number(data.remainders[key]||0):0);const tiers=Math.floor(total/data.bitsPerTier);if(data.accumulate)data.remainders[key]=total%data.bitsPerTier;const spins=Math.min(data.maxSpins,tiers*data.spinsPerTier);if(spins>0)enqueue({id:eventId,user,bits:Number(msg.bits),spins,bonus:0,source:"Bits",test:false});else save()}
   function wrapChat(){const old=window.handleChatCommands;if(typeof old!=="function"||old.__bitsWrapped)return;const fn=function(msg){old.apply(this,arguments);cheer(msg)};fn.__bitsWrapped=true;window.handleChatCommands=fn}
   window.BitsWheel={tab:showTab,async copyUrl(){const v=$("bits-overlay-url")?.value;if(!v)return alert("Aguarde a sala do overlay ser criada.");await navigator.clipboard.writeText(v);alert("URL da Roleta copiada!")},openUrl(){const v=$("bits-overlay-url")?.value;if(v)window.open(v,"_blank","noopener")},saveSettings(){settingsFromUI();save();process()},addPrize(){const n=$("bw-prize-name").value.trim(),c=Number($("bw-prize-chance").value),color=$("bw-prize-color").value;if(!n||!c)return alert("Informe nome e porcentagem.");data.prizes.push({id:id(),name:n,chance:c,color,active:true});$("bw-prize-name").value="";$("bw-prize-chance").value="";save()},removePrize(pid){data.prizes=data.prizes.filter(p=>p.id!==pid);save()},togglePrize(pid,v){const p=data.prizes.find(x=>x.id===pid);if(p)p.active=v;save()},normalize(){const ps=activePrizes();if(!ps.length)return;const v=100/ps.length;ps.forEach((p,i)=>p.chance=i===ps.length-1?Number((100-v*(ps.length-1)).toFixed(2)):Number(v.toFixed(2)));save()},manual(){const user=$("bw-manual-user").value.trim().replace(/^@/,""),spins=Math.max(1,Number($("bw-manual-spins").value||1));if(!user)return alert("Informe o usuário.");const announce=$("bw-manual-chat").checked;enqueue({id:"manual:"+id(),user,bits:0,spins,bonus:spins,source:$("bw-manual-reason").value.trim()||"Brinde manual",test:false});if(announce)sendChatMsg?.(`🎁 @${user} recebeu ${spins} giro${spins>1?'s':''} extra${spins>1?'s':''} de brinde!`)},test(){const ps=activePrizes();if(!ps.length)return alert("Cadastre pelo menos um prêmio ativo antes do teste.");if(Math.abs(totalChance()-100)>0.001){const v=100/ps.length;ps.forEach((p,i)=>p.chance=i===ps.length-1?Number((100-v*(ps.length-1)).toFixed(2)):Number(v.toFixed(2)));}const evt={id:"test:"+id(),user:"MegaTester",bits:100,spins:1,bonus:0,source:"Teste visual",test:true};startDirectEvent(evt)},pause(){data.paused=!data.paused;save();if(!data.paused)process()},clearQueue(){if(confirm("Limpar os eventos aguardando?")){data.queue=[];save()}},clearHistory(){if(confirm("Limpar o histórico da roleta?")){data.history=[];save()}},getPublicState:publicState,cheer};
-  document.addEventListener("DOMContentLoaded",()=>{buildPanel();setTimeout(wrapChat,1200);setInterval(()=>{wrapChat();watchdogAdvance();process()},250)});
+  document.addEventListener("DOMContentLoaded",()=>{buildPanel();setTimeout(wrapChat,1200);setInterval(()=>{wrapChat();lifecycleTick()},250)});
 })();
