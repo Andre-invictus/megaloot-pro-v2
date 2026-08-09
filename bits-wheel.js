@@ -9,7 +9,11 @@
   function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
   function id(){return crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2)}
   function later(fn,ms){
-    try{const due=Date.now()+ms,blob=new Blob([`onmessage=e=>setTimeout(()=>postMessage(1),Math.max(0,e.data-Date.now()))`],{type:"text/javascript"}),url=URL.createObjectURL(blob),w=new Worker(url);w.onmessage=()=>{w.terminate();URL.revokeObjectURL(url);fn()};w.postMessage(due);return w}catch(_){return setTimeout(fn,ms)}
+    const due=Date.now()+ms;let done=false,worker=null,timer=null,watch=null;
+    const fire=()=>{if(done)return;done=true;try{worker?.terminate()}catch(_){}if(timer)clearTimeout(timer);if(watch)clearInterval(watch);fn()};
+    timer=setTimeout(fire,ms);watch=setInterval(()=>{if(Date.now()>=due)fire()},250);
+    try{const blob=new Blob([`onmessage=e=>setTimeout(()=>postMessage(1),Math.max(0,e.data-Date.now()))`],{type:"text/javascript"}),url=URL.createObjectURL(blob);worker=new Worker(url);worker.onmessage=()=>{URL.revokeObjectURL(url);fire()};worker.postMessage(due)}catch(_){}
+    return {terminate:fire};
   }
   function activePrizes(){return data.prizes.filter(p=>p.active&&Number(p.chance)>0)}
   function totalChance(){return activePrizes().reduce((a,p)=>a+Number(p.chance||0),0)}
@@ -37,8 +41,12 @@
   function enqueue(evt){if(!evt.spins||evt.spins<1)return;data.queue.push(evt);save();process()}
   function startDirectEvent(evt){
     if(spinTimer){try{clearTimeout(spinTimer)}catch(_){}try{spinTimer.terminate?.()}catch(_){}spinTimer=null}
-    data.paused=false;data.queue=data.queue.filter(q=>!q.test);processing=true;current={...evt,index:0,results:[],phase:"intro",spinId:id()};save();
-    later(()=>{if(current&&current.id===evt.id)runSpin()},900);
+    const ps=activePrizes();const prize=pick(null);if(!prize)return alert("Nenhum prêmio ativo disponível.");
+    data.paused=false;data.queue=data.queue.filter(q=>!q.test);processing=true;
+    current={...evt,index:0,results:[],phase:"spinning",prize:{id:prize.id,name:prize.name,color:prize.color},angle:wheelAngle(prize)+Math.random()*30-15,spinId:id(),startedAt:Date.now(),endAt:Date.now()+data.spinDuration*1000};
+    if(data.sendChat)sendChatMsg?.(`🎡 TESTE: @${evt.user} recebeu ${evt.spins} giro na Roleta de Bits!`);
+    save();
+    spinTimer=later(()=>{if(!current||current.id!==evt.id)return;current.phase="result";current.results.push({id:prize.id,name:prize.name});current.index=1;save();if(data.sendChat)sendChatMsg?.(`🎯 TESTE: @${evt.user} ganhou ${prize.name} na Roleta de Bits!`);spinTimer=later(()=>finish(),Math.max(1200,data.gapSeconds*1000));},data.spinDuration*1000);
   }
   function process(){if(processing||data.paused||!data.queue.length||totalChance()!==100)return;if(!data.enabled&&!data.queue[0]?.test&&!String(data.queue[0]?.id||"").startsWith("manual:"))return;if(data.duringGiveaway==='wait'&&window.currentWinnerLogin){later(process,1500);return}processing=true;current=data.queue.shift();current.index=0;current.results=[];current.phase="intro";current.spinId=id();save();if(data.sendChat&&!current.test)sendChatMsg?.(`🎡 @${current.user} recebeu ${current.spins} giro${current.spins>1?'s':''} na Roleta de Bits!`);later(runSpin,1600)}
   function runSpin(){if(!current)return;if(current.index>=current.spins){finish();return}const prev=current.results.at(-1)?.id||null,p=pick(prev);if(!p){finish();return}current.phase="preparing";current.prize={id:p.id,name:p.name,color:p.color};current.angle=wheelAngle(p)+Math.random()*30-15;current.spinId=id();save();later(()=>{if(!current)return;current.phase="spinning";save();spinTimer=later(()=>{current.phase="result";current.results.push({id:p.id,name:p.name});current.index++;save();if(data.sendChat&&!current.test)sendChatMsg?.(`🎯 Giro ${current.index}/${current.spins}: @${current.user} ganhou ${p.name}!`);spinTimer=later(runSpin,data.gapSeconds*1000+1800)},data.spinDuration*1000)},350)}
